@@ -39,12 +39,21 @@ class Main extends CI_Controller {
   private function listMenu(){
     if(Main::isLogin()){
       if(!empty($this->session->userdata("Av72Net_Role")) &&
-         $this->session->userdata("Av72Net_Role") == "ROOT"){
+         $this->session->userdata("Av72Net_Role") == "ROOT"
+      ){
         $data = array("PARENT_MENU" => array(
                                               array("NAME"    => "Tambah Data Admin",
                                                     "ID"      => "MTambahDataAdmin",
                                                     "ICON"    => "fa fa-user-plus",
                                                     "URL"     => "AdminPage/main/add_new_administrator",
+                                                    "STATUS"  => "Single",
+                                                    "PARENT"  => NULL,
+                                                    "LEVEL"   => 1),
+
+                                              array("NAME"    => "Tambah Data Departemen",
+                                                    "ID"      => "MTambahDataDepartemen",
+                                                    "ICON"    => "fa fa-user-plus",
+                                                    "URL"     => "AdminPage/main/add_new_department",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => NULL,
                                                     "LEVEL"   => 1),
@@ -197,7 +206,29 @@ class Main extends CI_Controller {
     }else{
       redirect("/","refresh");
     }
+  }
 
+  public function add_new_department(){
+    if(Main::isLogin()){ 
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $DATA = array("TITLE"     => "Tambah Data",
+                      "ADDRESS_PATH" => array("Link_1" => $this->uri->rsegment(1),
+                                              "Link_2" => $this->uri->rsegment(2)),
+                      "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Input_Department",NULL,TRUE),
+                      "CSRF_NAME" => $this->security->get_csrf_token_name(),
+                      "CSRF_TOKEN" => $this->security->get_csrf_hash());
+                  
+        $this->load->view("Admin_Dashboard_View/ADV_Header");
+        $this->load->view("Admin_Dashboard_View/ADV_Sidebar",Main::listMenu());
+        $this->load->view("Admin_Dashboard_View/ADV_Content_Wrapper",$DATA);
+        $this->load->view("Admin_Dashboard_View/ADV_Footer");
+      }else{
+        log_message("APPLICATION","ADMIN MENCOBA MASUK",FALSE);
+        redirect("/","refresh");
+      }
+    }else{
+      redirect("/","refresh");
+    }
   }
 
   public function add_new_client(){
@@ -475,4 +506,92 @@ class Main extends CI_Controller {
     echo $result;
   }
 
+  public function getGenerateCustomerCode(){
+    if(Main::isLogin()){
+      $date = date("ym");
+      $data = array("registration_client" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
+                                                   "WHERE" => "SUBSTR(reg_id,3,4) = '$date' AND deleted_on IS NULL",
+                                                   "PREFIX" => "72".$date)
+                   );
+      $result = $this->Data_Access_Model->selectGenerateId($data);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function saveEmployeeData(){
+    if(Main::isLogin()){
+      $employeeId         = $this->input->post("EMPLOYEEID");
+      $adminId            = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $departmentId       = $this->input->post("DEPARTMENTID");
+      $numberId           = $this->input->post("NUMBERID");
+      $fullName           = $this->input->post("FULLNAME");
+      $gender             = $this->input->post("GENDER");
+      $birthday           = $this->input->post("BIRTHDAY");
+      $phoneNumber        = $this->input->post("PHONENUMBER");
+      $otherPhoneNumber   = $this->input->post("OTHERPHONENUMBER");
+      $address            = $this->input->post("ADDRESS");
+      $email              = $this->input->post("EMAIL");
+      $joinDate           = $this->input->post("JOINDATE");
+      $picture            = $this->input->post("PICTURENAME");
+
+      if(empty($employeeId) || empty($departmentId) || empty($fullName) || 
+         empty($gender)     || empty($phoneNumber)  || empty($address)  || 
+         empty($joinDate)
+      ){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
+      }else{
+        $data = array("employee" => array("employee_id"         => $employeeId,
+                                          "admin_id"            => $adminId,
+                                          "department_id"       => $departmentId,
+                                          "number_id"           => $numberId,
+                                          "full_name"           => $fullName,
+                                          "gender"              => $gender,
+                                          "birthday"            => $birthday,
+                                          "phone_number"        => $phoneNumber,
+                                          "other_phone_number"  => $otherPhoneNumber,
+                                          "address"             => $address,
+                                          "email"               => $email,
+                                          "join_date"           => $joinDate)
+                );
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+  }
+
+  public function saveDepartmentData(){
+    if(Main::isLogin()){
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+        $departmentName = $this->input->post("DEPARTMENTNAME");
+        if(empty($departmentName)){
+          $result = json_encode(array("CODE"      => 400,
+                                      "MESSAGE"   => "Bad Request",
+                                      "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+        }else{
+          $data = array("department" => array("admin_id" => $adminId,
+                                              "department_name" => $departmentName)
+                       );
+          $result = $this->Data_Access_Model->insertData($data);
+        }
+      }else{
+        $result = json_encode(array("CODE"      => 405,
+                                    "MESSAGE"   => "Method Not Allowed",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
 }

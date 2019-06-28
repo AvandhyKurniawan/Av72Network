@@ -42,6 +42,12 @@
         if($("#administratorListTable").length > 0){
           getAllAdministratorData();
         }
+        if($("#txtEmployeeId").length > 0){
+          getGenerateEmployeeCode("#txtEmployeeId");
+        }
+        if($("#txtClientId").length > 0){
+          getGenerateCustomerCode("#txtClientId");
+        }
       });
     </script>
 
@@ -198,6 +204,44 @@
         }else{
           console.log(result);
         }
+      }
+
+      function getGenerateEmployeeCode(param){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('AdminPage/main/getGenerateEmployeeCode'); ?>",
+          dataType : "JSON",
+          success : function(response){
+            $(param).val(response.RESPONSE.employee.RESULTCODE);
+          },
+          error : function(respose){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          }
+        });
+      }
+
+      function getGenerateCustomerCode(param){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('AdminPage/main/getGenerateCustomerCode'); ?>",
+          dataType : "JSON",
+          success : function(response){
+            $(param).val(response.RESPONSE.registration_client.RESULTCODE);
+          },
+          error : function(respose){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          }
+        });
       }
     </script>
 

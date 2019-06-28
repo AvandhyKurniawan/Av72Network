@@ -72,7 +72,7 @@ public function selectGenerateId($param){
     }
     $tempCode = "0000".(intval($result[0]["CODE"])+1);
     $finalCode = array("RESULTCODE" => $param[$table]["PREFIX"].substr($tempCode,(strlen($tempCode)-4)));
-    $arrResult = $arrResult["RESPONSE"][$table] += $finalCode;
+    $arrResult["RESPONSE"][$table] += $finalCode;
   }
   return json_encode($arrResult);
 }

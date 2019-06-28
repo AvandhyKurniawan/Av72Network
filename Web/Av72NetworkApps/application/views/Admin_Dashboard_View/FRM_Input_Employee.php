@@ -8,6 +8,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>ID. Pegawai</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -36,6 +37,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>Nama Lengkap</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -50,6 +52,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>Jenis Kelamin</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -86,6 +89,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>No. Telp. / Ponsel</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -114,6 +118,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>Alamat</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -142,6 +147,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>Tanggal Masuk</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
@@ -161,6 +167,7 @@
         <div class="col-md-12">
           <div class="col-md-3">
             <label>Departemen</label>
+            <label class="text-red">*</label>
           </div>
           <div class="col-md-1">
             <label>:</label>
