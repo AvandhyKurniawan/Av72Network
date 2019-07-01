@@ -39,14 +39,21 @@
     			autoclose: true,
     			todayHighlight: true
     		});
+
         if($("#administratorListTable").length > 0){
           getAllAdministratorData();
         }
+
         if($("#txtEmployeeId").length > 0){
           getGenerateEmployeeCode("#txtEmployeeId");
         }
+
         if($("#txtClientId").length > 0){
           getGenerateCustomerCode("#txtClientId");
+        }
+
+        if($("#departmentListTable").length > 0){
+          getAllDepartmentData();
         }
       });
     </script>
@@ -93,7 +100,9 @@
         $("select.form-control").prop("selectedIndex",0);
         $(".date").datepicker("setDate", null);
         var saveFunction = $("#btnAction").data("onclick");
-        
+        $("#btnAction").attr("onclick",saveFunction)
+                       .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                             "<i class='fa fa-plus' style='display: inline-block;'></i> Tambah Baru");
       }
 
       function alert(param){
@@ -141,12 +150,16 @@
           animationSpeed : 500,
           animationBounce : 2,
           buttons: {
-            ok : {
+            OK : {
               action : function(){
                 if(param.CODE == 403){
                   forceLogout();
                 }else{
-                  location.reload();
+                  if(param.CODE >= 200 && param.CODE < 300){
+
+                  }else{
+                    location.reload();
+                  }
                 }
               }
             }
@@ -273,6 +286,7 @@
           success     : function(response){
             var result = alert(response);
             if(result){
+              resetForm();
               getAllAdministratorData();
             }
           },
@@ -285,6 +299,43 @@
             alert(data);
           },
           complete    : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
+
+      function saveDepartmentData(){
+        var departmentName = $("#txtDepartmentName").val();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('AdminPage/main/saveDepartmentData'); ?>",
+          dataType : "JSON",
+          data : {
+            DEPARTMENTNAME : departmentName,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getAllDepartmentData();
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
             $("#btnAction > i").css("display","inline-block");
             $("#btnAction > img").css("display","none");
           }
@@ -331,6 +382,43 @@
           }
         });
       }
+
+      function editDepartmentData(param){
+        var departmentName = $("#txtDepartmentName").val();
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('AdminPage/main/editDepartmentData'); ?>",
+          dataType : "JSON",
+          data : {
+            DEPARTMENTID          : param,
+            DEPARTMENTNAME        : departmentName,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getAllDepartmentData();
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
     </script>
     <!-- ========== EDIT FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -356,7 +444,55 @@
                       <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
                     },
                     success : function(response){
-                      alert(response);
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        getAllDepartmentData();
+                      }
+                    },
+                    error : function(response){
+                      var param = {
+                        CODE : response.status,
+                        MESSAGE : response.statusText,
+                        RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                      }
+                      alert(param);
+                    }
+                  })
+                }
+              },
+              cancelAction: {
+                text: 'Batal'
+              }
+            }
+        });
+      }
+
+      function deleteDepartmentData(param){
+        $.confirm({
+          type: "red",
+          theme: "material",
+          title: 'Hapus Administrator?',
+          content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
+          autoClose: 'cancelAction|10000',
+          buttons: {
+              deleteUser: {
+                text: 'Hapus Data',
+                action: function () {
+                  $.ajax({
+                    type : "POST",
+                    url : "<?= base_url('AdminPage/main/deleteDepartmentData'); ?>",
+                    dataType : "JSON",
+                    data : {
+                      DEPARTMENTID : param,
+                      <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+                    },
+                    success : function(response){
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        getAllDepartmentData();
+                      }
                     },
                     error : function(response){
                       var param = {
@@ -401,6 +537,70 @@
               });
             }else{
               alert(response);
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getAllDepartmentData(){
+        $.ajax({
+          url : "<?= base_url('AdminPage/main/getAllDepartmentData'); ?>",
+          dataType : "JSON",
+          success : function(response){
+            if(response.CODE == 200){
+              $("#departmentListTable > tbody").empty();
+              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
+                var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailDepartmentDataById('"+AvValue.department_id+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteDepartmentData('"+AvValue.department_id+"')><i class='fa fa-trash'></i></button>";
+                $("#departmentListTable > tbody:last-child").append(
+                  "<tr>"+
+                    "<td>"+ ++AvIndex +"</td>"+
+                    "<td>"+ AvValue.department_name +"</td>"+
+                    "<td>"+ AvValue.updated_on +"</td>"+
+                    "<td>"+ buttons +"</td>"+
+                  "</tr>"
+                );
+              });
+            }else{
+              alert(response);
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getDetailDepartmentDataById(param, param2=false){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('AdminPage/main/getDetailDepartmentDataById'); ?>",
+          dataType : "JSON",
+          data : {
+            DEPARTMENTID : param
+          },
+          success : function(response){
+            if(param2){
+              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
+                $("#txtDepartmentName").val(AvValue.department_name);
+              });
+              var editFunction = "editDepartmentData('"+param+"')";
+              $("#btnAction").attr("onclick",editFunction)
+                             .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                                   "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
             }
           },
           error : function(response){

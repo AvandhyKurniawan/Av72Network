@@ -408,14 +408,14 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
-        $arrParamerter = array("administrator" => array("COLUMN" =>  encodeValueMysql("admin_id").", 
+        $arrParameter = array("administrator" => array("COLUMN" =>  encodeValueMysql("admin_id").", 
                                                                      username, 
                                                                      full_name, 
                                                                      role, 
                                                                      DATE_FORMAT(last_login,'%d-%m-%Y %H:%i:%s') AS last_login",
                                                         "WHERE"  => "deleted_on IS NULL AND admin_id != '$adminId'")
                               );
-        $result = $this->Data_Access_Model->selectData($arrParamerter);
+        $result = $this->Data_Access_Model->selectData($arrParameter);
       }else{
         $result = json_encode(array("CODE"      => 405,
                                     "MESSAGE"   => "Method Not Allowed",
@@ -546,18 +546,21 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
       }else{
-        $data = array("employee" => array("employee_id"         => $employeeId,
-                                          "admin_id"            => $adminId,
-                                          "department_id"       => $departmentId,
-                                          "number_id"           => $numberId,
-                                          "full_name"           => $fullName,
-                                          "gender"              => $gender,
-                                          "birthday"            => $birthday,
-                                          "phone_number"        => $phoneNumber,
-                                          "other_phone_number"  => $otherPhoneNumber,
-                                          "address"             => $address,
-                                          "email"               => $email,
-                                          "join_date"           => $joinDate)
+        $data = array("employee" => array("VALUES" => array(
+                                                        array("employee_id"         => $employeeId,
+                                                              "admin_id"            => $adminId,
+                                                              "department_id"       => $departmentId,
+                                                              "number_id"           => $numberId,
+                                                              "full_name"           => $fullName,
+                                                              "gender"              => $gender,
+                                                              "birthday"            => $birthday,
+                                                              "phone_number"        => $phoneNumber,
+                                                              "other_phone_number"  => $otherPhoneNumber,
+                                                              "address"             => $address,
+                                                              "email"               => $email,
+                                                              "join_date"           => $joinDate)
+                                                      )
+                                    )
                 );
       }
     }else{
@@ -577,10 +580,119 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
         }else{
-          $data = array("department" => array("admin_id" => $adminId,
-                                              "department_name" => $departmentName)
+          $data = array("department" => array("VALUES" => array(
+                                                            array("admin_id"        => $adminId,
+                                                                  "department_name" => $departmentName)
+                                                          )
+                                        )
                        );
           $result = $this->Data_Access_Model->insertData($data);
+        }
+      }else{
+        $result = json_encode(array("CODE"      => 405,
+                                    "MESSAGE"   => "Method Not Allowed",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getAllDepartmentData(){
+    if(Main::isLogin()){
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $arrParameter = array("department" => array("COLUMN" =>  encodeValueMysql("department_id").", 
+                                                                  ".encodeValueMysql("admin_id").", 
+                                                                  department_name, 
+                                                                  DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                     "WHERE"  => "deleted_on IS NULL")
+                              );
+        $result = $this->Data_Access_Model->selectData($arrParameter);
+      }else{
+        $result = json_encode(array("CODE"      => 405,
+                                    "MESSAGE"   => "Method Not Allowed",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function deleteDepartmentData(){
+    if(Main::isLogin()){
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $departmentId = $this->input->post("DEPARTMENTID");
+        if(empty($departmentId)){
+          $result = json_encode(array("CODE"      => 400,
+                                      "MESSAGE"   => "Bad Request",
+                                      "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
+        }else{
+          $data = array("department" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s")),
+                                              "WHERE" => array("department_id" => decodePassword($departmentId))
+                                             )
+                  );
+
+          $result = $this->Data_Access_Model->updateData($data);
+        }
+      }else{
+        $result = json_encode(array("CODE"      => 405,
+                                    "MESSAGE"   => "Method Not Allowed",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getDetailDepartmentDataById(){
+    if(Main::isLogin()){
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $departmentId = decodepassword($this->input->get("DEPARTMENTID"));
+        $arrParameter = array("department" => array("COLUMN" => "*",
+                                                     "WHERE" => "department_id = '$departmentId' AND 
+                                                                 deleted_on IS NULL")
+                              );
+        $result = $this->Data_Access_Model->selectData($arrParameter);                      
+      }else{
+        $result = json_encode(array("CODE"      => 405,
+                                    "MESSAGE"   => "Method Not Allowed",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function editDepartmentData(){
+    if(Main::isLogin()){
+      if($this->session->userdata("Av72Net_Role") == "ROOT"){
+        $departmentId = decodePassword($this->input->post("DEPARTMENTID"));
+        $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+        $departmentName = $this->input->post("DEPARTMENTNAME");
+
+        if(empty($departmentName)){
+          $result = json_encode(array("CODE"      => 400,
+                                      "MESSAGE"   => "Bad Request",
+                                      "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+        }else{
+          $arrParameter = array("department" => array("VALUES" => array("department_name" => $departmentName,
+                                                                        "admin_id"        => $adminId),
+                                                      "WHERE" => "department_id = '$departmentId'"
+                                                )
+                          );
+          $result = $this->Data_Access_Model->updateData($arrParameter);
         }
       }else{
         $result = json_encode(array("CODE"      => 405,

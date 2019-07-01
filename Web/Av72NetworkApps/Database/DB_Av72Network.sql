@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 21, 2019 at 04:24 PM
+-- Generation Time: Jul 01, 2019 at 04:21 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,8 +44,9 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-06-21 13:45:15', NULL),
-(6, 'admin', 'jdeZMA44QdBAzz4pSUp0XQ==', 'admin', 'ADMIN', '2019-06-21 15:30:10', NULL);
+(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-01 14:10:15', NULL),
+(6, 'admin', 'jdeZMA44QdBAzz4pSUp0XQ==', 'admin', 'ADMIN', '2019-06-21 15:30:10', '2019-06-26 16:17:32'),
+(7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21');
 
 -- --------------------------------------------------------
 
@@ -60,6 +61,22 @@ CREATE TABLE `department` (
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_on` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`department_id`, `admin_id`, `department_name`, `deleted_on`) VALUES
+(1, 1, ' Field Technician', NULL),
+(2, 1, 'Marketing', NULL),
+(3, 1, 'Network Operation Control', NULL),
+(4, 1, 'Accounting', NULL),
+(5, 1, 'Tax', '2019-07-01 14:29:56'),
+(6, 1, 'test', '2019-07-01 14:29:50'),
+(7, 1, 'sdsds', '2019-07-01 14:29:46'),
+(8, 1, 'dsfdsf', '2019-07-01 14:28:51'),
+(9, 1, 'aaaaa', '2019-07-01 14:28:29'),
+(10, 1, 'erterew', '2019-07-01 15:19:11');
 
 -- --------------------------------------------------------
 
@@ -238,13 +255,13 @@ ALTER TABLE `registration_client`
 -- AUTO_INCREMENT for table `administrator`
 --
 ALTER TABLE `administrator`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `department_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `department_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `installation_schedule`
