@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 01, 2019 at 04:21 PM
+-- Generation Time: Jul 03, 2019 at 04:41 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,7 +44,7 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-01 14:10:15', NULL),
+(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-03 15:18:43', NULL),
 (6, 'admin', 'jdeZMA44QdBAzz4pSUp0XQ==', 'admin', 'ADMIN', '2019-06-21 15:30:10', '2019-06-26 16:17:32'),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21');
 
@@ -161,6 +161,28 @@ CREATE TABLE `packages` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `package_categories`
+--
+
+CREATE TABLE `package_categories` (
+  `package_categories_id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `package_categories_name` varchar(50) NOT NULL,
+  `information` text,
+  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `package_categories`
+--
+
+INSERT INTO `package_categories` (`package_categories_id`, `admin_id`, `package_categories_name`, `information`, `deleted_on`) VALUES
+(1, 1, 'BROADBAND INTERNET ONLY', '1. Layanan pada kategori ini tidak mendapatkan jaminan apapun, \n    baik secara koneksi ataupun keamanan yang berkaitan karena kesalahan \n    pelanggan.\n2. Pelanggan hanya mendapatkan layanan internet saja.', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `registration_client`
 --
 
@@ -238,6 +260,13 @@ ALTER TABLE `packages`
   ADD KEY `admin_id` (`admin_id`);
 
 --
+-- Indexes for table `package_categories`
+--
+ALTER TABLE `package_categories`
+  ADD PRIMARY KEY (`package_categories_id`),
+  ADD KEY `admin_id` (`admin_id`);
+
+--
 -- Indexes for table `registration_client`
 --
 ALTER TABLE `registration_client`
@@ -276,6 +305,12 @@ ALTER TABLE `packages`
   MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `package_categories`
+--
+ALTER TABLE `package_categories`
+  MODIFY `package_categories_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -312,6 +347,12 @@ ALTER TABLE `internet_payment`
 --
 ALTER TABLE `packages`
   ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`);
+
+--
+-- Constraints for table `package_categories`
+--
+ALTER TABLE `package_categories`
+  ADD CONSTRAINT `package_categories_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`);
 
 --
 -- Constraints for table `registration_client`
