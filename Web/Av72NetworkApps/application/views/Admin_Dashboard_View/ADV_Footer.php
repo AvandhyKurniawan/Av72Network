@@ -55,6 +55,10 @@
         if($("#departmentListTable").length > 0){
           getAllDepartmentData();
         }
+
+        if($("#packageCategoriesListTable").length > 0){
+          getAllPackageCategoryData();
+        }
       });
     </script>
 
@@ -222,7 +226,7 @@
       function getGenerateEmployeeCode(param){
         $.ajax({
           type : "GET",
-          url : "<?= base_url('AdminPage/main/getGenerateEmployeeCode'); ?>",
+          url : "<?= base_url('_administrator/getGenerateEmployeeCode'); ?>",
           dataType : "JSON",
           success : function(response){
             $(param).val(response.RESPONSE.employee.RESULTCODE);
@@ -241,7 +245,7 @@
       function getGenerateCustomerCode(param){
         $.ajax({
           type : "GET",
-          url : "<?= base_url('AdminPage/main/getGenerateCustomerCode'); ?>",
+          url : "<?= base_url('_administrator/getGenerateCustomerCode'); ?>",
           dataType : "JSON",
           success : function(response){
             $(param).val(response.RESPONSE.registration_client.RESULTCODE);
@@ -269,7 +273,7 @@
 
         $.ajax({
           type        : "POST",
-          url         : "<?= base_url('AdminPage/main/saveAdministratorData'); ?>",
+          url         : "<?= base_url('_administrator/saveAdministratorData'); ?>",
           dataType    : "JSON",
           data        : {
             FULLNAME              : fullName,
@@ -310,7 +314,7 @@
 
         $.ajax({
           type : "POST",
-          url : "<?= base_url('AdminPage/main/saveDepartmentData'); ?>",
+          url : "<?= base_url('_administrator/saveDepartmentData'); ?>",
           dataType : "JSON",
           data : {
             DEPARTMENTNAME : departmentName,
@@ -341,6 +345,45 @@
           }
         });
       }
+
+      function savePackageCategoryData(){
+        var packageCategoryName = $("#txtCategoryName").val();
+        var information = $("#txtCategoryInformation").val();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/savePackageCategoryData'); ?>",
+          dataType : "JSON",
+          data : {
+            PACKAGECATEGORYNAME   : packageCategoryName,
+            INFORMATION           : information,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getAllPackageCategoryData();
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
     </script>
     <!-- ========== SAVE FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -353,7 +396,7 @@
 
         $.ajax({
           type : "POST",
-          url : "<?= base_url('AdminPage/main/changePasswordData'); ?>",
+          url : "<?= base_url('_administrator/changePasswordData'); ?>",
           dataType : "JSON",
           data : {
             OLDPASSWORD : _encodePassword(oldPassword),
@@ -387,7 +430,7 @@
         var departmentName = $("#txtDepartmentName").val();
         $.ajax({
           type : "POST",
-          url : "<?= base_url('AdminPage/main/editDepartmentData'); ?>",
+          url : "<?= base_url('_administrator/editDepartmentData'); ?>",
           dataType : "JSON",
           data : {
             DEPARTMENTID          : param,
@@ -403,6 +446,45 @@
             if(result){
               resetForm();
               getAllDepartmentData();
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
+
+      function editPackageCategoryData(param){
+        var packageCategoryName = $("#txtCategoryName").val();
+        var information = $("#txtCategoryInformation").val();
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/editPackageCategoryData'); ?>",
+          dataType : "JSON",
+          data : {
+            PACKAGECATEGORYID     : param,
+            PACKAGECATEGORYNAME   : packageCategoryName,
+            INFORMATION           : information,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getAllPackageCategoryData();
             }
           },
           error : function(response){
@@ -437,7 +519,7 @@
                 action: function () {
                   $.ajax({
                     type : "POST",
-                    url : "<?= base_url('AdminPage/main/deleteAdministratorData'); ?>",
+                    url : "<?= base_url('_administrator/deleteAdministratorData'); ?>",
                     dataType : "JSON",
                     data : {
                       ADMINID : param,
@@ -472,7 +554,7 @@
         $.confirm({
           type: "red",
           theme: "material",
-          title: 'Hapus Administrator?',
+          title: 'Hapus Data Departemen?',
           content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
           autoClose: 'cancelAction|10000',
           buttons: {
@@ -481,7 +563,7 @@
                 action: function () {
                   $.ajax({
                     type : "POST",
-                    url : "<?= base_url('AdminPage/main/deleteDepartmentData'); ?>",
+                    url : "<?= base_url('_administrator/deleteDepartmentData'); ?>",
                     dataType : "JSON",
                     data : {
                       DEPARTMENTID : param,
@@ -511,6 +593,50 @@
             }
         });
       }
+
+      function deletePackageCategoryData(param){
+        $.confirm({
+          type: "red",
+          theme: "material",
+          title: 'Hapus Data Kategori Paket?',
+          content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
+          autoClose: 'cancelAction|10000',
+          buttons: {
+              deleteUser: {
+                text: 'Hapus Data',
+                action: function () {
+                  $.ajax({
+                    type : "POST",
+                    url : "<?= base_url('_administrator/deletePackageCategoryData'); ?>",
+                    dataType : "JSON",
+                    data : {
+                      PACKAGECATEGORYID : param,
+                      <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+                    },
+                    success : function(response){
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        getAllPackageCategoryData();
+                      }
+                    },
+                    error : function(response){
+                      var param = {
+                        CODE : response.status,
+                        MESSAGE : response.statusText,
+                        RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                      }
+                      alert(param);
+                    }
+                  })
+                }
+              },
+              cancelAction: {
+                text: 'Batal'
+              }
+            }
+        });
+      }
     </script>
     <!-- ========== DELETE FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -518,7 +644,7 @@
     <script type="text/javascript">
       function getAllAdministratorData(){
         $.ajax({
-          url : "<?= base_url('AdminPage/main/getAllAdministratorData'); ?>",
+          url : "<?= base_url('_administrator/getAllAdministratorData'); ?>",
           dataType : "JSON",
           success : function(response){
             if(response.CODE == 200){
@@ -552,7 +678,7 @@
 
       function getAllDepartmentData(){
         $.ajax({
-          url : "<?= base_url('AdminPage/main/getAllDepartmentData'); ?>",
+          url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
           dataType : "JSON",
           success : function(response){
             if(response.CODE == 200){
@@ -587,7 +713,7 @@
       function getDetailDepartmentDataById(param, param2=false){
         $.ajax({
           type : "GET",
-          url : "<?= base_url('AdminPage/main/getDetailDepartmentDataById'); ?>",
+          url : "<?= base_url('_administrator/getDetailDepartmentDataById'); ?>",
           dataType : "JSON",
           data : {
             DEPARTMENTID : param
@@ -598,6 +724,72 @@
                 $("#txtDepartmentName").val(AvValue.department_name);
               });
               var editFunction = "editDepartmentData('"+param+"')";
+              $("#btnAction").attr("onclick",editFunction)
+                             .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                                   "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getAllPackageCategoryData(){
+        $.ajax({
+          url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
+          dataType : "JSON",
+          success : function(response){
+            if(response.CODE == 200){
+              $("#packageCategoriesListTable > tbody").empty();
+              $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
+                var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailPackageCategoryDataById('"+AvValue.package_categories_id+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deletePackageCategoryData('"+AvValue.package_categories_id+"')><i class='fa fa-trash'></i></button>";
+                $("#packageCategoriesListTable > tbody:last-child").append(
+                  "<tr>"+
+                    "<td>"+ ++AvIndex +"</td>"+
+                    "<td>"+ AvValue.package_categories_name +"</td>"+
+                    "<td>"+ AvValue.information +"</td>"+
+                    "<td>"+ AvValue.updated_on +"</td>"+
+                    "<td>"+ buttons +"</td>"+
+                  "</tr>"
+                );
+              });
+            }else{
+              alert(response);
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getDetailPackageCategoryDataById(param, param2=false){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('_administrator/getDetailPackageCategoryDataById'); ?>",
+          dataType : "JSON",
+          data : {
+            PACKAGECATEGORYID : param
+          },
+          success : function(response){
+            if(param2){
+              $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
+                $("#txtCategoryName").val(AvValue.package_categories_name);
+                $("#txtCategoryInformation").val(AvValue.information);
+              });
+              var editFunction = "editPackageCategoryData('"+param+"')";
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");

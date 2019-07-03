@@ -45,7 +45,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Tambah Data Admin",
                                                     "ID"      => "MTambahDataAdmin",
                                                     "ICON"    => "fa fa-user-plus",
-                                                    "URL"     => "AdminPage/main/add_new_administrator",
+                                                    "URL"     => "_administrator/add_new_administrator",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => NULL,
                                                     "LEVEL"   => 1),
@@ -53,7 +53,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Tambah Data Departemen",
                                                     "ID"      => "MTambahDataDepartemen",
                                                     "ICON"    => "fa fa-user-plus",
-                                                    "URL"     => "AdminPage/main/add_new_department",
+                                                    "URL"     => "_administrator/add_new_department",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => NULL,
                                                     "LEVEL"   => 1),
@@ -61,18 +61,18 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Tambah Data Pegawai",
                                                     "ID"      => "MTambahDataPegawai",
                                                     "ICON"    => "fa fa-user-plus",
-                                                    "URL"     => "AdminPage/main/add_new_employee",
+                                                    "URL"     => "_administrator/add_new_employee",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => NULL,
                                                     "LEVEL"   => 1),
 
-                                              array("NAME"    => "Tambah Data Paket Internet",
-                                                    "ID"      => "MTambahDataPaketInternet",
-                                                    "ICON"    => "fa fa-plus",
-                                                    "URL"     => "AdminPage/main/add_new_internet_package",
-                                                    "STATUS"  => "Single",
+                                              array("NAME"    => "Data Paket Internet",
+                                                    "ID"      => "MDataPaketInternet",
+                                                    "ICON"    => "fa fa-book",
+                                                    "URL"     => "#",
+                                                    "STATUS"  => "Multi",
                                                     "PARENT"  => NULL,
-                                                    "LEVEL"   => 1),
+                                                    "LEVEL"   => 2),
 
                                               array("NAME"    => "Transaksi",
                                                     "ID"      => "MTransaksi",
@@ -95,7 +95,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Registrasi Pelanggan Baru",
                                                     "ID"      => "MRegistrasiPelangganBaru",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/new_registration",
+                                                    "URL"     => "_administrator/new_registration",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -103,7 +103,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Pembayaran Registrasi Baru",
                                                     "ID"      => "MPembayaranRegistrasiBaru",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/add_new_registration_payment",
+                                                    "URL"     => "_administrator/add_new_registration_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -111,9 +111,25 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Pembayaran Internet Bulanan",
                                                     "ID"      => "MPembayaranInternetBulanan",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/add_internet_payment",
+                                                    "URL"     => "_administrator/add_internet_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
+                                                    "LEVEL"   => 1),
+
+                                              array("NAME"    => "Tambah Kategori Paket",
+                                                    "ID"      => "MTambahKategoriPaket",
+                                                    "ICON"    => "fa fa-plus",
+                                                    "URL"     => "_administrator/add_new_package_categories",
+                                                    "STATUS"  => "Single",
+                                                    "PARENT"  => "MDataPaketInternet",
+                                                    "LEVEL"   => 1),
+
+                                              array("NAME"    => "Tambah Data Paket Internet",
+                                                    "ID"      => "MTambahDataPaketInternet",
+                                                    "ICON"    => "fa fa-plus",
+                                                    "URL"     => "_administrator/add_new_internet_package",
+                                                    "STATUS"  => "Single",
+                                                    "PARENT"  => "MDataPaketInternet",
                                                     "LEVEL"   => 1),
                                            )
                      );
@@ -122,18 +138,18 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Tambah Data Pegawai",
                                                     "ID"      => "MTambahDataPegawai",
                                                     "ICON"    => "fa fa-user-plus",
-                                                    "URL"     => "AdminPage/main/add_new_employee",
+                                                    "URL"     => "_administrator/add_new_employee",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => NULL,
                                                     "LEVEL"   => 1),
 
-                                              array("NAME"    => "Tambah Data Paket Internet",
-                                                    "ID"      => "MTambahDataPaketInternet",
-                                                    "ICON"    => "fa fa-user-plus",
-                                                    "URL"     => "AdminPage/main/add_new_internet_package",
-                                                    "STATUS"  => "Single",
+                                              array("NAME"    => "Data Paket Internet",
+                                                    "ID"      => "MDataPaketInternet",
+                                                    "ICON"    => "fa fa-book",
+                                                    "URL"     => "#",
+                                                    "STATUS"  => "Multi",
                                                     "PARENT"  => NULL,
-                                                    "LEVEL"   => 1),
+                                                    "LEVEL"   => 2),
 
                                               array("NAME"    => "Transaksi",
                                                     "ID"      => "MTransaksi",
@@ -156,7 +172,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Registrasi Pelanggan Baru",
                                                     "ID"      => "MRegistrasiPelangganBaru",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/new_registration",
+                                                    "URL"     => "_administrator/new_registration",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -164,7 +180,7 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Pembayaran Registrasi Baru",
                                                     "ID"      => "MPembayaranRegistrasiBaru",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/add_new_registration_payment",
+                                                    "URL"     => "_administrator/add_new_registration_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -172,9 +188,25 @@ class Main extends CI_Controller {
                                               array("NAME"    => "Pembayaran Internet Bulanan",
                                                     "ID"      => "MPembayaranInternetBulanan",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "AdminPage/main/add_internet_payment",
+                                                    "URL"     => "_administrator/add_internet_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
+                                                    "LEVEL"   => 1),
+
+                                              array("NAME"    => "Tambah Kategori Paket",
+                                                    "ID"      => "MTambahKategoriPaket",
+                                                    "ICON"    => "fa fa-plus",
+                                                    "URL"     => "_administrator/add_new_package_categories",
+                                                    "STATUS"  => "Single",
+                                                    "PARENT"  => "MDataPaketInternet",
+                                                    "LEVEL"   => 1),
+
+                                              array("NAME"    => "Tambah Data Paket Internet",
+                                                    "ID"      => "MTambahDataPaketInternet",
+                                                    "ICON"    => "fa fa-plus",
+                                                    "URL"     => "_administrator/add_new_internet_package",
+                                                    "STATUS"  => "Single",
+                                                    "PARENT"  => "MDataPaketInternet",
                                                     "LEVEL"   => 1),
                                            )
                      );
@@ -237,6 +269,23 @@ class Main extends CI_Controller {
                     "ADDRESS_PATH" => array("Link_1" => $this->uri->rsegment(1),
                                             "Link_2" => $this->uri->rsegment(2)),
                     "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Input_Client",NULL,TRUE),
+                    "CSRF_NAME" => $this->security->get_csrf_token_name(),
+                    "CSRF_TOKEN" => $this->security->get_csrf_hash());
+  		$this->load->view("Admin_Dashboard_View/ADV_Header");
+      $this->load->view("Admin_Dashboard_View/ADV_Sidebar",Main::listMenu());
+      $this->load->view("Admin_Dashboard_View/ADV_Content_Wrapper",$DATA);
+      $this->load->view("Admin_Dashboard_View/ADV_Footer");
+    }else{
+      redirect("/","refresh");
+    }
+  }
+
+  public function add_new_package_categories(){
+    if(Main::isLogin()){
+      $DATA = array("TITLE"     => "Tambah Data",
+                    "ADDRESS_PATH" => array("Link_1" => $this->uri->rsegment(1),
+                                            "Link_2" => $this->uri->rsegment(2)),
+                    "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Input_Package_Categories",NULL,TRUE),
                     "CSRF_NAME" => $this->security->get_csrf_token_name(),
                     "CSRF_TOKEN" => $this->security->get_csrf_hash());
   		$this->load->view("Admin_Dashboard_View/ADV_Header");
@@ -438,9 +487,9 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
         }else{
-          $data = array("administrator" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s")),
-                                                "WHERE" => array("admin_id" => decodePassword($adminId))
-                                               )
+          $data = array("administrator" => array("VALUES"  => array("deleted_on" => date("Y-m-d H:i:s")),
+                                                 "WHERE"   => array("admin_id" => decodePassword($adminId))
+                                           )
                   );
 
           $result = $this->Data_Access_Model->updateData($data);
@@ -473,8 +522,8 @@ class Main extends CI_Controller {
           $data = array("administrator" => array("VALUES" => array("password" => $this->encryption->Av72Net_ENC_OPEN_SSL($newPassword)),
                                                  "WHERE" => array("admin_id" => $adminId,
                                                                   "password" => $this->encryption->Av72Net_ENC_OPEN_SSL($oldPassword))
-                                            )
-                        );
+                                           )
+                  );
           $result = $this->Data_Access_Model->changePassword($data);
         }else{
           $result = json_encode(array("CODE"      => 401,
@@ -605,11 +654,11 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $arrParameter = array("department" => array("COLUMN" =>  encodeValueMysql("department_id").", 
-                                                                  ".encodeValueMysql("admin_id").", 
-                                                                  department_name, 
-                                                                  DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                                 ".encodeValueMysql("admin_id").", 
+                                                                 department_name, 
+                                                                 DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
                                                      "WHERE"  => "deleted_on IS NULL")
-                              );
+                        );
         $result = $this->Data_Access_Model->selectData($arrParameter);
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -628,14 +677,16 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $departmentId = $this->input->post("DEPARTMENTID");
+        $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
         if(empty($departmentId)){
           $result = json_encode(array("CODE"      => 400,
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
         }else{
-          $data = array("department" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s")),
+          $data = array("department" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                "admin_id"   => $adminId),
                                               "WHERE" => array("department_id" => decodePassword($departmentId))
-                                             )
+                                        )
                   );
 
           $result = $this->Data_Access_Model->updateData($data);
@@ -658,9 +709,8 @@ class Main extends CI_Controller {
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $departmentId = decodepassword($this->input->get("DEPARTMENTID"));
         $arrParameter = array("department" => array("COLUMN" => "*",
-                                                     "WHERE" => "department_id = '$departmentId' AND 
-                                                                 deleted_on IS NULL")
-                              );
+                                                     "WHERE" => "department_id = '$departmentId'")
+                        );
         $result = $this->Data_Access_Model->selectData($arrParameter);                      
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -698,6 +748,120 @@ class Main extends CI_Controller {
         $result = json_encode(array("CODE"      => 405,
                                     "MESSAGE"   => "Method Not Allowed",
                                     "RESPONSE"  => "Maaf, Anda Tidak Memiliki Izin Untuk Akses Fitur Tersebut!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function savePackageCategoryData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $packageCategoryName = $this->input->post("PACKAGECATEGORYNAME");
+      $information = $this->input->post("INFORMATION");
+
+      if(empty($packageCategoryName)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+      }else{
+        $arrParameter = array("package_categories" => array("VALUES" => array(
+                                                                          array("admin_id"                => $adminId,
+                                                                                "package_categories_name" => $packageCategoryName,
+                                                                                "information"             => $information)
+                                                                        )
+                                                      )
+                        );
+        $result = $this->Data_Access_Model->insertData($arrParameter);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getAllPackageCategoryData(){
+    if(Main::isLogin()){
+      $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
+                                                                       package_categories_name,
+                                                                       information,
+                                                                       updated_on",
+                                                          "WHERE" => "deleted_on IS NULL"
+                                                    )
+                      );
+      $result = $this->Data_Access_Model->selectData($arrParameter);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getDetailPackageCategoryDataById(){
+    if(Main::isLogin()){
+      $packageCategoryId = decodePassword($this->input->get("PACKAGECATEGORYID"));
+      $arrParameter = array("package_categories" => array("COLUMN" => "*",
+                                                          "WHERE" => "package_categories_id = '$packageCategoryId' AND 
+                                                                      deleted_on IS NULL")
+                      );
+      $result = $this->Data_Access_Model->selectData($arrParameter);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function editPackageCategoryData(){
+    if(Main::isLogin()){
+      $packageCategoryId = decodePassword($this->input->post("PACKAGECATEGORYID"));
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $packageCategoryName = $this->input->post("PACKAGECATEGORYNAME");
+      $information = $this->input->post("INFORMATION");
+      if(empty($packageCategoryName)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+      }else{
+        $arrParameter = array("package_categories" => array("VALUES" => array("admin_id"                => $adminId,
+                                                                            "package_categories_name" => $packageCategoryName,
+                                                                            "information"             => $information),
+                                                          "WHERE" => "package_categories_id = '$packageCategoryId'"
+                                                    )
+                      );
+      }
+      $result = $this->Data_Access_Model->updateData($arrParameter);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function deletePackageCategoryData(){
+    if(Main::isLogin()){
+      $packageCategoryId = decodePassword($this->input->post("PACKAGECATEGORYID"));
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      if(empty($packageCategoryId)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
+      }else{
+        $data = array("package_categories" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                      "admin_id"   => $adminId),
+                                                    "WHERE" => array("package_categories_id" => decodePassword($packageCategoryId))
+                                              )
+                );
+
+        $result = $this->Data_Access_Model->updateData($data);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,

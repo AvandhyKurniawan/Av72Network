@@ -17,7 +17,7 @@ class Login_Controller extends CI_Controller {
        !empty($this->session->userdata("Av72Net_FullName")) &&
        !empty($this->session->userdata("Av72Net_Role"))
     ){
-      redirect("AdminPage/main","refresh");
+      redirect("_administrator","refresh");
     }else{
       $DATA = array("CSRF_NAME" => $this->security->get_csrf_token_name(),
                     "CSRF_TOKEN" => $this->security->get_csrf_hash());
@@ -50,6 +50,12 @@ class Login_Controller extends CI_Controller {
 		$this->session->unset_userdata("fabricationIpAddress");
 		$this->session->sess_destroy();
     redirect("/","refresh");
+  }
+
+  public function pageNotFound(){
+    $data["heading"] = "404 Page Not Found";
+    $data["message"] = "The page you requested was not found ";
+    $this->load->view('error',$data);
   }
 
 }
