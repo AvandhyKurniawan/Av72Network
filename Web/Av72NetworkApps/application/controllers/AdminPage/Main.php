@@ -857,7 +857,7 @@ class Main extends CI_Controller {
       }else{
         $data = array("package_categories" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
                                                                       "admin_id"   => $adminId),
-                                                    "WHERE" => array("package_categories_id" => decodePassword($packageCategoryId))
+                                                    "WHERE" => array("package_categories_id" => $packageCategoryId)
                                               )
                 );
 

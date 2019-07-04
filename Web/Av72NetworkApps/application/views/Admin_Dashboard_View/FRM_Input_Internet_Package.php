@@ -7,6 +7,7 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Nama Paket Internet</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
@@ -21,6 +22,7 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Kecepatan</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
@@ -38,6 +40,7 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Harga</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
@@ -55,17 +58,14 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Tipe Paket Internet</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <select class="form-control" id="cmbType">
-              <option value="HOME">HOME</option>
-              <option value="BUSINESS">BUSINESS</option>
-              <option value="DEDICATED">DEDICATED</option>
-            </select>
+            <select class="form-control" id="cmbType"></select>
           </div>
         </div>
         <div class="col-md-3">

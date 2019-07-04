@@ -25,9 +25,9 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="form-group">
-            <textarea id="txtCategoryInformation" class="form-control" placeholder="Masukan Keterangan Bila Perlu" cols="50" rows="8"></textarea>
+            <textarea id="txtCategoryInformation" class="form-control" placeholder="Masukan Keterangan Bila Perlu" cols="80" rows="8"></textarea>
           </div>
         </div>
       </div>

@@ -4,28 +4,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title><?php echo $this->session->userdata("Av72Net_Username"); ?> | Dashboard</title>
+    <title><?= $this->session->userdata("Av72Net_Username"); ?> | Dashboard</title>
 
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/dist/css/AdminLTE.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/dist/css/skins/_all-skins.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bootstrap/css/font-awesome.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bootstrap/css/ionicons.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/datepicker/datepicker3.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/iCheck/all.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/select2/select2.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/datatables/dataTables.bootstrap.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/fixedheader/css/fixedHeader.bootstrap.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/bootstrap/css/bootstrap.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/dist/css/AdminLTE.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/jvectormap/jquery-jvectormap-1.2.2.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/dist/css/skins/_all-skins.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/bootstrap/css/font-awesome.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/bootstrap/css/ionicons.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/datepicker/datepicker3.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/iCheck/all.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/select2/select2.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/fixedheader/css/fixedHeader.bootstrap.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.css'); ?>">
 
+    <script src="<?= base_url('assets/plugins/ckeditor/ckeditor.js') ?>"></script>
+    <script src="<?= base_url('assets/plugins/ckeditor/config.js') ?>"></script>
   </head>
   <body class="hold-transition skin-black">
     <div class="wrapper">
       <header class="main-header">
         <a href="#" class="logo" style="background-color:#FFF;">
-          <span class="logo-mini"><img class="user-image" src="<?php echo base_url('assets/images/avatar_2x.png'); ?>" width="45px" height="45px"></span>
-          <span class="logo-lg"><img class="user-image" src="<?php echo base_url('assets/images/Logo_Av-72_Network2.png'); ?>" width="200px" height="30px" style="margin-top:10px;"></span>
+          <span class="logo-mini"><img class="user-image" src="<?= base_url('assets/images/avatar_2x.png'); ?>" width="45px" height="45px"></span>
+          <span class="logo-lg"><img class="user-image" src="<?= base_url('assets/images/Logo_Av-72_Network2.png'); ?>" width="200px" height="30px" style="margin-top:10px;"></span>
         </a>
         <nav class="navbar navbar-static-top">
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -35,15 +37,15 @@
             <ul class="nav navbar-nav">
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="<?php echo base_url('assets/images/avatar_2x.png'); ?>" class="user-image" alt="User Image">
-                  <span class="hidden-xs"><?php echo $this->session->userdata("Av72Net_FullName"); ?></span>
+                  <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" class="user-image" alt="User Image">
+                  <span class="hidden-xs"><?= $this->session->userdata("Av72Net_FullName"); ?></span>
                   <span class="ion-arrow-down-b"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <li class="user-header">
-                    <img src="<?php echo base_url('assets/images/avatar_2x.png'); ?>" class="img-circle" alt="User Image">
+                    <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" class="img-circle" alt="User Image">
                     <p>
-                      <?php echo $this->session->userdata("Av72Net_FullName"); ?> - <?php echo $this->session->userdata("Av72Net_Role"); ?>
+                      <?= $this->session->userdata("Av72Net_FullName"); ?> - <?= $this->session->userdata("Av72Net_Role"); ?>
                       <!-- <small>Member since Nov. 2012</small> -->
                     </p>
                   </li>

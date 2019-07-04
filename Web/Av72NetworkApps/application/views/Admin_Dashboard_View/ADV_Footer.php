@@ -59,6 +59,15 @@
         if($("#packageCategoriesListTable").length > 0){
           getAllPackageCategoryData();
         }
+
+        if($("#txtCategoryInformation").length > 0){
+          CKEDITOR.replace("txtCategoryInformation");
+        }
+
+        if($("#cmbType").length > 0){
+          getAllPackageCategoryData_Select();
+        }
+        
       });
     </script>
 
@@ -103,6 +112,10 @@
         $(".form-control").val("");
         $("select.form-control").prop("selectedIndex",0);
         $(".date").datepicker("setDate", null);
+        for (instance in CKEDITOR.instances) {
+          var name = CKEDITOR.instances[instance].name;
+          CKEDITOR.instances[name].setData("");
+        }
         var saveFunction = $("#btnAction").data("onclick");
         $("#btnAction").attr("onclick",saveFunction)
                        .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
@@ -348,7 +361,7 @@
 
       function savePackageCategoryData(){
         var packageCategoryName = $("#txtCategoryName").val();
-        var information = $("#txtCategoryInformation").val();
+        var information = CKEDITOR.instances["txtCategoryInformation"].getData();
 
         $.ajax({
           type : "POST",
@@ -465,7 +478,7 @@
 
       function editPackageCategoryData(param){
         var packageCategoryName = $("#txtCategoryName").val();
-        var information = $("#txtCategoryInformation").val();
+        var information = CKEDITOR.instances["txtCategoryInformation"].getData();
         $.ajax({
           type : "POST",
           url : "<?= base_url('_administrator/editPackageCategoryData'); ?>",
@@ -742,6 +755,7 @@
 
       function getAllPackageCategoryData(){
         $.ajax({
+          type : "GET",
           url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
           dataType : "JSON",
           success : function(response){
@@ -787,13 +801,38 @@
             if(param2){
               $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
                 $("#txtCategoryName").val(AvValue.package_categories_name);
-                $("#txtCategoryInformation").val(AvValue.information);
+                CKEDITOR.instances["txtCategoryInformation"].setData(AvValue.information);
               });
               var editFunction = "editPackageCategoryData('"+param+"')";
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
             }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getAllPackageCategoryData_Select(){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
+          dataType : "JSON",
+          success : function(response){
+            $("#cmbType").empty();
+            $("#cmbType").append("<option>Pilih Kategori Paket</option>");
+            $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
+              $("#cmbType").append(
+                "<option value='"+AvValue.package_categories_id+"'>"+AvValue.package_categories_name+"</option>"
+              );
+            });
           },
           error : function(response){
             var param = {

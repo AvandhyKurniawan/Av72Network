@@ -119,6 +119,14 @@
             },
             success : function(response){
               alert(response);
+            },
+            error : function(response){
+              var data = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+              }
+              alert(data);
             }
           });
         }
