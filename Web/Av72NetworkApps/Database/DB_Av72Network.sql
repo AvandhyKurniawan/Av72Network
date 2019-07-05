@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 04, 2019 at 04:05 PM
+-- Generation Time: Jul 05, 2019 at 04:18 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,9 +44,10 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-04 15:45:32', NULL),
-(6, 'admin', 'jdeZMA44QdBAzz4pSUp0XQ==', 'admin', 'ADMIN', '2019-06-21 15:30:10', '2019-06-26 16:17:32'),
-(7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21');
+(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-05 15:46:16', NULL),
+(6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
+(7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
+(10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');
 
 -- --------------------------------------------------------
 
@@ -67,16 +68,22 @@ CREATE TABLE `department` (
 --
 
 INSERT INTO `department` (`department_id`, `admin_id`, `department_name`, `deleted_on`) VALUES
-(1, 1, ' Field Technician', NULL),
-(2, 1, 'Marketing', NULL),
-(3, 1, 'Network Operation Control', NULL),
-(4, 1, 'Accounting', NULL),
+(1, 1, 'IT Department', NULL),
+(2, 1, 'Marketing Department', NULL),
+(3, 1, 'Network Operation Control', '2019-07-05 15:50:57'),
+(4, 1, 'Accounting Department', NULL),
 (5, 1, 'Tax', '2019-07-01 14:29:56'),
 (6, 1, 'test', '2019-07-01 14:29:50'),
 (7, 1, 'sdsds', '2019-07-01 14:29:46'),
 (8, 1, 'dsfdsf', '2019-07-01 14:28:51'),
 (9, 1, 'aaaaa', '2019-07-01 14:28:29'),
-(10, 1, 'erterew', '2019-07-01 15:19:11');
+(10, 1, 'erterew', '2019-07-01 15:19:11'),
+(11, 1, 'sasas', '2019-07-05 14:21:20'),
+(12, 1, 'dsfdsf', '2019-07-05 14:27:21'),
+(13, 1, 'dsfdsf', '2019-07-05 14:27:18'),
+(14, 1, 'sdasd', '2019-07-05 14:27:13'),
+(15, 1, 'gfhgfhgfh', '2019-07-05 14:27:10'),
+(16, 1, 'Purchasing Department', NULL);
 
 -- --------------------------------------------------------
 
@@ -149,10 +156,10 @@ CREATE TABLE `internet_payment` (
 CREATE TABLE `packages` (
   `package_id` int(11) NOT NULL,
   `admin_id` int(11) NOT NULL,
+  `package_categories_id` int(11) NOT NULL,
   `package_name` varchar(100) NOT NULL,
   `speed` varchar(20) NOT NULL,
   `price` varchar(20) NOT NULL DEFAULT '0',
-  `type` enum('HOME','DEDICATED','BUSINESS') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'HOME',
   `information` text NOT NULL,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_on` datetime DEFAULT NULL
@@ -259,7 +266,8 @@ ALTER TABLE `internet_payment`
 --
 ALTER TABLE `packages`
   ADD PRIMARY KEY (`package_id`),
-  ADD KEY `admin_id` (`admin_id`);
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `package_categories_id` (`package_categories_id`);
 
 --
 -- Indexes for table `package_categories`
@@ -286,13 +294,13 @@ ALTER TABLE `registration_client`
 -- AUTO_INCREMENT for table `administrator`
 --
 ALTER TABLE `administrator`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `department`
 --
 ALTER TABLE `department`
-  MODIFY `department_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `department_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `installation_schedule`
@@ -348,7 +356,8 @@ ALTER TABLE `internet_payment`
 -- Constraints for table `packages`
 --
 ALTER TABLE `packages`
-  ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`);
+  ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
+  ADD CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`package_categories_id`) REFERENCES `package_categories` (`package_categories_id`);
 
 --
 -- Constraints for table `package_categories`
