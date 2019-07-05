@@ -32,9 +32,6 @@
             <input type="text" id="txtSpeed" class="form-control" placeholder="Masukan Kecepatan">
           </div>
         </div>
-        <div class="col-md-3">
-          <label class="text-red fade" id="lblWarningUname">Nama Sudah Digunakan</label>
-        </div>
       </div>
 
       <div class="col-md-12">
@@ -47,11 +44,8 @@
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <input type="text" id="txtHarga" class="form-control" placeholder="Masukan Harga">
+            <input type="text" id="txtHarga" class="form-control currency" placeholder="Masukan Harga">
           </div>
-        </div>
-        <div class="col-md-3">
-          <label class="text-red fade" id="lblWarningUpass">Kata Sandi Terlalu Pendek</label>
         </div>
       </div>
 
@@ -68,9 +62,6 @@
             <select class="form-control" id="cmbType"></select>
           </div>
         </div>
-        <div class="col-md-3">
-          <label class="text-red fade" id="lblWarningUconfirm">Kata Sandi Tidak Sama</label>
-        </div>
       </div>
 
       <div class="col-md-12">
@@ -80,27 +71,24 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="form-group">
             <textarea id="txtPackageInformation" class="form-control" placeholder="Masukan Informasi / Promosi Paket" rows="5" cols="80"></textarea>
           </div>
-        </div>
-        <div class="col-md-3">
-          <label class="text-red fade" id="lblWarningUconfirm">Kata Sandi Tidak Sama</label>
         </div>
       </div>
 
       <div class="col-md-9">
         <div class="pull-right">
           <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary"><i class="fa fa-plus"></i> Tambah Baru</button>
-          <button type="button" class="btn btn-md btn-flat btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+          <button type="button" class="btn btn-md btn-flat btn-danger" onclick="resetForm();"><i class="fa fa-refresh"></i> Batal</button>
         </div>
       </div>
       <div class="col-md-12">
         <fieldset>
           <legend>Daftar Paket Internet Tersedia</legend>
           <div class="col-md-12">
-            <table class="table table-responsive table-striped" id="administratorListTable">
+            <table class="table table-responsive table-striped" id="internetPackageListTable">
               <thead>
                 <th width="10%">No.</th>
                 <th>Nama Paket</th>

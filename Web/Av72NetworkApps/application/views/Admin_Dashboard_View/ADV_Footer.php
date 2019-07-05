@@ -26,11 +26,17 @@
     <script src="<?php echo base_url('assets/plugins/input-mask/jquery.inputmask.js'); ?>"></script>
     <script src="<?php echo base_url('assets/plugins/iCheck/icheck.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/datatables/jquery.dataTables.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/datatables/dataTables.bootstrap.min.js'); ?>"></script>    
+    <script src="<?php echo base_url('assets/plugins/datatables/datatables.min.js'); ?>"></script>
+    <!-- <script src="<?php echo base_url('assets/plugins/datatables/dataTables.bootstrap.min.js'); ?>"></script>     -->
     <script src="<?php echo base_url('assets/plugins/chartjs/Chart_2.4.0.js'); ?>"></script>
 
     <script type="text/javascript">
+      var ADMINISTRATORDATA = null;
+      var DEPARTMENTDATA = null;
+      var EMPLOYEEDATA = null;
+      var PACKAGECATEGORYDATA = null;
+      var INTERNETPACKAGEDATA = null;
+
       $(function(e){
         $(".date").datepicker({
     			language: 'id',
@@ -38,10 +44,17 @@
     			format: 'yyyy-mm-dd',
     			autoclose: true,
     			todayHighlight: true
-    		});
+        });
+        
+        $(".currency").inputmask("decimal",{
+          rightAlign: false,
+          groupSeparator: ",",
+          digits: 0,
+          autoGroup: true
+        });
 
         if($("#administratorListTable").length > 0){
-          getAllAdministratorData();
+          ADMINISTRATORDATA = getAllAdministratorData();
         }
 
         if($("#txtEmployeeId").length > 0){
@@ -53,11 +66,11 @@
         }
 
         if($("#departmentListTable").length > 0){
-          getAllDepartmentData();
+          DEPARTMENTDATA = getAllDepartmentData();
         }
 
         if($("#packageCategoriesListTable").length > 0){
-          getAllPackageCategoryData();
+          PACKAGECATEGORYDATA = getAllPackageCategoryData();
         }
 
         if($("#txtCategoryInformation").length > 0){
@@ -66,6 +79,10 @@
 
         if($("#cmbType").length > 0){
           getAllPackageCategoryData_Select();
+        }
+
+        if($("#txtPackageInformation").length > 0){
+          CKEDITOR.replace("txtPackageInformation");
         }
         
       });
@@ -172,11 +189,11 @@
                 if(param.CODE == 403){
                   forceLogout();
                 }else{
-                  if(param.CODE >= 200 && param.CODE < 300){
+                  // if(param.CODE >= 200 && param.CODE < 300){
 
-                  }else{
-                    location.reload();
-                  }
+                  // }else{
+                  //   location.reload();
+                  // }
                 }
               }
             }
@@ -304,7 +321,7 @@
             var result = alert(response);
             if(result){
               resetForm();
-              getAllAdministratorData();
+              ADMINISTRATORDATA.ajax.reload(null, false);
             }
           },
           error       : function(response){
@@ -341,7 +358,7 @@
             var result = alert(response);
             if(result){
               resetForm();
-              getAllDepartmentData();
+              DEPARTMENTDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -380,7 +397,7 @@
             var result = alert(response);
             if(result){
               resetForm();
-              getAllPackageCategoryData();
+              PACKAGECATEGORYDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -423,6 +440,9 @@
           },
           success : function(response){
             var result = alert(response);
+            if(result){
+              resetForm();
+            }
           },
           error : function(response){
             var data = {
@@ -458,7 +478,7 @@
             var result = alert(response);
             if(result){
               resetForm();
-              getAllDepartmentData();
+              DEPARTMENTDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -497,7 +517,7 @@
             var result = alert(response);
             if(result){
               resetForm();
-              getAllPackageCategoryData();
+              PACKAGECATEGORYDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -542,7 +562,7 @@
                       var result = alert(response);
                       if(result){
                         resetForm();
-                        getAllDepartmentData();
+                        ADMINISTRATORDATA.ajax.reload(null, false);
                       }
                     },
                     error : function(response){
@@ -586,7 +606,7 @@
                       var result = alert(response);
                       if(result){
                         resetForm();
-                        getAllDepartmentData();
+                        DEPARTMENTDATA.ajax.reload(null, false);
                       }
                     },
                     error : function(response){
@@ -630,7 +650,7 @@
                       var result = alert(response);
                       if(result){
                         resetForm();
-                        getAllPackageCategoryData();
+                        PACKAGECATEGORYDATA.ajax.reload(null, false);
                       }
                     },
                     error : function(response){
@@ -655,72 +675,67 @@
 <!-- ============================================================================================================================== -->
     <!-- ========== GET DATA FUNCTION START ========== -->
     <script type="text/javascript">
-      function getAllAdministratorData(){
-        $.ajax({
-          url : "<?= base_url('_administrator/getAllAdministratorData'); ?>",
-          dataType : "JSON",
-          success : function(response){
-            if(response.CODE == 200){
-              $("#administratorListTable > tbody").empty();
-              $.each(response.RESPONSE.administrator, function(AvIndex, AvValue){
-                var buttons = "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteAdministratorData('"+AvValue.admin_id+"')><i class='fa fa-trash'></i></button>";
-                $("#administratorListTable > tbody:last-child").append(
-                  "<tr>"+
-                    "<td>"+ ++AvIndex +"</td>"+
-                    "<td>"+ AvValue.username +"</td>"+
-                    "<td>"+ AvValue.full_name +"</td>"+
-                    "<td>"+ AvValue.last_login +"</td>"+
-                    "<td>"+ buttons +"</td>"+
-                  "</tr>"
-                );
-              });
-            }else{
-              alert(response);
-            }
-          },
-          error : function(response){
-            var param = {
-              CODE : response.status,
-              MESSAGE : response.statusText,
-              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
-            }
-            alert(param);
-          }
-        });
+      function getAllAdministratorData(){        
+        var result = $('#administratorListTable').DataTable({
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllAdministratorData'); ?>",
+                        dataSrc : "RESPONSE.administrator",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "admin_id"},
+                        {data : "username"},
+                        {data : "full_name"},
+                        {data : "role"},
+                        {data : "last_login"},
+                        {data : "admin_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        var buttons = "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteAdministratorData('"+AvData["admin_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(5)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
       }
 
       function getAllDepartmentData(){
-        $.ajax({
-          url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
-          dataType : "JSON",
-          success : function(response){
-            if(response.CODE == 200){
-              $("#departmentListTable > tbody").empty();
-              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
-                var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailDepartmentDataById('"+AvValue.department_id+"',"+true+")><i class='fa fa-pencil'></i></button>"+
-                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteDepartmentData('"+AvValue.department_id+"')><i class='fa fa-trash'></i></button>";
-                $("#departmentListTable > tbody:last-child").append(
-                  "<tr>"+
-                    "<td>"+ ++AvIndex +"</td>"+
-                    "<td>"+ AvValue.department_name +"</td>"+
-                    "<td>"+ AvValue.updated_on +"</td>"+
-                    "<td>"+ buttons +"</td>"+
-                  "</tr>"
-                );
-              });
-            }else{
-              alert(response);
-            }
-          },
-          error : function(response){
-            var param = {
-              CODE : response.status,
-              MESSAGE : response.statusText,
-              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
-            }
-            alert(param);
-          }
-        });
+        var result = $('#departmentListTable').DataTable({
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+                        dataSrc : "RESPONSE.department",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "admin_id"},
+                        {data : "department_name"},
+                        {data : "updated_on"},
+                        {data : "department_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailDepartmentDataById('"+AvData["department_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteDepartmentData('"+AvData["department_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(3)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
       }
 
       function getDetailDepartmentDataById(param, param2=false){
@@ -750,43 +765,39 @@
             }
             alert(param);
           }
-        });
+        });        
       }
 
       function getAllPackageCategoryData(){
-        $.ajax({
-          type : "GET",
-          url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
-          dataType : "JSON",
-          success : function(response){
-            if(response.CODE == 200){
-              $("#packageCategoriesListTable > tbody").empty();
-              $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
-                var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailPackageCategoryDataById('"+AvValue.package_categories_id+"',"+true+")><i class='fa fa-pencil'></i></button>"+
-                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deletePackageCategoryData('"+AvValue.package_categories_id+"')><i class='fa fa-trash'></i></button>";
-                $("#packageCategoriesListTable > tbody:last-child").append(
-                  "<tr>"+
-                    "<td>"+ ++AvIndex +"</td>"+
-                    "<td>"+ AvValue.package_categories_name +"</td>"+
-                    "<td>"+ AvValue.information +"</td>"+
-                    "<td>"+ AvValue.updated_on +"</td>"+
-                    "<td>"+ buttons +"</td>"+
-                  "</tr>"
-                );
-              });
-            }else{
-              alert(response);
-            }
-          },
-          error : function(response){
-            var param = {
-              CODE : response.status,
-              MESSAGE : response.statusText,
-              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
-            }
-            alert(param);
-          }
-        });
+        var result = $('#packageCategoriesListTable').DataTable({
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
+                        dataSrc : "RESPONSE.package_categories",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "package_categories_id"},
+                        {data : "package_categories_name"},
+                        {data : "information"},
+                        {data : "updated_on"},
+                        {data : "package_categories_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailPackageCategoryDataById('"+AvData["package_categories_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deletePackageCategoryData('"+AvData["package_categories_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(4)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
       }
 
       function getDetailPackageCategoryDataById(param, param2=false){

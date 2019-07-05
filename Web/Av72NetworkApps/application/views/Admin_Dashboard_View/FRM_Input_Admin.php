@@ -118,6 +118,7 @@
                 <th width="10%">No.</th>
                 <th>Nama Pengguna</th>
                 <th>Nama Lengkap</th>
+                <th>Hak Akses</th>
                 <th>Terakhir Masuk</th>
                 <th>Pilihan</th>
               </thead>

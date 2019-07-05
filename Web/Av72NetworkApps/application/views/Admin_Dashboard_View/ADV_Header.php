@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/datepicker/datepicker3.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/iCheck/all.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/select2/select2.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/datatables/datatables.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/fixedheader/css/fixedHeader.bootstrap.min.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?= base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.css'); ?>">
 
@@ -55,7 +55,7 @@
                         <a href="#"><i class="fa fa-user"></i> Profil</a>
                       </div>
                       <div class="col-xs-6 text-center">
-                        <a href="<?= base_url('AdminPage/main/change_password'); ?>"><i class="fa fa-cog"></i> Ubah Kata Sandi</a>
+                        <a href="<?= base_url('_administrator/change_password'); ?>"><i class="fa fa-cog"></i> Ubah Kata Sandi</a>
                       </div>
                     </div>
                   </li>

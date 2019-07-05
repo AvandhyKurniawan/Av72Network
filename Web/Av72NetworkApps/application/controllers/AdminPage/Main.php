@@ -461,7 +461,7 @@ class Main extends CI_Controller {
                                                                      username, 
                                                                      full_name, 
                                                                      role, 
-                                                                     DATE_FORMAT(last_login,'%d-%m-%Y %H:%i:%s') AS last_login",
+                                                                     DATE_FORMAT(last_login,'%d %M %Y %H:%i:%s') AS last_login",
                                                         "WHERE"  => "deleted_on IS NULL AND admin_id != '$adminId'")
                               );
         $result = $this->Data_Access_Model->selectData($arrParameter);
@@ -790,7 +790,7 @@ class Main extends CI_Controller {
       $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
                                                                        package_categories_name,
                                                                        information,
-                                                                       updated_on",
+                                                                       DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
                                                           "WHERE" => "deleted_on IS NULL"
                                                     )
                       );
@@ -863,6 +863,51 @@ class Main extends CI_Controller {
 
         $result = $this->Data_Access_Model->updateData($data);
       }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function saveInternetPackageData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $packageCategoryId = $this->input->post("PACKAGECATEGORYID");
+      $packageName = decodePassword($this->input->post("PACKAGENAME"));
+      $speed = $this->input->post("SPEED");
+      $price = $this->input->post("PRICE");
+      $information = $this->input->post("INFORMATION");
+      
+      if(empty($packageCategoryId) || empty($packageName) ||
+         empty($speed)             || empty($price)
+      ){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+      }else{
+        $arrParameter = array("packages" => array("VALUES" => array("admin_id"              => $adminId,
+                                                                    "package_categories_id" => $packageCategoryId,
+                                                                    "package_name"          => $packageName,
+                                                                    "speed"                 => $speed,
+                                                                    "price"                 => $price,
+                                                                    "information"           => $information)
+                                            )
+                        );
+        $result = $this->Data_Access_Model->insertData($arrParameter);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getAllInternetPackageData(){
+    if(Main::isLogin()){
+
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
