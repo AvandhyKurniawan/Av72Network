@@ -27,6 +27,9 @@ public function insertData($param){
 #=============== Select Data (Start) ===============#
 public function selectData($param){
   $arrTable = array_keys($param);
+  // for($i=0; $i<count($arrTable); $i++){
+  //   $arrTable[$i] = substr($arrTable[$i],0,(strpos($arrTable[$i]," ") - 1));
+  // }
   $arrResult = array("CODE"      => 200,
                      "MESSAGE"   => "Success",
                      "RESPONSE"  => array_fill_keys($arrTable, array())
@@ -36,7 +39,11 @@ public function selectData($param){
       $this->db->select($param[$table]["COLUMN"]);
     }
     if(array_key_exists("JOIN", $param[$table])){
-      $this->db->join($param[$table]["JOIN"]);
+      if(is_array($param[$table]["JOIN"])){
+        foreach($param[$table]["JOIN"] as $join){
+          $this->db->join($join[0], $join[1], $join[2]);
+        }
+      }
     }
     if(array_key_exists("WHERE", $param[$table])){
       $this->db->where($param[$table]["WHERE"]);

@@ -427,17 +427,30 @@ class Main extends CI_Controller {
                                         "RESPONSE"  => "Password Yang Anda Masukan Terlalu Pendek!"));
           }else{
             $password = $this->encryption->Av72Net_ENC_OPEN_SSL(decodePassword($password));
-            $arrData = array("administrator" => array("VALUES" => array(
-                                                                    array("username"    => $username,
-                                                                          "password"    => $password,
-                                                                          "full_name"   => $fullname,
-                                                                          "role"        => $role
+            $arrDataCheckUsername = array("administrator" => array("COLUMN" => "COUNT(admin_id) AS adminIdCounter",
+                                                                   "WHERE" => "username LIKE '%$username%' AND 
+                                                                               deleted_on IS NULL"
+                                                             )
+                                    );
+            $arrResult = json_decode($this->Data_Access_Model->selectData($arrDataCheckUsername), TRUE);
+            $adminIdCounter = $arrResult["RESPONSE"]["administrator"][0]["adminIdCounter"];
+            if($adminIdCounter > 0){
+              $result = json_encode(array("CODE"      => 406,
+                                          "MESSAGE"   => "Not Acceptable",
+                                          "RESPONSE"  => "Maaf Nama Pengguna Sudah Ada!"));
+            }else{
+              $arrData = array("administrator" => array("VALUES" => array(
+                                                                      array("username"    => $username,
+                                                                            "password"    => $password,
+                                                                            "full_name"   => $fullname,
+                                                                            "role"        => $role
+                                                                      )
                                                                     )
-                                                                  )
-                                                )
-                       );
-  
-            $result = $this->Data_Access_Model->insertData($arrData);
+                                                  )
+                         );
+
+              $result = $this->Data_Access_Model->insertData($arrData);
+            }
           }
         }
       }else{
@@ -787,13 +800,24 @@ class Main extends CI_Controller {
 
   public function getAllPackageCategoryData(){
     if(Main::isLogin()){
-      $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
-                                                                       package_categories_name,
-                                                                       information,
-                                                                       DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                          "WHERE" => "deleted_on IS NULL"
-                                                    )
-                      );
+      $search = $this->input->get("SEARCH");
+      if(empty($search)){
+        $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
+                                                                         package_categories_name,
+                                                                         information,
+                                                                         DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                            "WHERE" => "deleted_on IS NULL"
+                                                      )
+                        );
+      }else{
+        $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
+                                                                         package_categories_name,
+                                                                         information,
+                                                                         DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                            "WHERE" => "deleted_on IS NULL AND package_categories_name LIKE '%$search%'"
+                                                      )
+                        );
+      }
       $result = $this->Data_Access_Model->selectData($arrParameter);
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -836,8 +860,8 @@ class Main extends CI_Controller {
                                                           "WHERE" => "package_categories_id = '$packageCategoryId'"
                                                     )
                       );
+        $result = $this->Data_Access_Model->updateData($arrParameter);
       }
-      $result = $this->Data_Access_Model->updateData($arrParameter);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -874,8 +898,8 @@ class Main extends CI_Controller {
   public function saveInternetPackageData(){
     if(Main::isLogin()){
       $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
-      $packageCategoryId = $this->input->post("PACKAGECATEGORYID");
-      $packageName = decodePassword($this->input->post("PACKAGENAME"));
+      $packageCategoryId = decodePassword($this->input->post("PACKAGECATEGORYID"));
+      $packageName = $this->input->post("INTERNETPACKAGENAME");
       $speed = $this->input->post("SPEED");
       $price = $this->input->post("PRICE");
       $information = $this->input->post("INFORMATION");
@@ -887,13 +911,15 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
-        $arrParameter = array("packages" => array("VALUES" => array("admin_id"              => $adminId,
-                                                                    "package_categories_id" => $packageCategoryId,
-                                                                    "package_name"          => $packageName,
-                                                                    "speed"                 => $speed,
-                                                                    "price"                 => $price,
-                                                                    "information"           => $information)
-                                            )
+        $arrParameter = array("internet_packages" => array("VALUES" => array(
+                                                                        array("admin_id"              => $adminId,
+                                                                              "package_categories_id" => $packageCategoryId,
+                                                                              "package_name"          => $packageName,
+                                                                              "speed"                 => $speed,
+                                                                              "price"                 => $price,
+                                                                              "information"           => $information)
+                                                                        )
+                                                     )
                         );
         $result = $this->Data_Access_Model->insertData($arrParameter);
       }
@@ -907,7 +933,122 @@ class Main extends CI_Controller {
 
   public function getAllInternetPackageData(){
     if(Main::isLogin()){
+      if(Main::isLogin()){
+        $search = $this->input->get("SEARCH");
+        if(empty($search)){
+          $arrParameter = array("internet_packages A" => array("COLUMN" => encodeValueMysql("A.package_id","package_id").", 
+                                                                           A.package_name,
+                                                                           A.speed,
+                                                                           A.price,
+                                                                           B.package_categories_name,
+                                                                           A.information,
+                                                                           DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                               "JOIN" => array(
+                                                                          array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                         ),
+                                                               "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
+                                                        )
+                          );
+        }else{
+          $arrParameter = array("internet_packages A" => array("COLUMN" => encodeValueMysql("A.package_id","package_id").", 
+                                                                           A.package_name,
+                                                                           A.speed,
+                                                                           A.price,
+                                                                           B.package_categories_name,
+                                                                           A.information,
+                                                                           DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                              "JOIN" => array(
+                                                                         array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                        ),
+                                                              "WHERE" => "A.deleted_on IS NULL AND 
+                                                                          B.deleted_on IS NULL AND 
+                                                                          (A.package_name LIKE '%$search%' OR
+                                                                           A.speed LIKE '%$search%' OR
+                                                                           B.package_categories_name LIKE '$search' OR
+                                                                          )"
+                                                        )
+                          );
+        }
+        $result = $this->Data_Access_Model->selectData($arrParameter);
+      }else{
+        $result = json_encode(array("CODE"      => 403,
+                                    "MESSAGE"   => "Forbidden",
+                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
 
+  public function getDetailInternetPackageDataById(){
+    if(Main::isLogin()){
+      $internetPackageId = decodePassword($this->input->get("INTERNETPACKAGEID"));
+      $arrParameter = array("internet_packages" => array("COLUMN" => "*",
+                                                         "WHERE" => "package_id = '$internetPackageId' AND 
+                                                                     deleted_on IS NULL")
+                      );
+      $result = $this->Data_Access_Model->selectData($arrParameter);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function editInternetPackageData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $internetPackageId = decodePassword($this->input->post("INTERNETPACKAGEID"));
+      $packageName = $this->input->post("PACKAGENAME");
+      $speed = $this->input->post("SPEED");
+      $price = $this->input->post("PRICE");
+      $information = $this->input->post("INFORMATION");
+
+      if(empty($packageCategoryName)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
+      }else{
+        $arrParameter = array("internet_packages" => array("VALUES" => array("admin_id"                => $adminId,
+                                                                             "package_name"            => $packageName,
+                                                                             "speed"                   => $speed,
+                                                                             "price"                   => $price,
+                                                                             "information"             => $information),
+                                                           "WHERE" => "package_id = '$internetPackageId'"
+                                                    )
+                      );
+        $result = $this->Data_Access_Model->updateData($arrParameter);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function deleteInternetPackageData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $internetPackageId = decodePassword($this->input->post("INTERNETPACKAGEID"));
+
+      if(empty($internetPackageId)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
+      }else{
+        $data = array("internet_packages" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                      "admin_id"   => $adminId),
+                                                    "WHERE" => array("package_id" => $internetPackageId)
+                                             )
+                );
+
+        $result = $this->Data_Access_Model->updateData($data);
+      }
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",

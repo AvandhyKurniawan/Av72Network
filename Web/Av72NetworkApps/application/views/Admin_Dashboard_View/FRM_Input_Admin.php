@@ -5,13 +5,14 @@
     </div>
     <div class="box-body">
       <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label>Nama Lengkap</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div class="form-group">
             <input type="text" id="txtFullName" class="form-control" placeholder="Masukan Nama Lengkap">
           </div>
@@ -19,13 +20,14 @@
       </div>
 
       <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label>Nama Pengguna</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div class="form-group">
             <input type="text" id="txtUsername" class="form-control" placeholder="Masukan Nama Pengguna">
           </div>
@@ -36,13 +38,14 @@
       </div>
 
       <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label>Hak Akses</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div class="form-group">
             <select class="form-control" id="cmbRole">
               <option value="ADMIN">Admin</option>
@@ -53,13 +56,14 @@
       </div>
 
       <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label>Kata Sandi</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <div class="form-group">
             <input type="password" id="txtPassword" class="form-control" placeholder="Masukan Kata Sandi" onkeyup="checkLengthPassword(this);">
           </div>
@@ -70,13 +74,14 @@
       </div>
 
       <div class="col-md-12">
-        <div class="col-md-2">
+        <div class="col-md-3">
           <label>Konfirmasi Kata Sandi</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6" style="margin:0;">
+        <div class="col-md-5" style="margin:0;">
           <div class="form-group">
             <input type="password" id="txtConfirmPassword" class="form-control" placeholder="Ulangi Kata Sandi" onkeyup="comparePassword('txtPassword','txtConfirmPassword');">
           </div>

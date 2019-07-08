@@ -9,26 +9,26 @@
     </div> <!--Wrapper-->
 
 
-    <script src="<?php echo base_url('assets/plugins/jQuery/jquery-2.2.3.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/dist/js/app.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/dist/js/Av72.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/fastclick/fastclick.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/sparkline/jquery.sparkline.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/slimScroll/jquery.slimscroll.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/jQuery/jquery-2.2.3.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/bootstrap/js/bootstrap.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/dist/js/app.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/dist/js/Av72.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/fastclick/fastclick.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/sparkline/jquery.sparkline.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/slimScroll/jquery.slimscroll.min.js'); ?>"></script>
 
-    <script src="<?php echo base_url('assets/plugins/datepicker/bootstrap-datepicker.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/input-mask/inputmask.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/input-mask/inputmask.numeric.extensions.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/input-mask/jquery.inputmask.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/iCheck/icheck.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/datatables/datatables.min.js'); ?>"></script>
-    <!-- <script src="<?php echo base_url('assets/plugins/datatables/dataTables.bootstrap.min.js'); ?>"></script>     -->
-    <script src="<?php echo base_url('assets/plugins/chartjs/Chart_2.4.0.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/datepicker/bootstrap-datepicker.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/input-mask/inputmask.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/input-mask/inputmask.numeric.extensions.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/input-mask/jquery.inputmask.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/iCheck/icheck.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
+    <script src="<?= base_url('assets/plugins/datatables/datatables.min.js'); ?>"></script>
+    <!-- <script src="<?= base_url('assets/plugins/datatables/dataTables.bootstrap.min.js'); ?>"></script>     -->
+    <script src="<?= base_url('assets/plugins/chartjs/Chart_2.4.0.js'); ?>"></script>
 
     <script type="text/javascript">
       var ADMINISTRATORDATA = null;
@@ -57,20 +57,24 @@
           ADMINISTRATORDATA = getAllAdministratorData();
         }
 
-        if($("#txtEmployeeId").length > 0){
-          getGenerateEmployeeCode("#txtEmployeeId");
-        }
-
-        if($("#txtClientId").length > 0){
-          getGenerateCustomerCode("#txtClientId");
-        }
-
         if($("#departmentListTable").length > 0){
           DEPARTMENTDATA = getAllDepartmentData();
         }
 
         if($("#packageCategoriesListTable").length > 0){
           PACKAGECATEGORYDATA = getAllPackageCategoryData();
+        }
+
+        if($("#internetPackageListTable").length > 0){
+          INTERNETPACKAGEDATA = getAllInternetPackageData();
+        }
+
+        if($("#txtEmployeeId").length > 0){
+          getGenerateEmployeeCode("#txtEmployeeId");
+        }
+
+        if($("#txtClientId").length > 0){
+          getGenerateCustomerCode("#txtClientId");
         }
 
         if($("#txtCategoryInformation").length > 0){
@@ -398,6 +402,51 @@
             if(result){
               resetForm();
               PACKAGECATEGORYDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
+
+      function saveInternetPackageData(){
+        var internetPackageName = $("#txtInternetPackage").val();
+        var speed = $("#txtSpeed").val();
+        var price = $("#txtHarga").val().replace(/,/gi,"");
+        var type = $("#cmbType").val();
+        var information = CKEDITOR.instances["txtPackageInformation"].getData();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/saveInternetPackageData'); ?>",
+          dataType : "JSON",
+          data : {
+            INTERNETPACKAGENAME   : internetPackageName,
+            SPEED                 : speed,
+            PRICE                 : price,
+            PACKAGECATEGORYID     : type,
+            INFORMATION           : information,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              INTERNETPACKAGEDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -831,29 +880,94 @@
         });
       }
 
-      function getAllPackageCategoryData_Select(){
-        $.ajax({
-          type : "GET",
-          url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
-          dataType : "JSON",
-          success : function(response){
-            $("#cmbType").empty();
-            $("#cmbType").append("<option>Pilih Kategori Paket</option>");
-            $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
-              $("#cmbType").append(
-                "<option value='"+AvValue.package_categories_id+"'>"+AvValue.package_categories_name+"</option>"
-              );
-            });
-          },
-          error : function(response){
-            var param = {
-              CODE : response.status,
-              MESSAGE : response.statusText,
-              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+      function getAllPackageCategoryData_Select(param=false){
+        if(param){
+          $("#cmbType").select2({
+            placeholder : "Pilih Kategori Paket",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.package_categories, function(item){
+                    return{
+                      text:item.package_categories_name,
+                      id:item.package_categories_id
+                    }
+                  })
+                };
+              }
             }
-            alert(param);
-          }
-        });
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $("#cmbType").empty();
+              $("#cmbType").append("<option>Pilih Kategori Paket</option>");
+              $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
+                $("#cmbType").append(
+                  "<option value='"+AvValue.package_categories_id+"'>"+AvValue.package_categories_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
+      }
+
+      function getAllInternetPackageData(){
+        var result = $('#internetPackageListTable').DataTable({
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllInternetPackageData'); ?>",
+                        dataSrc : "RESPONSE.internet_packages A",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "package_id"},
+                        {data : "package_name"},
+                        {data : "speed"},
+                        {data : "price"},
+                        {data : "package_categories_name"},
+                        {data : "information"},
+                        {data : "package_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailInternetPackageDataById('"+AvData["package_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                              "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteInternetPackageData('"+AvData["package_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(6)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
       }
     </script>
     <!-- ========== GET DATA FUNCTION FINISH ========== -->

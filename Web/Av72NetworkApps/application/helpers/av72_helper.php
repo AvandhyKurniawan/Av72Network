@@ -15,8 +15,12 @@ function encodePassword($param){
     return $encodedPassword;
 }
 
-function encodeValueMysql($param){
-    $originStr = $param;
+function encodeValueMysql($param,$param2=""){
+    if(empty($param2)){
+        $originStr = $param;
+    }else{
+        $originStr = $param2;
+    }
     $command = "TO_BASE64($param)";
     for($i=0; $i<6; $i++){
         $command = "TO_BASE64($command)";

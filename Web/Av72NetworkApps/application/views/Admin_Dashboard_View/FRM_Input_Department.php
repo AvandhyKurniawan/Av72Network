@@ -7,6 +7,7 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Nama Departemen</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>

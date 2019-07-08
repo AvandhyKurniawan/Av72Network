@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 05, 2019 at 04:18 PM
+-- Generation Time: Jul 08, 2019 at 04:26 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,10 +44,39 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-05 15:46:16', NULL),
+(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-08 15:04:09', NULL),
 (6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
 (10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `client_registration`
+--
+
+CREATE TABLE `client_registration` (
+  `reg_id` varchar(20) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `employee_id` varchar(20) NOT NULL,
+  `package_id` int(11) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `gender` enum('MALE','FEMALE') NOT NULL,
+  `birthday` date DEFAULT NULL,
+  `phone_number` varchar(15) NOT NULL,
+  `other_phone_number` varchar(15) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `address` text NOT NULL,
+  `registration_date` date NOT NULL,
+  `registration_status` enum('PENDING','CANCELED','ON SCHEDULED','ON PROCESS','HOLD','REGISTERED') DEFAULT NULL,
+  `registration_fee` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `monthly_payment` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `information` text,
+  `entered_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int(11) NOT NULL,
+  `deleted_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -129,6 +158,31 @@ CREATE TABLE `installation_schedule` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `internet_packages`
+--
+
+CREATE TABLE `internet_packages` (
+  `package_id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `package_categories_id` int(11) NOT NULL,
+  `package_name` varchar(100) NOT NULL,
+  `speed` varchar(20) NOT NULL,
+  `price` varchar(20) NOT NULL DEFAULT '0',
+  `information` text NOT NULL,
+  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `internet_packages`
+--
+
+INSERT INTO `internet_packages` (`package_id`, `admin_id`, `package_categories_id`, `package_name`, `speed`, `price`, `information`, `deleted_on`) VALUES
+(1, 1, 1, 'INTERNET ONLY UPTO 2 Mbps', '2 Mbps', '132000', '<p><strong>Spesifikasi Layanan :</strong></p>\r\n\r\n<ol>\r\n	<li>Cocok untuk 1-2 perangkat (Laptop, Handphone, Komputer).</li>\r\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\r\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\r\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\r\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\r\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\r\n</ol>\r\n', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `internet_payment`
 --
 
@@ -145,24 +199,6 @@ CREATE TABLE `internet_payment` (
   `payment_information` text,
   `transfer_proof_image` varchar(150) DEFAULT NULL,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `packages`
---
-
-CREATE TABLE `packages` (
-  `package_id` int(11) NOT NULL,
-  `admin_id` int(11) NOT NULL,
-  `package_categories_id` int(11) NOT NULL,
-  `package_name` varchar(100) NOT NULL,
-  `speed` varchar(20) NOT NULL,
-  `price` varchar(20) NOT NULL DEFAULT '0',
-  `information` text NOT NULL,
-  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_on` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -187,35 +223,7 @@ CREATE TABLE `package_categories` (
 INSERT INTO `package_categories` (`package_categories_id`, `admin_id`, `package_categories_name`, `information`, `deleted_on`) VALUES
 (1, 1, 'BROADBAND INTERNET ONLY', '<ol>\n	<li>Layanan pada kategori ini <span style=\"color:#e74c3c\"><strong>tidak mendapatkan jaminan apapun</strong></span>, baik secara koneksi ataupun keamanan yang berkaitan karena kesalahan pelanggan.</li>\n	<li>Pelanggan hanya mendapatkan layanan internet saja.</li>\n</ol>\n', NULL),
 (2, 1, 'BROADBAND MULTIMEDIA INTERNET', '<ol>\n	<li>Layanan pada kategori ini <span style=\"color:#e74c3c\"><strong>tidak mendapatkan jaminan apapun</strong></span>, baik secara koneksi ataupun keamanan yang berkaitan karena kesalahan pelanggan.</li>\n	<li>Pelanggan mendapatkan layanan internet dan dipinjamkan perangkat berupa STB Android untuk menunjang kebutuhan multimedia.</li>\n</ol>\n', NULL),
-(3, 1, 'DEDICATED INTERNET ONLY', '<p>Layanan dedicated internet merupakan layanan yang di pergunakan untuk perusahaan atau kalangan pebisnis yang membutuhkan layanan internet dengan jaminan SLA (Service Level Agreement) hingga 98%.</p>\n', NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `registration_client`
---
-
-CREATE TABLE `registration_client` (
-  `reg_id` varchar(20) NOT NULL,
-  `admin_id` int(11) NOT NULL,
-  `employee_id` varchar(20) NOT NULL,
-  `package_id` int(11) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `gender` enum('MALE','FEMALE') NOT NULL,
-  `birthday` date DEFAULT NULL,
-  `phone_number` varchar(15) NOT NULL,
-  `other_phone_number` varchar(15) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `address` text NOT NULL,
-  `registration_date` date NOT NULL,
-  `registration_status` enum('PENDING','CANCELED','ON SCHEDULED','ON PROCESS','HOLD','REGISTERED') DEFAULT NULL,
-  `registration_fee` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `information` text,
-  `entered_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated_by` int(11) NOT NULL,
-  `deleted_on` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+(3, 1, 'DEDICATED INTERNET ONLY', '<p>Layanan dedicated internet merupakan layanan yang di pergunakan untuk perusahaan atau kalangan pebisnis yang membutuhkan layanan internet dengan <span style=\"color:#e74c3c\"><strong>jaminan</strong></span> <strong><span style=\"color:#e74c3c\">SLA (Service Level Agreement) hingga 98%.</span></strong></p>\n', NULL);
 
 --
 -- Indexes for dumped tables
@@ -227,6 +235,16 @@ CREATE TABLE `registration_client` (
 ALTER TABLE `administrator`
   ADD PRIMARY KEY (`admin_id`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `client_registration`
+--
+ALTER TABLE `client_registration`
+  ADD PRIMARY KEY (`reg_id`),
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `employee_id` (`employee_id`),
+  ADD KEY `package_id` (`package_id`),
+  ADD KEY `updated_by` (`updated_by`);
 
 --
 -- Indexes for table `department`
@@ -254,6 +272,14 @@ ALTER TABLE `installation_schedule`
   ADD KEY `reg_id` (`reg_id`);
 
 --
+-- Indexes for table `internet_packages`
+--
+ALTER TABLE `internet_packages`
+  ADD PRIMARY KEY (`package_id`),
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `package_categories_id` (`package_categories_id`);
+
+--
 -- Indexes for table `internet_payment`
 --
 ALTER TABLE `internet_payment`
@@ -262,29 +288,11 @@ ALTER TABLE `internet_payment`
   ADD KEY `reg_id` (`reg_id`) USING BTREE;
 
 --
--- Indexes for table `packages`
---
-ALTER TABLE `packages`
-  ADD PRIMARY KEY (`package_id`),
-  ADD KEY `admin_id` (`admin_id`),
-  ADD KEY `package_categories_id` (`package_categories_id`);
-
---
 -- Indexes for table `package_categories`
 --
 ALTER TABLE `package_categories`
   ADD PRIMARY KEY (`package_categories_id`),
   ADD KEY `admin_id` (`admin_id`);
-
---
--- Indexes for table `registration_client`
---
-ALTER TABLE `registration_client`
-  ADD PRIMARY KEY (`reg_id`),
-  ADD KEY `admin_id` (`admin_id`),
-  ADD KEY `employee_id` (`employee_id`),
-  ADD KEY `package_id` (`package_id`),
-  ADD KEY `updated_by` (`updated_by`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -309,10 +317,10 @@ ALTER TABLE `installation_schedule`
   MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `packages`
+-- AUTO_INCREMENT for table `internet_packages`
 --
-ALTER TABLE `packages`
-  MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `internet_packages`
+  MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `package_categories`
@@ -323,6 +331,15 @@ ALTER TABLE `package_categories`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `client_registration`
+--
+ALTER TABLE `client_registration`
+  ADD CONSTRAINT `client_registration_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
+  ADD CONSTRAINT `client_registration_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`),
+  ADD CONSTRAINT `client_registration_ibfk_3` FOREIGN KEY (`package_id`) REFERENCES `internet_packages` (`package_id`),
+  ADD CONSTRAINT `client_registration_ibfk_4` FOREIGN KEY (`updated_by`) REFERENCES `administrator` (`admin_id`);
 
 --
 -- Constraints for table `department`
@@ -343,36 +360,27 @@ ALTER TABLE `employee`
 ALTER TABLE `installation_schedule`
   ADD CONSTRAINT `installation_schedule_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
   ADD CONSTRAINT `installation_schedule_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`),
-  ADD CONSTRAINT `installation_schedule_ibfk_3` FOREIGN KEY (`reg_id`) REFERENCES `registration_client` (`reg_id`);
+  ADD CONSTRAINT `installation_schedule_ibfk_3` FOREIGN KEY (`reg_id`) REFERENCES `client_registration` (`reg_id`);
+
+--
+-- Constraints for table `internet_packages`
+--
+ALTER TABLE `internet_packages`
+  ADD CONSTRAINT `internet_packages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
+  ADD CONSTRAINT `internet_packages_ibfk_2` FOREIGN KEY (`package_categories_id`) REFERENCES `package_categories` (`package_categories_id`);
 
 --
 -- Constraints for table `internet_payment`
 --
 ALTER TABLE `internet_payment`
-  ADD CONSTRAINT `internet_payment_ibfk_1` FOREIGN KEY (`reg_id`) REFERENCES `registration_client` (`reg_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `internet_payment_ibfk_1` FOREIGN KEY (`reg_id`) REFERENCES `client_registration` (`reg_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `internet_payment_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`);
-
---
--- Constraints for table `packages`
---
-ALTER TABLE `packages`
-  ADD CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
-  ADD CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`package_categories_id`) REFERENCES `package_categories` (`package_categories_id`);
 
 --
 -- Constraints for table `package_categories`
 --
 ALTER TABLE `package_categories`
   ADD CONSTRAINT `package_categories_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`);
-
---
--- Constraints for table `registration_client`
---
-ALTER TABLE `registration_client`
-  ADD CONSTRAINT `registration_client_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `administrator` (`admin_id`),
-  ADD CONSTRAINT `registration_client_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`),
-  ADD CONSTRAINT `registration_client_ibfk_3` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
-  ADD CONSTRAINT `registration_client_ibfk_4` FOREIGN KEY (`updated_by`) REFERENCES `administrator` (`admin_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
