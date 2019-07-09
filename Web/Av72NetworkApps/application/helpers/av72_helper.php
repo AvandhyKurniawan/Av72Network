@@ -15,7 +15,7 @@ function encodePassword($param){
     return $encodedPassword;
 }
 
-function encodeValueMysql($param,$param2=""){
+function encodeMysqlValue($param,$param2=""){
     if(empty($param2)){
         $originStr = $param;
     }else{

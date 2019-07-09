@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 08, 2019 at 04:26 PM
+-- Generation Time: Jul 09, 2019 at 04:30 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,7 +44,7 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'jdeZMA44QdBAzz4pSUp0XQ==', 'Avandhy Kurniawan', 'ROOT', '2019-07-08 15:04:09', NULL),
+(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-09 15:24:47', NULL),
 (6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
 (10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');
@@ -138,6 +138,13 @@ CREATE TABLE `employee` (
   `deleted_on` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`employee_id`, `admin_id`, `department_id`, `number_id`, `full_name`, `gender`, `birthday`, `phone_number`, `other_phone_number`, `address`, `email`, `join_date`, `picture`, `deleted_on`) VALUES
+('19070001', 1, 1, '3603180702970009', 'Avandhy Kurniawan', 'Pria', '1997-02-07', '081287505145', '', '<p>Perum Bukit Tiara Blok R4 No. 3, Rt. 041, Rw. 006, Kel. Pasir Jaya, Kec. Cikupa, Kab. Tangerang.</p>\n', 'avandhykurniawan@gmail.com', '2015-01-01', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -178,7 +185,10 @@ CREATE TABLE `internet_packages` (
 --
 
 INSERT INTO `internet_packages` (`package_id`, `admin_id`, `package_categories_id`, `package_name`, `speed`, `price`, `information`, `deleted_on`) VALUES
-(1, 1, 1, 'INTERNET ONLY UPTO 2 Mbps', '2 Mbps', '132000', '<p><strong>Spesifikasi Layanan :</strong></p>\r\n\r\n<ol>\r\n	<li>Cocok untuk 1-2 perangkat (Laptop, Handphone, Komputer).</li>\r\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\r\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\r\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\r\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\r\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\r\n</ol>\r\n', NULL);
+(1, 1, 1, 'INTERNET ONLY 1', 'UPTO 2 Mbps', '120000', '<p><strong>Spesifikasi Layanan :</strong></p>\n\n<ol>\n	<li>Ideal untuk penggunaan&nbsp;1-2 perangkat (Laptop, Handphone, Komputer).</li>\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\n</ol>\n\n<p><strong>Harga Belum Termasuk PPN 10%</strong></p>\n', NULL),
+(2, 1, 1, 'INTERNET ONLY 2', 'UPTO 3 Mbps', '150000', '<p><strong>Spesifikasi Layanan :</strong></p>\n\n<ol>\n	<li>Ideal untuk penggunaan&nbsp;1-3&nbsp;perangkat (Laptop, Handphone, Komputer).</li>\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\n</ol>\n\n<p><strong>Harga Belum Termasuk PPN 10%</strong></p>\n', NULL),
+(3, 1, 1, 'INTERNET ONLY 3', 'UPTO 4 Mbps', '175000', '<p><strong>Spesifikasi Layanan :</strong></p>\n\n<ol>\n	<li>Ideal untuk penggunaan&nbsp;1-4&nbsp;perangkat (Laptop, Handphone, Komputer).</li>\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\n</ol>\n\n<p><strong>Harga Belum Termasuk PPN 10%</strong></p>\n', NULL),
+(4, 1, 1, 'INTERNET ONLY 4', 'UPTO 5 Mbps', '200000', '<p><strong>Spesifikasi Layanan :</strong></p>\n\n<ol>\n	<li>Ideal untuk penggunaan&nbsp;1-5&nbsp;perangkat (Laptop, Handphone, Komputer).</li>\n	<li>Kecepatan unggah dan unduh hampir simetris 1:1.</li>\n	<li>Perangkat wifi router menjadi milik pelanggan.</li>\n	<li>Bebas untuk ganti kata sandi (berdasarkan permintaan pelanggan).</li>\n	<li>Bebas kuota dan FUP (Fair Usage Policy) / Batas penggunaan wajar.</li>\n	<li>Biaya bulanan flat, dan akan di infromasikan terlebih dahulu apabila ada kenaikan biaya.</li>\n</ol>\n\n<p><strong>Harga Belum Termasuk PPN 10%</strong></p>\n', NULL);
 
 -- --------------------------------------------------------
 
@@ -320,7 +330,7 @@ ALTER TABLE `installation_schedule`
 -- AUTO_INCREMENT for table `internet_packages`
 --
 ALTER TABLE `internet_packages`
-  MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `package_categories`

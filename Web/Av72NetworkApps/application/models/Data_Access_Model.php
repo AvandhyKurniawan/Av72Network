@@ -27,13 +27,17 @@ public function insertData($param){
 #=============== Select Data (Start) ===============#
 public function selectData($param){
   $arrTable = array_keys($param);
-  // for($i=0; $i<count($arrTable); $i++){
-  //   $arrTable[$i] = substr($arrTable[$i],0,(strpos($arrTable[$i]," ") - 1));
-  // }
+  $arrTableResult = $arrTable;
+  for($i=0; $i<count($arrTable); $i++){
+    if(strpos($arrTable[$i]," ") !== FALSE){
+      $arrTableResult[$i] = substr($arrTable[$i],0,(strpos($arrTable[$i]," ")));
+    }
+  }
   $arrResult = array("CODE"      => 200,
                      "MESSAGE"   => "Success",
-                     "RESPONSE"  => array_fill_keys($arrTable, array())
+                     "RESPONSE"  => array_fill_keys($arrTableResult, array())
                );
+  $i = 0;
   foreach($arrTable as $table){
     if(array_key_exists("COLUMN", $param[$table])){
       $this->db->select($param[$table]["COLUMN"]);
@@ -55,7 +59,8 @@ public function selectData($param){
       $this->db->order_by($param[$table]["ORDER BY"]);
     }
     $result = $this->db->get($table)->result_array();
-    $arrResult["RESPONSE"][$table] += $result;
+    $arrResult["RESPONSE"][$arrTableResult[$i]] += $result;
+    $i++;
   }
   return json_encode($arrResult);
 }

@@ -41,7 +41,7 @@ class Main extends CI_Controller {
       if(!empty($this->session->userdata("Av72Net_Role")) &&
          $this->session->userdata("Av72Net_Role") == "ROOT"
       ){
-        $data = array("PARENT_MENU" => array(
+        $arrData = array("PARENT_MENU" => array(
                                               array("NAME"    => "Tambah Data Admin",
                                                     "ID"      => "MTambahDataAdmin",
                                                     "ICON"    => "fa fa-user-plus",
@@ -134,7 +134,7 @@ class Main extends CI_Controller {
                                            )
                      );
       }else{
-        $data = array("PARENT_MENU" => array(
+        $arrData = array("PARENT_MENU" => array(
                                               array("NAME"    => "Tambah Data Pegawai",
                                                     "ID"      => "MTambahDataPegawai",
                                                     "ICON"    => "fa fa-user-plus",
@@ -211,7 +211,7 @@ class Main extends CI_Controller {
                                            )
                      );
       }
-      return $data;
+      return $arrData;
     }else{
       redirect("/","refresh");
     }
@@ -470,14 +470,14 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
-        $arrParameter = array("administrator" => array("COLUMN" =>  encodeValueMysql("admin_id").", 
-                                                                     username, 
-                                                                     full_name, 
-                                                                     role, 
-                                                                     DATE_FORMAT(last_login,'%d %M %Y %H:%i:%s') AS last_login",
-                                                        "WHERE"  => "deleted_on IS NULL AND admin_id != '$adminId'")
+        $arrData = array("administrator" => array("COLUMN" =>  encodeMysqlValue("admin_id").", 
+                                                               username, 
+                                                               full_name, 
+                                                               role, 
+                                                               DATE_FORMAT(last_login,'%d %M %Y %H:%i:%s') AS last_login",
+                                                  "WHERE"  => "deleted_on IS NULL AND admin_id != '$adminId'")
                               );
-        $result = $this->Data_Access_Model->selectData($arrParameter);
+        $result = $this->Data_Access_Model->selectData($arrData);
       }else{
         $result = json_encode(array("CODE"      => 405,
                                     "MESSAGE"   => "Method Not Allowed",
@@ -500,12 +500,12 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
         }else{
-          $data = array("administrator" => array("VALUES"  => array("deleted_on" => date("Y-m-d H:i:s")),
-                                                 "WHERE"   => array("admin_id" => decodePassword($adminId))
-                                           )
+          $arrData = array("administrator" => array("VALUES"  => array("deleted_on" => date("Y-m-d H:i:s")),
+                                                    "WHERE"   => array("admin_id" => decodePassword($adminId))
+                                              )
                   );
 
-          $result = $this->Data_Access_Model->updateData($data);
+          $result = $this->Data_Access_Model->updateData($arrData);
         }
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -532,12 +532,12 @@ class Main extends CI_Controller {
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
         if($newPassword == $confirmPassword){
-          $data = array("administrator" => array("VALUES" => array("password" => $this->encryption->Av72Net_ENC_OPEN_SSL($newPassword)),
-                                                 "WHERE" => array("admin_id" => $adminId,
-                                                                  "password" => $this->encryption->Av72Net_ENC_OPEN_SSL($oldPassword))
-                                           )
+          $arrData= array("administrator" => array("VALUES" => array("password" => $this->encryption->Av72Net_ENC_OPEN_SSL($newPassword)),
+                                                   "WHERE" => array("admin_id" => $adminId,
+                                                                    "password" => $this->encryption->Av72Net_ENC_OPEN_SSL($oldPassword))
+                                             )
                   );
-          $result = $this->Data_Access_Model->changePassword($data);
+          $result = $this->Data_Access_Model->changePassword($arrData);
         }else{
           $result = json_encode(array("CODE"      => 401,
                                       "MESSAGE"   => "Unauthorized",
@@ -555,11 +555,11 @@ class Main extends CI_Controller {
   public function getGenerateEmployeeCode(){
     if(Main::isLogin()){
       $date = date("ym");
-      $data = array("employee" => array("COLUMN" => "MAX(RIGHT(employee_id,4)) AS CODE",
-                                        "WHERE" => "LEFT(employee_id,4) = '$date' AND deleted_on IS NULL",
-                                        "PREFIX" => $date)
+      $arrData = array("employee" => array("COLUMN" => "MAX(RIGHT(employee_id,4)) AS CODE",
+                                           "WHERE" => "LEFT(employee_id,4) = '$date' AND deleted_on IS NULL",
+                                           "PREFIX" => $date)
                    );
-      $result = $this->Data_Access_Model->selectGenerateId($data);
+      $result = $this->Data_Access_Model->selectGenerateId($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -571,11 +571,11 @@ class Main extends CI_Controller {
   public function getGenerateCustomerCode(){
     if(Main::isLogin()){
       $date = date("ym");
-      $data = array("registration_client" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
-                                                   "WHERE" => "SUBSTR(reg_id,3,4) = '$date' AND deleted_on IS NULL",
-                                                   "PREFIX" => "72".$date)
+      $arrData = array("registration_client" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
+                                                      "WHERE" => "SUBSTR(reg_id,3,4) = '$date' AND deleted_on IS NULL",
+                                                      "PREFIX" => "72".$date)
                    );
-      $result = $this->Data_Access_Model->selectGenerateId($data);
+      $result = $this->Data_Access_Model->selectGenerateId($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -586,9 +586,9 @@ class Main extends CI_Controller {
 
   public function saveEmployeeData(){
     if(Main::isLogin()){
-      $employeeId         = $this->input->post("EMPLOYEEID");
+      $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
       $adminId            = decodePassword($this->session->userdata("Av72Net_AdminId"));
-      $departmentId       = $this->input->post("DEPARTMENTID");
+      $departmentId       = decodePassword($this->input->post("DEPARTMENTID"));
       $numberId           = $this->input->post("NUMBERID");
       $fullName           = $this->input->post("FULLNAME");
       $gender             = $this->input->post("GENDER");
@@ -608,28 +608,191 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
       }else{
-        $data = array("employee" => array("VALUES" => array(
-                                                        array("employee_id"         => $employeeId,
-                                                              "admin_id"            => $adminId,
-                                                              "department_id"       => $departmentId,
-                                                              "number_id"           => $numberId,
-                                                              "full_name"           => $fullName,
-                                                              "gender"              => $gender,
-                                                              "birthday"            => $birthday,
-                                                              "phone_number"        => $phoneNumber,
-                                                              "other_phone_number"  => $otherPhoneNumber,
-                                                              "address"             => $address,
-                                                              "email"               => $email,
-                                                              "join_date"           => $joinDate)
-                                                      )
-                                    )
+        $arrData = array("employee" => array("VALUES" => array(
+                                                          array("employee_id"         => $employeeId,
+                                                                "admin_id"            => $adminId,
+                                                                "department_id"       => $departmentId,
+                                                                "number_id"           => $numberId,
+                                                                "full_name"           => $fullName,
+                                                                "gender"              => $gender,
+                                                                "birthday"            => $birthday,
+                                                                "phone_number"        => $phoneNumber,
+                                                                "other_phone_number"  => $otherPhoneNumber,
+                                                                "address"             => $address,
+                                                                "email"               => $email,
+                                                                "join_date"           => $joinDate)
+                                                          )
+                                       )
                 );
+        $result = $this->Data_Access_Model->insertData($arrData);
+      }
+      echo $result;
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+  }
+
+  public function getAllEmployeeData(){
+    if(Main::isLogin()){
+      $search = $this->input->get("SEARCH");
+      if(empty($search)){
+        $arrData = array("employee A" => array("COLUMN" => "A.employee_id,
+                                                            A.number_id, 
+                                                            A.full_name,
+                                                            A.gender,
+                                                            DATE_FORMAT(A.birthday, '%d %M %Y') AS birthday,
+                                                            A.phone_number,
+                                                            A.other_phone_number,
+                                                            A.address,
+                                                            A.email,
+                                                            DATE_FORMAT(A.join_date, '%d %M %Y') AS join_date,
+                                                            A.picture,
+                                                            DATE_FORMAT(A.updated_on, '%d %M %T') AS updated_on,
+                                                            B.department_name",
+                                               "JOIN" => array(
+                                                          array("department B","A.department_id = B.department_id","INNER")
+                                                         ),
+                                               "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
+                                         )
+                        );
+      }else{
+        $arrData = array("employee A" => array("COLUMN" => "A.employee_id,
+                                                            A.number_id, 
+                                                            A.full_name,
+                                                            A.gender,
+                                                            DATE_FORMAT(A.birthday, '%d %M %Y') AS birthday,
+                                                            A.phone_number,
+                                                            A.other_phone_number,
+                                                            A.address,
+                                                            A.email,
+                                                            DATE_FORMAT(A.join_date, '%d %M %Y') AS join_date,
+                                                            A.picture,
+                                                            DATE_FORMAT(A.updated_on, '%d %M %T') AS updated_on,
+                                                            B.department_name",
+                                               "JOIN" => array(
+                                                          array("department B","A.department_id = B.department_id","INNER")
+                                                         ),
+                                               "WHERE" => "A.deleted_on IS NULL AND 
+                                                           B.deleted_on IS NULL AND 
+                                                           (
+                                                            A.full_name LIKE '%$search%' OR
+                                                            A.employee_id LIKE '%$search%'
+                                                           )"
+                                              )
+                        );
+      }
+      $result = $this->Data_Access_Model->selectData($arrData);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getDetailEmployeeDataById(){
+    if(Main::isLogin()){
+      $employeeId = decodePassword($this->input->get("EMPLOYEEID"));
+      $arrData = array("employee" => array("COLUMN" => encodeMysqlValue("employee_id").",".
+                                                       encodeMysqlValue("department_id").","."
+                                                       number_id, 
+                                                       full_name,
+                                                       gender,
+                                                       DATE_FORMAT(birthday, '%d %M %Y') AS birthday,
+                                                       phone_number,
+                                                       other_phone_number,
+                                                       address,
+                                                       email,
+                                                       DATE_FORMAT(join_date, '%d %M %Y') AS join_date,
+                                                       picture,
+                                                       DATE_FORMAT(updated_on, '%d %M %T') AS updated_on",
+                                           "WHERE" => "employee_id = '$employeeId' AND 
+                                                       deleted_on IS NULL")
+                 );
+      $result = $this->Data_Access_Model->selectData($arrData);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function editEmployeeData(){
+    if(Main::isLogin()){
+      $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
+      $adminId            = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $departmentId       = decodePassword($this->input->post("DEPARTMENTID"));
+      $numberId           = $this->input->post("NUMBERID");
+      $fullName           = $this->input->post("FULLNAME");
+      $gender             = $this->input->post("GENDER");
+      $birthday           = $this->input->post("BIRTHDAY");
+      $phoneNumber        = $this->input->post("PHONENUMBER");
+      $otherPhoneNumber   = $this->input->post("OTHERPHONENUMBER");
+      $address            = $this->input->post("ADDRESS");
+      $email              = $this->input->post("EMAIL");
+      $joinDate           = $this->input->post("JOINDATE");
+      $picture            = $this->input->post("PICTURENAME");
+
+      if(empty($employeeId) || empty($departmentId) || empty($fullName) || 
+         empty($gender)     || empty($phoneNumber)  || empty($address)  || 
+         empty($joinDate)
+      ){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
+      }else{
+        $arrData = array("employee" => array("VALUES" => array(
+                                                          array("employee_id"         => $employeeId,
+                                                                "admin_id"            => $adminId,
+                                                                "department_id"       => $departmentId,
+                                                                "number_id"           => $numberId,
+                                                                "full_name"           => $fullName,
+                                                                "gender"              => $gender,
+                                                                "birthday"            => $birthday,
+                                                                "phone_number"        => $phoneNumber,
+                                                                "other_phone_number"  => $otherPhoneNumber,
+                                                                "address"             => $address,
+                                                                "email"               => $email,
+                                                                "join_date"           => $joinDate)
+                                                         )
+                                       )
+                );
+        $result = $this->Data_Access_Model->insertData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
                                   "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
     }
+  }
+
+  public function deleteEmployeeData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $employeeId = decodePassword($this->input->post("EMPLOYEEID"));
+
+      if(empty($employeeId)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
+      }else{
+        $arrData = array("employee" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                               "admin_id"   => $adminId),
+                                             "WHERE" => array("employee_id" => $employeeId)
+                                    )
+                );
+
+        $result = $this->Data_Access_Model->updateData($arrData);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
   }
 
   public function saveDepartmentData(){
@@ -642,13 +805,13 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
         }else{
-          $data = array("department" => array("VALUES" => array(
-                                                            array("admin_id"        => $adminId,
-                                                                  "department_name" => $departmentName)
-                                                          )
-                                        )
+          $arrData = array("department" => array("VALUES" => array(
+                                                              array("admin_id"        => $adminId,
+                                                                    "department_name" => $departmentName)
+                                                             )
+                                           )
                        );
-          $result = $this->Data_Access_Model->insertData($data);
+          $result = $this->Data_Access_Model->insertData($arrData);
         }
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -666,13 +829,23 @@ class Main extends CI_Controller {
   public function getAllDepartmentData(){
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
-        $arrParameter = array("department" => array("COLUMN" =>  encodeValueMysql("department_id").", 
-                                                                 ".encodeValueMysql("admin_id").", 
-                                                                 department_name, 
-                                                                 DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                     "WHERE"  => "deleted_on IS NULL")
-                        );
-        $result = $this->Data_Access_Model->selectData($arrParameter);
+        $search = $this->input->get("SEARCH");
+        if(empty($search)){
+          $arrData = array("department" => array("COLUMN" =>  encodeMysqlValue("department_id").", 
+                                                              ".encodeMysqlValue("admin_id").", 
+                                                              department_name, 
+                                                              DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                 "WHERE"  => "deleted_on IS NULL")
+                     );
+        }else{
+          $arrData = array("department" => array("COLUMN" =>  encodeMysqlValue("department_id").", 
+                                                              ".encodeMysqlValue("admin_id").", 
+                                                              department_name, 
+                                                              DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                 "WHERE"  => "deleted_on IS NULL AND department_name LIKE '%$search%'")
+                     );
+        }
+        $result = $this->Data_Access_Model->selectData($arrData);
       }else{
         $result = json_encode(array("CODE"      => 405,
                                     "MESSAGE"   => "Method Not Allowed",
@@ -696,13 +869,13 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
         }else{
-          $data = array("department" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
-                                                                "admin_id"   => $adminId),
-                                              "WHERE" => array("department_id" => decodePassword($departmentId))
+          $arrData = array("department" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                   "admin_id"   => $adminId),
+                                                 "WHERE" => array("department_id" => decodePassword($departmentId))
                                         )
                   );
 
-          $result = $this->Data_Access_Model->updateData($data);
+          $result = $this->Data_Access_Model->updateData($arrData);
         }
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -721,10 +894,14 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
         $departmentId = decodepassword($this->input->get("DEPARTMENTID"));
-        $arrParameter = array("department" => array("COLUMN" => "*",
-                                                     "WHERE" => "department_id = '$departmentId'")
+        $arrData = array("department" => array("COLUMN" => encodeMysqlValue("department_id").",".
+                                                           encodeMysqlValue("admin_id").",".
+                                                           "department_name,
+                                                            DATE_FORMAT(updated_on, '%d %M %Y %H:%i:%s') AS updated_on,
+                                                            deleted_on",
+                                               "WHERE" => "department_id = '$departmentId'")
                         );
-        $result = $this->Data_Access_Model->selectData($arrParameter);                      
+        $result = $this->Data_Access_Model->selectData($arrData);                      
       }else{
         $result = json_encode(array("CODE"      => 405,
                                     "MESSAGE"   => "Method Not Allowed",
@@ -750,12 +927,12 @@ class Main extends CI_Controller {
                                       "MESSAGE"   => "Bad Request",
                                       "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
         }else{
-          $arrParameter = array("department" => array("VALUES" => array("department_name" => $departmentName,
-                                                                        "admin_id"        => $adminId),
-                                                      "WHERE" => "department_id = '$departmentId'"
-                                                )
-                          );
-          $result = $this->Data_Access_Model->updateData($arrParameter);
+          $arrData = array("department" => array("VALUES" => array("department_name" => $departmentName,
+                                                                   "admin_id"        => $adminId),
+                                                 "WHERE" => "department_id = '$departmentId'"
+                                           )
+                     );
+          $result = $this->Data_Access_Model->updateData($arrData);
         }
       }else{
         $result = json_encode(array("CODE"      => 405,
@@ -781,14 +958,14 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
-        $arrParameter = array("package_categories" => array("VALUES" => array(
-                                                                          array("admin_id"                => $adminId,
-                                                                                "package_categories_name" => $packageCategoryName,
-                                                                                "information"             => $information)
-                                                                        )
-                                                      )
-                        );
-        $result = $this->Data_Access_Model->insertData($arrParameter);
+        $arrData = array("package_categories" => array("VALUES" => array(
+                                                                    array("admin_id"                => $adminId,
+                                                                          "package_categories_name" => $packageCategoryName,
+                                                                          "information"             => $information)
+                                                                   )
+                                                 )
+                   );
+        $result = $this->Data_Access_Model->insertData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -802,23 +979,23 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       $search = $this->input->get("SEARCH");
       if(empty($search)){
-        $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
-                                                                         package_categories_name,
-                                                                         information,
-                                                                         DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                            "WHERE" => "deleted_on IS NULL"
-                                                      )
-                        );
+        $arrData = array("package_categories" => array("COLUMN" => encodeMysqlValue("package_categories_id").", 
+                                                                   package_categories_name,
+                                                                   information,
+                                                                   DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                       "WHERE" => "deleted_on IS NULL"
+                                                 )
+                   );
       }else{
-        $arrParameter = array("package_categories" => array("COLUMN" => encodeValueMysql("package_categories_id").", 
-                                                                         package_categories_name,
-                                                                         information,
-                                                                         DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                            "WHERE" => "deleted_on IS NULL AND package_categories_name LIKE '%$search%'"
-                                                      )
-                        );
+        $arrData = array("package_categories" => array("COLUMN" => encodeMysqlValue("package_categories_id").", 
+                                                                   package_categories_name,
+                                                                   information,
+                                                                   DATE_FORMAT(updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                       "WHERE" => "deleted_on IS NULL AND package_categories_name LIKE '%$search%'"
+                                                 )
+                   );
       }
-      $result = $this->Data_Access_Model->selectData($arrParameter);
+      $result = $this->Data_Access_Model->selectData($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -830,11 +1007,11 @@ class Main extends CI_Controller {
   public function getDetailPackageCategoryDataById(){
     if(Main::isLogin()){
       $packageCategoryId = decodePassword($this->input->get("PACKAGECATEGORYID"));
-      $arrParameter = array("package_categories" => array("COLUMN" => "*",
-                                                          "WHERE" => "package_categories_id = '$packageCategoryId' AND 
-                                                                      deleted_on IS NULL")
-                      );
-      $result = $this->Data_Access_Model->selectData($arrParameter);
+      $arrData = array("package_categories" => array("COLUMN" => "*",
+                                                     "WHERE" => "package_categories_id = '$packageCategoryId' AND 
+                                                                 deleted_on IS NULL")
+                 );
+      $result = $this->Data_Access_Model->selectData($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -854,13 +1031,13 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
-        $arrParameter = array("package_categories" => array("VALUES" => array("admin_id"                => $adminId,
-                                                                            "package_categories_name" => $packageCategoryName,
-                                                                            "information"             => $information),
-                                                          "WHERE" => "package_categories_id = '$packageCategoryId'"
-                                                    )
-                      );
-        $result = $this->Data_Access_Model->updateData($arrParameter);
+        $arrData = array("package_categories" => array("VALUES" => array("admin_id"                => $adminId,
+                                                                         "package_categories_name" => $packageCategoryName,
+                                                                         "information"             => $information),
+                                                       "WHERE" => "package_categories_id = '$packageCategoryId'"
+                                                 )
+                   );
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -879,13 +1056,13 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
       }else{
-        $data = array("package_categories" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
-                                                                      "admin_id"   => $adminId),
-                                                    "WHERE" => array("package_categories_id" => $packageCategoryId)
-                                              )
-                );
+        $arrData = array("package_categories" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                         "admin_id"   => $adminId),
+                                                       "WHERE" => array("package_categories_id" => $packageCategoryId)
+                                                 )
+                   );
 
-        $result = $this->Data_Access_Model->updateData($data);
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -911,17 +1088,17 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
-        $arrParameter = array("internet_packages" => array("VALUES" => array(
-                                                                        array("admin_id"              => $adminId,
-                                                                              "package_categories_id" => $packageCategoryId,
-                                                                              "package_name"          => $packageName,
-                                                                              "speed"                 => $speed,
-                                                                              "price"                 => $price,
-                                                                              "information"           => $information)
-                                                                        )
-                                                     )
-                        );
-        $result = $this->Data_Access_Model->insertData($arrParameter);
+        $arrData = array("internet_packages" => array("VALUES" => array(
+                                                                    array("admin_id"              => $adminId,
+                                                                          "package_categories_id" => $packageCategoryId,
+                                                                          "package_name"          => $packageName,
+                                                                          "speed"                 => $speed,
+                                                                          "price"                 => $price,
+                                                                          "information"           => $information)
+                                                                  )
+                                                )
+                   );
+        $result = $this->Data_Access_Model->insertData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -936,40 +1113,40 @@ class Main extends CI_Controller {
       if(Main::isLogin()){
         $search = $this->input->get("SEARCH");
         if(empty($search)){
-          $arrParameter = array("internet_packages A" => array("COLUMN" => encodeValueMysql("A.package_id","package_id").", 
-                                                                           A.package_name,
-                                                                           A.speed,
-                                                                           A.price,
-                                                                           B.package_categories_name,
-                                                                           A.information,
-                                                                           DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                               "JOIN" => array(
-                                                                          array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
-                                                                         ),
-                                                               "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
-                                                        )
-                          );
+          $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
+                                                                      A.package_name,
+                                                                      A.speed,
+                                                                      A.price,
+                                                                      B.package_categories_name,
+                                                                      A.information,
+                                                                      DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                          "JOIN" => array(
+                                                                      array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                    ),
+                                                          "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
+                                                    )
+                     );
         }else{
-          $arrParameter = array("internet_packages A" => array("COLUMN" => encodeValueMysql("A.package_id","package_id").", 
-                                                                           A.package_name,
-                                                                           A.speed,
-                                                                           A.price,
-                                                                           B.package_categories_name,
-                                                                           A.information,
-                                                                           DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                              "JOIN" => array(
-                                                                         array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
-                                                                        ),
-                                                              "WHERE" => "A.deleted_on IS NULL AND 
-                                                                          B.deleted_on IS NULL AND 
-                                                                          (A.package_name LIKE '%$search%' OR
-                                                                           A.speed LIKE '%$search%' OR
-                                                                           B.package_categories_name LIKE '$search' OR
-                                                                          )"
-                                                        )
-                          );
+          $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
+                                                                      A.package_name,
+                                                                      A.speed,
+                                                                      A.price,
+                                                                      B.package_categories_name,
+                                                                      A.information,
+                                                                      DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                          "JOIN" => array(
+                                                                      array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                    ),
+                                                          "WHERE" => "A.deleted_on IS NULL AND 
+                                                                      B.deleted_on IS NULL AND 
+                                                                      (A.package_name LIKE '%$search%' OR
+                                                                       A.speed LIKE '%$search%' OR
+                                                                       B.package_categories_name LIKE '$search' OR
+                                                                      )"
+                                                    )
+                     );
         }
-        $result = $this->Data_Access_Model->selectData($arrParameter);
+        $result = $this->Data_Access_Model->selectData($arrData);
       }else{
         $result = json_encode(array("CODE"      => 403,
                                     "MESSAGE"   => "Forbidden",
@@ -986,11 +1163,19 @@ class Main extends CI_Controller {
   public function getDetailInternetPackageDataById(){
     if(Main::isLogin()){
       $internetPackageId = decodePassword($this->input->get("INTERNETPACKAGEID"));
-      $arrParameter = array("internet_packages" => array("COLUMN" => "*",
-                                                         "WHERE" => "package_id = '$internetPackageId' AND 
-                                                                     deleted_on IS NULL")
-                      );
-      $result = $this->Data_Access_Model->selectData($arrParameter);
+      $arrData = array("internet_packages" => array("COLUMN" => "admin_id,
+                                                                 deleted_on,
+                                                                 information,".
+                                                                 encodeMysqlValue("package_categories_id").",
+                                                                 package_id,
+                                                                 package_name,
+                                                                 price,
+                                                                 speed,
+                                                                 updated_on",
+                                                    "WHERE" => "package_id = '$internetPackageId' AND 
+                                                                deleted_on IS NULL")
+                 );
+      $result = $this->Data_Access_Model->selectData($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -1003,25 +1188,28 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
       $internetPackageId = decodePassword($this->input->post("INTERNETPACKAGEID"));
-      $packageName = $this->input->post("PACKAGENAME");
+      $packageCategoryId = decodePassword($this->input->post("PACKAGECATEGORYID"));
+      $packageName = $this->input->post("INTERNETPACKAGENAME");
       $speed = $this->input->post("SPEED");
       $price = $this->input->post("PRICE");
       $information = $this->input->post("INFORMATION");
 
-      if(empty($packageCategoryName)){
+      if(empty($packageCategoryId) || empty($packageName) ||
+         empty($speed)             || empty($price)
+      ){
         $result = json_encode(array("CODE"      => 400,
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Tidak Boleh Kosong!"));
       }else{
-        $arrParameter = array("internet_packages" => array("VALUES" => array("admin_id"                => $adminId,
-                                                                             "package_name"            => $packageName,
-                                                                             "speed"                   => $speed,
-                                                                             "price"                   => $price,
-                                                                             "information"             => $information),
-                                                           "WHERE" => "package_id = '$internetPackageId'"
-                                                    )
-                      );
-        $result = $this->Data_Access_Model->updateData($arrParameter);
+        $arrData = array("internet_packages" => array("VALUES" => array("admin_id"                => $adminId,
+                                                                        "package_name"            => $packageName,
+                                                                        "speed"                   => $speed,
+                                                                        "price"                   => $price,
+                                                                        "information"             => $information),
+                                                      "WHERE" => "package_id = '$internetPackageId'"
+                                                )
+                   );
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -1041,13 +1229,13 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
       }else{
-        $data = array("internet_packages" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
-                                                                      "admin_id"   => $adminId),
-                                                    "WHERE" => array("package_id" => $internetPackageId)
-                                             )
-                );
+        $arrData = array("internet_packages" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                        "admin_id"   => $adminId),
+                                                      "WHERE" => array("package_id" => $internetPackageId)
+                                                )
+                   );
 
-        $result = $this->Data_Access_Model->updateData($data);
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
@@ -1056,4 +1244,5 @@ class Main extends CI_Controller {
     }
     echo $result;
   }
+
 }

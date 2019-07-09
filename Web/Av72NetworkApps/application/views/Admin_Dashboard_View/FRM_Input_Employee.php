@@ -4,7 +4,7 @@
       <h3 class="box-title">Tambah Pegawai Baru</h3>
     </div>
     <div class="box-body">
-      <div class="col-md-9">
+      <div class="col-md-10">
         <div class="col-md-12">
           <div class="col-md-3">
             <label>ID. Pegawai</label>
@@ -96,7 +96,22 @@
           </div>
           <div class="col-md-8">
             <div class="form-group">
-              <input type="text" id="txtTelp" class="form-control" placeholder="Masukan No. Telepon / Ponsel">
+              <input type="text" id="txtPhone" class="form-control" placeholder="Masukan No. Telepon / Ponsel">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="col-md-3">
+            <label>No. Telp. / Ponsel Lainnya</label>
+            <!-- <label class="text-red">*</label> -->
+          </div>
+          <div class="col-md-1">
+            <label>:</label>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <input type="text" id="txtOtherPhone" class="form-control" placeholder="Masukan No. Telepon / Ponsel Lainnya">
             </div>
           </div>
         </div>
@@ -125,7 +140,7 @@
           </div>
           <div class="col-md-8">
             <div class="form-group">
-              <textarea id="txtAddress" class="form-control" placeholder="Masukan Alamat" rows="5" cols="80"></textarea>
+              <textarea id="txtAddress" class="form-control" placeholder="Masukan Alamat"></textarea>
             </div>
           </div>
         </div>
@@ -182,30 +197,29 @@
 
         <div class="col-md-9">
           <div class="pull-right">
-            <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary"><i class="fa fa-user-plus"></i> Tambah Baru</button>
+            <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary" onclick="saveEmployeeData();" data-onclick="saveEmployeeData();"><i class="fa fa-user-plus"></i> Tambah Baru</button>
             <button type="button" class="btn btn-md btn-flat btn-danger"><i class="fa fa-refresh"></i> Batal</button>
           </div>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <div style="float:left; margin-right:10px;">
-          <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" class="img-responsive" width="500px" height="500px">
+          <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" class="img-responsive" width="138px" height="138px">
         </div>
       </div>
 
       <div class="col-md-12">
         <fieldset>
           <legend>Data Pegawai</legend>
-          <table class="table table-responsive table-striped" id="clientListTable">
+          <table class="table table-responsive table-striped" id="employeeListTable">
             <thead>
               <th>ID. Pegawai</th>
               <th>No. KTP</th>
               <th>Nama Lengkap</th>
               <th>Jenis Kelamin</th>
-              <th>Tanggal Lahir</th>
               <th>No.Telp. / Ponsel</th>
               <th>E-mail</th>
-              <th>Alamat</th>
+              <th>Departemen</th>
               <th>Pilihan</th>
             </thead>
             <tbody>

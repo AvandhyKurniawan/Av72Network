@@ -69,6 +69,10 @@
           INTERNETPACKAGEDATA = getAllInternetPackageData();
         }
 
+        if($("#employeeListTable").length > 0){
+          EMPLOYEEDATA = getAllEmployeeData();
+        }
+
         if($("#txtEmployeeId").length > 0){
           getGenerateEmployeeCode("#txtEmployeeId");
         }
@@ -77,18 +81,26 @@
           getGenerateCustomerCode("#txtClientId");
         }
 
-        if($("#txtCategoryInformation").length > 0){
-          CKEDITOR.replace("txtCategoryInformation");
-        }
-
         if($("#cmbType").length > 0){
           getAllPackageCategoryData_Select();
+        }
+
+        if($("#cmbDepartment").length > 0){
+          getAllEmployeeData_Select();
+        }
+
+        if($("#txtCategoryInformation").length > 0){
+          CKEDITOR.replace("txtCategoryInformation");
         }
 
         if($("#txtPackageInformation").length > 0){
           CKEDITOR.replace("txtPackageInformation");
         }
         
+        if($("#txtAddress").length > 0){
+          CKEDITOR.replace("txtAddress");
+        }
+
       });
     </script>
 
@@ -463,6 +475,65 @@
           }
         });
       }
+
+      function saveEmployeeData(){
+        var employeeId = $("#txtEmployeeId").val();
+        var numberId = $("#txtNumberId").val();
+        var fullName = $("#txtFullName").val().replace(/,/gi,"");
+        var gender = $("#cmbGender").val();
+        var birthday = $("#txtBirthday").val();
+        var phoneNumber = $("#txtPhone").val();
+        var otherPhoneNumber = $("#txtOtherPhone").val();
+        var email = $("#txtEmail").val();
+        var address = CKEDITOR.instances["txtAddress"].getData();
+        var photoName = $("#filePhoto").val();
+        var joinDate = $("#txtJoinDate").val();
+        var department = $("#cmbDepartment").val();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/saveEmployeeData'); ?>",
+          dataType : "JSON",
+          data : {
+            EMPLOYEEID            : _encodePassword(employeeId),
+            DEPARTMENTID          : department,
+            NUMBERID              : numberId,
+            FULLNAME              : fullName,
+            GENDER                : gender,
+            BIRTHDAY              : birthday,
+            PHONENUMBER           : phoneNumber,
+            OTHERPHONENUMBER      : otherPhoneNumber,
+            ADDRESS               : address,
+            EMAIL                 : email,
+            JOINDATE              : joinDate,
+            PICTURENAME           : photoName,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              EMPLOYEEDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
     </script>
     <!-- ========== SAVE FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -491,6 +562,7 @@
             var result = alert(response);
             if(result){
               resetForm();
+              $("#lblWarningUconfirm").removeClass("in");
             }
           },
           error : function(response){
@@ -567,6 +639,52 @@
             if(result){
               resetForm();
               PACKAGECATEGORYDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
+
+      function editInternetPackageData(param){
+        var internetPackageName = $("#txtInternetPackage").val();
+        var speed = $("#txtSpeed").val();
+        var price = $("#txtHarga").val().replace(/,/gi,"");
+        var type = $("#cmbType").val();
+        var information = CKEDITOR.instances["txtPackageInformation"].getData();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/editInternetPackageData'); ?>",
+          dataType : "JSON",
+          data : {
+            INTERNETPACKAGEID     : param,
+            INTERNETPACKAGENAME   : internetPackageName,
+            SPEED                 : speed,
+            PRICE                 : price,
+            PACKAGECATEGORYID     : type,
+            INFORMATION           : information,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              INTERNETPACKAGEDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -700,6 +818,50 @@
                       if(result){
                         resetForm();
                         PACKAGECATEGORYDATA.ajax.reload(null, false);
+                      }
+                    },
+                    error : function(response){
+                      var param = {
+                        CODE : response.status,
+                        MESSAGE : response.statusText,
+                        RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                      }
+                      alert(param);
+                    }
+                  })
+                }
+              },
+              cancelAction: {
+                text: 'Batal'
+              }
+            }
+        });
+      }
+
+      function deleteInternetPackageData(param){
+        $.confirm({
+          type: "red",
+          theme: "material",
+          title: 'Hapus Data Kategori Paket?',
+          content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
+          autoClose: 'cancelAction|10000',
+          buttons: {
+              deleteUser: {
+                text: 'Hapus Data',
+                action: function () {
+                  $.ajax({
+                    type : "POST",
+                    url : "<?= base_url('_administrator/deleteInternetPackageData'); ?>",
+                    dataType : "JSON",
+                    data : {
+                      INTERNETPACKAGEID : param,
+                      <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+                    },
+                    success : function(response){
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        INTERNETPACKAGEDATA.ajax.reload(null, false);
                       }
                     },
                     error : function(response){
@@ -940,7 +1102,7 @@
         var result = $('#internetPackageListTable').DataTable({
                       ajax: {
                         url     : "<?= base_url('_administrator/getAllInternetPackageData'); ?>",
-                        dataSrc : "RESPONSE.internet_packages A",
+                        dataSrc : "RESPONSE.internet_packages",
                         error : function(response){
                           var param = {
                             CODE : response.status,
@@ -951,23 +1113,151 @@
                         }
                       },
                       columns:[
-                        {data : "package_id"},
+                        {data : "package_id", width : "25px"},
                         {data : "package_name"},
                         {data : "speed"},
-                        {data : "price"},
+                        {data : "price", width: "100px"},
                         {data : "package_categories_name"},
                         {data : "information"},
+                        {data : "updated_on"},
                         {data : "package_id"}
                       ],
                       fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
-                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        $("td:eq(0)", AvRow).text(++AvDisplayIndex);
+                        $("td:eq(3)", AvRow).text("Rp. "+parseFloat(AvData["price"]).toLocaleString());
                         var buttons = "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailInternetPackageDataById('"+AvData["package_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
                               "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteInternetPackageData('"+AvData["package_id"]+"')><i class='fa fa-trash'></i></button>";
-                        $("td:eq(6)",AvRow).html(buttons);
+                        $("td:eq(7)",AvRow).html(buttons);
                       }
                     });
 
         return result;
+      }
+
+      function getDetailInternetPackageDataById(param, param2=false){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('_administrator/getDetailInternetPackageDataById'); ?>",
+          dataType : "JSON",
+          data : {
+            INTERNETPACKAGEID : param
+          },
+          success : function(response){
+            if(param2){
+              $.each(response.RESPONSE.internet_packages, function(AvIndex, AvValue){
+                $("#txtInternetPackage").val(AvValue.package_name);
+                $("#txtSpeed").val(AvValue.speed);
+                $("#txtHarga").val(AvValue.price);
+                $("#cmbType").val(AvValue.package_categories_id);
+                CKEDITOR.instances["txtPackageInformation"].setData(AvValue.information);
+              });
+              var editFunction = "editInternetPackageData('"+param+"')";
+              $("#btnAction").attr("onclick",editFunction)
+                             .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                                   "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getAllEmployeeData(){
+        var result = $('#employeeListTable').DataTable({
+                      scrollX: true,
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllEmployeeData'); ?>",
+                        dataSrc : "RESPONSE.employee",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "employee_id"},
+                        {data : "number_id"},
+                        {data : "full_name"},
+                        {data : "gender"},
+                        {data : "phone_number"},
+                        {data : "email"},
+                        {data : "department_name"},
+                        {data : "employee_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailEmployeeDataById('"+AvData["employee_id"]+"',"+false+")><i class='fa fa-info'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+AvData["employee_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteEmployeeData('"+AvData["employee_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(7)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
+      }
+
+      function getAllEmployeeData_Select(param=false){
+        if(param){
+          $("#cmbDepartment").select2({
+            placeholder : "Pilih Departemen",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.department, function(item){
+                    return{
+                      text:item.department_id,
+                      id:item.department_name
+                    }
+                  })
+                };
+              }
+            }
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $("#cmbDepartment").empty();
+              $("#cmbDepartment").append("<option>Pilih Departemen</option>");
+              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
+                $("#cmbDepartment").append(
+                  "<option value='"+AvValue.department_id+"'>"+AvValue.department_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
       }
     </script>
     <!-- ========== GET DATA FUNCTION FINISH ========== -->

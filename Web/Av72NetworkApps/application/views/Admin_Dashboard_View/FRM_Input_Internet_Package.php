@@ -80,7 +80,7 @@
 
       <div class="col-md-9">
         <div class="pull-right">
-          <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary" onclick="saveInternetPackageData();" data-onclick="saveDepartmentData();"><i class="fa fa-plus"></i> Tambah Baru</button>
+          <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary" onclick="saveInternetPackageData();" data-onclick="saveInternetPackageData();"><i class="fa fa-plus"></i> Tambah Baru</button>
           <button type="button" class="btn btn-md btn-flat btn-danger" onclick="resetForm();"><i class="fa fa-refresh"></i> Batal</button>
         </div>
       </div>
@@ -96,6 +96,7 @@
                 <th>Harga</th>
                 <th>Tipe</th>
                 <th>Informasi</th>
+                <th>Diperbarui</th>
                 <th>Pilihan</th>
               </thead>
               <tbody>
