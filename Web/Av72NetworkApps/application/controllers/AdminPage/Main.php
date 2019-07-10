@@ -399,6 +399,45 @@ class Main extends CI_Controller {
     }
   }
 
+  public function uploadPhoto(){
+    if(Main::isLogin()){
+      if(isset($_FILES["FILEPHOTO"])){
+        $fileName = str_replace(array(" ","/"), "_", $_FILES["FILEPHOTO"]["name"]);
+        if(!empty($fileName)){
+          $configImage = array("upload_path"    => "./assets/images/upload/profile-images/",
+                               "allowed_types"  => "jpg|jpeg|png|gif",
+                               "overwrite"      => TRUE,
+                               "max_size"       => 2048,
+                               "file_name"      => $fileName);
+          $this->load->library("upload", $configImage);
+          $this->upload->initialize($configImage);
+          if($this->upload->do_upload("FILEPHOTO")){
+            $result = json_encode(array("CODE"      => 200,
+                                        "MESSAGE"   => "Success",
+                                        "RESPONSE"  => "Foto Anda Berhasil Di Unggah."));
+          }else{
+            $result = json_encode(array("CODE"      => 500,
+                                        "MESSAGE"   => "Internal Server Error",
+                                        "RESPONSE"  => "Maaf, Foto Anda Gagal Di Unggah."));
+          }
+        }else{
+          $result = json_encode(array("CODE"      => 400,
+                                      "MESSAGE"   => "Bad Request",
+                                      "RESPONSE"  => "Maaf, Nama File Anda Tidak Sesuai!"));
+        }
+      }else{
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, File Gambar Tidak Boleh Kosong!"));
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
   public function saveAdministratorData(){
     if(Main::isLogin()){
       if($this->session->userdata("Av72Net_Role") == "ROOT"){
@@ -620,7 +659,8 @@ class Main extends CI_Controller {
                                                                 "other_phone_number"  => $otherPhoneNumber,
                                                                 "address"             => $address,
                                                                 "email"               => $email,
-                                                                "join_date"           => $joinDate)
+                                                                "join_date"           => $joinDate,
+                                                                "picture"             => $picture)
                                                           )
                                        )
                 );
@@ -694,22 +734,30 @@ class Main extends CI_Controller {
 
   public function getDetailEmployeeDataById(){
     if(Main::isLogin()){
-      $employeeId = decodePassword($this->input->get("EMPLOYEEID"));
-      $arrData = array("employee" => array("COLUMN" => encodeMysqlValue("employee_id").",".
-                                                       encodeMysqlValue("department_id").","."
-                                                       number_id, 
-                                                       full_name,
-                                                       gender,
-                                                       DATE_FORMAT(birthday, '%d %M %Y') AS birthday,
-                                                       phone_number,
-                                                       other_phone_number,
-                                                       address,
-                                                       email,
-                                                       DATE_FORMAT(join_date, '%d %M %Y') AS join_date,
-                                                       picture,
-                                                       DATE_FORMAT(updated_on, '%d %M %T') AS updated_on",
-                                           "WHERE" => "employee_id = '$employeeId' AND 
-                                                       deleted_on IS NULL")
+      $employeeId = $this->input->get("EMPLOYEEID");
+      $arrData = array("employee A" => array("COLUMN" => "A.employee_id,".
+                                                          encodeMysqlValue("A.department_id","department_id").","."
+                                                          A.number_id, 
+                                                          A.full_name,
+                                                          A.gender,
+                                                          A.birthday,
+                                                          DATE_FORMAT(A.birthday, '%d %M %Y') AS formated_birthday,
+                                                          A.phone_number,
+                                                          A.other_phone_number,
+                                                          A.address,
+                                                          A.email,
+                                                          A.join_date,
+                                                          DATE_FORMAT(A.join_date, '%d %M %Y') AS formated_join_date,
+                                                          A.picture,
+                                                          A.updated_on,
+                                                          DATE_FORMAT(A.updated_on, '%d %M %Y %H:%i:%s') AS formated_updated_on,
+                                                          B.department_name",
+                                             "JOIN" => array(
+                                                        array("department B","A.department_id = B.department_id","INNER")
+                                                       ),
+                                             "WHERE" => "A.employee_id = '$employeeId' AND 
+                                                         A.deleted_on IS NULL AND 
+                                                         B.deleted_on IS NULL")
                  );
       $result = $this->Data_Access_Model->selectData($arrData);
     }else{
@@ -772,7 +820,7 @@ class Main extends CI_Controller {
   public function deleteEmployeeData(){
     if(Main::isLogin()){
       $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
-      $employeeId = decodePassword($this->input->post("EMPLOYEEID"));
+      $employeeId = $this->input->post("EMPLOYEEID");
 
       if(empty($employeeId)){
         $result = json_encode(array("CODE"      => 400,
@@ -1244,5 +1292,4 @@ class Main extends CI_Controller {
     }
     echo $result;
   }
-
 }

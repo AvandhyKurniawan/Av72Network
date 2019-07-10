@@ -25,9 +25,9 @@
         <img src="<?php echo base_url('assets/images/Logo_Av-72_Network2.png'); ?>" width="300px" style="margin-top:10px">
       </div>
       <div class="login-box-body">
-        <div class="login-box-msg">
+        <!-- <div class="login-box-msg">
           <img src="<?php echo base_url('assets/images/avatar_2x.png'); ?>" class="img-circle" width="80px" height="80px;">
-        </div>
+        </div> -->
         <form class="" action="#" method="POST">
           <div class="form-group has-feedback">
             <input type="text" id="txtUname" class="form-control" placeholder="Nama Pengguna">

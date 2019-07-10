@@ -45,7 +45,7 @@
     			autoclose: true,
     			todayHighlight: true
         });
-        
+
         $(".currency").inputmask("decimal",{
           rightAlign: false,
           groupSeparator: ",",
@@ -96,7 +96,7 @@
         if($("#txtPackageInformation").length > 0){
           CKEDITOR.replace("txtPackageInformation");
         }
-        
+
         if($("#txtAddress").length > 0){
           CKEDITOR.replace("txtAddress");
         }
@@ -145,6 +145,7 @@
         $(".form-control").val("");
         $("select.form-control").prop("selectedIndex",0);
         $(".date").datepicker("setDate", null);
+        $(".profileImage").attr("src","<?= base_url('assets/images/avatar_2x.png'); ?>");
         for (instance in CKEDITOR.instances) {
           var name = CKEDITOR.instances[instance].name;
           CKEDITOR.instances[name].setData("");
@@ -262,7 +263,7 @@
             }else{
               $("#lblWarningUconfirm").removeClass("in");
             }
-            
+
           }
         }else{
           console.log(result);
@@ -297,6 +298,40 @@
             $(param).val(response.RESPONSE.registration_client.RESULTCODE);
           },
           error : function(respose){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          }
+        });
+      }
+
+      function previewImage(param, param2) {
+        if (param.files && param.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $(param2).attr('src', e.target.result);
+          }
+          reader.readAsDataURL(param.files[0]);
+        }else{
+          $(param2).attr('src', "<?= base_url('assets/images/avatar_2x.png'); ?>");
+        }
+      }
+
+      function uploadPhoto(param){
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/uploadPhoto'); ?>",
+          dataType : "JSON",
+          contentType : false,
+          processData : false,
+          data : param,
+          success : function(response){
+            alert(response);
+          },
+          error : function(response){
             var data = {
               CODE : response.status,
               MESSAGE : response.statusText,
@@ -477,18 +512,18 @@
       }
 
       function saveEmployeeData(){
-        var employeeId = $("#txtEmployeeId").val();
-        var numberId = $("#txtNumberId").val();
-        var fullName = $("#txtFullName").val().replace(/,/gi,"");
-        var gender = $("#cmbGender").val();
-        var birthday = $("#txtBirthday").val();
-        var phoneNumber = $("#txtPhone").val();
+        var employeeId       = $("#txtEmployeeId").val();
+        var numberId         = $("#txtNumberId").val();
+        var fullName         = $("#txtFullName").val();
+        var gender           = $("#cmbGender").val();
+        var birthday         = $("#txtBirthday").val();
+        var phoneNumber      = $("#txtPhone").val();
         var otherPhoneNumber = $("#txtOtherPhone").val();
-        var email = $("#txtEmail").val();
-        var address = CKEDITOR.instances["txtAddress"].getData();
-        var photoName = $("#filePhoto").val();
-        var joinDate = $("#txtJoinDate").val();
-        var department = $("#cmbDepartment").val();
+        var email            = $("#txtEmail").val();
+        var address          = CKEDITOR.instances["txtAddress"].getData();
+        var photoName        = $("#filePhoto").val().replace(/.*(\/|\\)/, '').replace(/ |\/|\\/gi,"_");
+        var joinDate         = $("#txtJoinDate").val();
+        var department       = $("#cmbDepartment").val();
 
         $.ajax({
           type : "POST",
@@ -516,7 +551,12 @@
           success : function(response){
             var result = alert(response);
             if(result){
+              var formData = new FormData();
+              formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
+              formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
+              uploadPhoto(formData);
               resetForm();
+              getGenerateEmployeeCode('#txtEmployeeId');
               EMPLOYEEDATA.ajax.reload(null, false);
             }
           },
@@ -701,6 +741,10 @@
           }
         });
       }
+
+      function editEmployeeData(param){
+
+      }
     </script>
     <!-- ========== EDIT FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -881,12 +925,57 @@
             }
         });
       }
+
+      function deleteEmployeeData(param){
+        $.confirm({
+          type: "red",
+          theme: "material",
+          title: 'Hapus Data Pegawai?',
+          content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
+          autoClose: 'cancelAction|10000',
+          buttons: {
+              deleteUser: {
+                text: 'Hapus Data',
+                action: function () {
+                  $.ajax({
+                    type : "POST",
+                    url : "<?= base_url('_administrator/deleteEmployeeData'); ?>",
+                    dataType : "JSON",
+                    data : {
+                      EMPLOYEEID : param,
+                      <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+                    },
+                    success : function(response){
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        getGenerateEmployeeCode('#txtEmployeeId');
+                        EMPLOYEEDATA.ajax.reload(null, false);
+                      }
+                    },
+                    error : function(response){
+                      var param = {
+                        CODE : response.status,
+                        MESSAGE : response.statusText,
+                        RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                      }
+                      alert(param);
+                    }
+                  })
+                }
+              },
+              cancelAction: {
+                text: 'Batal'
+              }
+            }
+        });
+      }
     </script>
     <!-- ========== DELETE FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
     <!-- ========== GET DATA FUNCTION START ========== -->
     <script type="text/javascript">
-      function getAllAdministratorData(){        
+      function getAllAdministratorData(){
         var result = $('#administratorListTable').DataTable({
                       ajax: {
                         url     : "<?= base_url('_administrator/getAllAdministratorData'); ?>",
@@ -976,7 +1065,7 @@
             }
             alert(param);
           }
-        });        
+        });
       }
 
       function getAllPackageCategoryData(){
@@ -1258,6 +1347,131 @@
             }
           });
         }
+      }
+
+      function getDetailEmployeeDataById(param, param2=false){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('_administrator/getDetailEmployeeDataById'); ?>",
+          dataType : "JSON",
+          data : {
+            EMPLOYEEID : param
+          },
+          success : function(response){
+            if(param2){
+              $.each(response.RESPONSE.employee, function(AvIndex, AvValue){
+                if(AvValue.picture == null){
+                  var pictureUrl = "<?= base_url('assets/images/avatar_2x.png'); ?>";
+                }else{
+                  var pictureUrl = "<?= base_url('assets/images/upload/profile-images/'); ?>"+AvValue.picture;
+                }
+                $("#txtEmployeeId").val(AvValue.employee_id);
+                $("#txtNumberId").val(AvValue.number_id);
+                $("#txtFullName").val(AvValue.full_name);
+                $("#cmbGender").val(AvValue.gender);
+                $("#txtBirthday").val(AvValue.birthday);
+                $("#txtPhone").val(AvValue.phone_number);
+                $("#txtOtherPhone").val(AvValue.other_phone_number);
+                $("#txtEmail").val(AvValue.email);
+                CKEDITOR.instances["txtAddress"].setData(AvValue.address);
+                $("#txtJoinDate").val(AvValue.join_date);
+                $("#cmbDepartment").val(AvValue.department_id);
+                $("#profileImage").attr("src",pictureUrl);
+              });
+              var editFunction = "editEmployeeData('"+param+"')";
+              $("#btnAction").attr("onclick",editFunction)
+                             .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                                   "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+            }else{
+              $("#modalContentContainer").empty();
+              $.each(response.RESPONSE.employee, function(AvIndex, AvValue){
+                if(AvValue.picture == null){
+                  var pictureUrl = "<?= base_url('assets/images/avatar_2x.png'); ?>";
+                }else{
+                  var pictureUrl = "<?= base_url('assets/images/upload/profile-images/'); ?>"+AvValue.picture;
+                }
+                $("#modalContentContainer").append(
+                  "<div class='col-md-10'>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>ID. Pegawai</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.employee_id+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. KTP</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.number_id+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Nama Lengkap</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.full_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Jenis Kelamin</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.gender+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Tgl.Lahir</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formated_birthday+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Telp / Ponsel</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.phone_number+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Telp. / Ponsel Lainnya</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.other_phone_number+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>E-mail</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.email+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Alamat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.address+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Tanggal Masuk</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formated_join_date+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Departemen</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.department_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Diperbarui Pada</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formated_updated_on+"</div>"+
+                    "</div>"+
+                  "</div>"+
+                    "<div class='col-md-2'>"+
+                      "<div style='float:left; margin-right:10px;'>"+
+                        "<img src='"+pictureUrl+"' class='img-responsive' width='138px' height='138px'>"+
+                      "</div>"+
+                    "</div>"
+                );
+              });
+              $("#modalDetailData").modal("show");
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
       }
     </script>
     <!-- ========== GET DATA FUNCTION FINISH ========== -->

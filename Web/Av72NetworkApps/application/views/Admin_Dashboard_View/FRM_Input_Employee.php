@@ -154,7 +154,7 @@
           </div>
           <div class="col-md-8">
             <div class="form-group">
-              <input type="file" id="filePhoto" class="form-control" accept="image/jpeg,image/x-png">
+              <input type="file" id="filePhoto" class="form-control" onchange="previewImage(this, '#profileImage');" accept="image/jpeg,image/x-png,image/gif">
             </div>
           </div>
         </div>
@@ -198,13 +198,13 @@
         <div class="col-md-9">
           <div class="pull-right">
             <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary" onclick="saveEmployeeData();" data-onclick="saveEmployeeData();"><i class="fa fa-user-plus"></i> Tambah Baru</button>
-            <button type="button" class="btn btn-md btn-flat btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+            <button type="button" class="btn btn-md btn-flat btn-danger" onclick="resetForm(); getGenerateEmployeeCode('#txtEmployeeId');"><i class="fa fa-refresh"></i> Batal</button>
           </div>
         </div>
       </div>
       <div class="col-md-2">
         <div style="float:left; margin-right:10px;">
-          <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" class="img-responsive" width="138px" height="138px">
+          <img src="<?= base_url('assets/images/avatar_2x.png'); ?>" id="profileImage" class="img-responsive profileImage" width="138px" height="138px">
         </div>
       </div>
 
@@ -229,6 +229,25 @@
         </fieldset>
       </div>
 
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalDetailData" role="dialog" tabindex="-1" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal" data-target="#modalDetailData">&times</button>
+          <h4 class="modal-title">Detail Data</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div id="modalContentContainer"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
     </div>
   </div>
 </div>
