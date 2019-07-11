@@ -792,29 +792,29 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
       }else{
-        $arrData = array("employee" => array("VALUES" => array(
-                                                          array("employee_id"         => $employeeId,
-                                                                "admin_id"            => $adminId,
-                                                                "department_id"       => $departmentId,
-                                                                "number_id"           => $numberId,
-                                                                "full_name"           => $fullName,
-                                                                "gender"              => $gender,
-                                                                "birthday"            => $birthday,
-                                                                "phone_number"        => $phoneNumber,
-                                                                "other_phone_number"  => $otherPhoneNumber,
-                                                                "address"             => $address,
-                                                                "email"               => $email,
-                                                                "join_date"           => $joinDate)
-                                                         )
+        $arrData = array("employee" => array("VALUES" => array("admin_id"            => $adminId,
+                                                               "department_id"       => $departmentId,
+                                                               "number_id"           => $numberId,
+                                                               "full_name"           => $fullName,
+                                                               "gender"              => $gender,
+                                                               "birthday"            => $birthday,
+                                                               "phone_number"        => $phoneNumber,
+                                                               "other_phone_number"  => $otherPhoneNumber,
+                                                               "address"             => $address,
+                                                               "email"               => $email,
+                                                               "join_date"           => $joinDate,
+                                                               "picture"             => $picture),
+                                             "WHERE" => "employee_id = '$employeeId'"
                                        )
                 );
-        $result = $this->Data_Access_Model->insertData($arrData);
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
                                   "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
     }
+    echo $result;
   }
 
   public function deleteEmployeeData(){

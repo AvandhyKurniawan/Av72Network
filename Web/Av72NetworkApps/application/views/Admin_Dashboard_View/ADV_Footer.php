@@ -743,7 +743,67 @@
       }
 
       function editEmployeeData(param){
+        var employeeId       = $("#txtEmployeeId").val();
+        var numberId         = $("#txtNumberId").val();
+        var fullName         = $("#txtFullName").val();
+        var gender           = $("#cmbGender").val();
+        var birthday         = $("#txtBirthday").val();
+        var phoneNumber      = $("#txtPhone").val();
+        var otherPhoneNumber = $("#txtOtherPhone").val();
+        var email            = $("#txtEmail").val();
+        var address          = CKEDITOR.instances["txtAddress"].getData();
+        var photoName        = $("#filePhoto").val().replace(/.*(\/|\\)/, '').replace(/ |\/|\\/gi,"_");
+        var joinDate         = $("#txtJoinDate").val();
+        var department       = $("#cmbDepartment").val();
 
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/editEmployeeData'); ?>",
+          dataType : "JSON",
+          data : {
+            EMPLOYEEID            : _encodePassword(employeeId),
+            DEPARTMENTID          : department,
+            NUMBERID              : numberId,
+            FULLNAME              : fullName,
+            GENDER                : gender,
+            BIRTHDAY              : birthday,
+            PHONENUMBER           : phoneNumber,
+            OTHERPHONENUMBER      : otherPhoneNumber,
+            ADDRESS               : address,
+            EMAIL                 : email,
+            JOINDATE              : joinDate,
+            PICTURENAME           : photoName,
+            <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              var formData = new FormData();
+              formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
+              formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
+              uploadPhoto(formData);
+              resetForm();
+              getGenerateEmployeeCode('#txtEmployeeId');
+              EMPLOYEEDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
       }
     </script>
     <!-- ========== EDIT FUNCTION FINISH ========== -->
