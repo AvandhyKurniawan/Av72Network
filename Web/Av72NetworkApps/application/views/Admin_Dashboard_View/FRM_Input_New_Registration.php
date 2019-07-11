@@ -7,11 +7,12 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>No. Registrasi</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <input type="text" id="txtClientId" class="form-control" placeholder="Auto Generate" readonly>
           </div>
@@ -21,11 +22,12 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Nama Lengkap</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <input type="text" id="txtFullName" class="form-control" placeholder="Masukan Nama Lengkap Pelanggan">
           </div>
@@ -35,11 +37,12 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Jenis Kelamin</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="form-group">
             <select class="form-control" id="cmbGender">
               <option value="Pria">Pria</option>
@@ -56,7 +59,7 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div class="form-group">
             <div class="input-group date">
               <input type="text" id="txtBirthday" class="form-control" placeholder="Pilih Tanggal Lahir" readonly>
@@ -71,11 +74,12 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>No. Telp. / Ponsel</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <input type="text" id="txtTelp" class="form-control" placeholder="Masukan No. Telepon / Ponsel Pelanggan">
           </div>
@@ -89,7 +93,7 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <input type="text" id="txtTelpLain" class="form-control" placeholder="Masukan No. Telepon / Ponsel Pelanggan Lain">
           </div>
@@ -103,7 +107,7 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
             <input type="text" id="txtEmail" class="form-control" placeholder="Masukan E-mail Pelanggan">
           </div>
@@ -113,11 +117,12 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Alamat</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="form-group">
             <textarea id="txtAddress" class="form-control" placeholder="Masukan Alamat Pelanggan" rows="5" cols="80"></textarea>
           </div>
@@ -127,6 +132,7 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Paket Internet</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
@@ -142,12 +148,28 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
-          <label>Tanggal Registrasi</label>
+          <label>Harga Paket Internet</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
         <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" class="form-control currency" id="txtPrice" placeholder="Harga Paket Internet" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Tanggal Registrasi</label>
+          <label class="text-red">*</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-3">
           <div class="form-group">
             <div class="input-group date">
               <input type="text" id="txtRegistrationDate" class="form-control" placeholder="Pilih Tanggal Registrasi" readonly>
@@ -162,13 +184,14 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Biaya Registrasi</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="form-group">
-            <input type="text" id="txtRegistrationFee" class="form-control number" placeholder="Masukan Biaya Registrasi">
+            <input type="text" id="txtRegistrationFee" class="form-control currency" placeholder="Masukan Biaya Registrasi">
           </div>
         </div>
       </div>
@@ -176,13 +199,14 @@
       <div class="col-md-12">
         <div class="col-md-2">
           <label>Sales</label>
+          <label class="text-red">*</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <select class="form-control" id="cmbSales">
+            <select class="form-control" id="cmbEmployee">
 
             </select>
           </div>
@@ -196,7 +220,7 @@
         <div class="col-md-1">
           <label>:</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="form-group">
             <textarea id="txtRegistrationInformation" class="form-control" rows="5" cols="80" placeholder="Masukan Keterangan Jika Status Tunda / Batal"></textarea>
           </div>
@@ -206,21 +230,19 @@
       <div class="col-md-9">
         <div class="pull-right">
           <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary"><i class="fa fa-plus"></i> Tambah Baru</button>
-          <button type="button" class="btn btn-md btn-flat btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+          <button type="button" class="btn btn-md btn-flat btn-danger" onclick="resetForm();"><i class="fa fa-refresh"></i> Batal</button>
         </div>
       </div>
       <div class="col-md-12">
         <fieldset>
           <legend>Daftar Pelanggan</legend>
           <div class="col-md-12">
-            <table class="table table-responsive table-striped" id="administratorListTable">
+            <table class="table table-responsive table-striped" id="customerListTable">
               <thead>
                 <th width="1%">No.</th>
                 <th>Nama Pelanggan</th>
                 <th>Nama Paket</th>
                 <th>Tanggal Registrasi</th>
-                <th>Pajak</th>
-                <th>Selesai Masa Percobaan</th>
                 <th>Biaya Registrasi</th>
                 <th>Status</th>
                 <th>Keterangan</th>

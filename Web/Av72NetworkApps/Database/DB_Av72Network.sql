@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 10, 2019 at 04:24 PM
+-- Generation Time: Jul 11, 2019 at 04:25 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,7 +44,7 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-10 16:01:01', NULL),
+(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-11 15:56:55', NULL),
 (6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
 (10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');
@@ -68,7 +68,7 @@ CREATE TABLE `client_registration` (
   `email` varchar(50) DEFAULT NULL,
   `address` text NOT NULL,
   `registration_date` date NOT NULL,
-  `registration_status` enum('PENDING','CANCELED','ON SCHEDULED','ON PROCESS','HOLD','REGISTERED') DEFAULT NULL,
+  `registration_status` enum('PENDING','CANCELED','ON SCHEDULED','ON PROCESS','HOLD','REGISTERED') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'PENDING',
   `registration_fee` decimal(15,2) NOT NULL DEFAULT '0.00',
   `monthly_payment` decimal(15,2) NOT NULL DEFAULT '0.00',
   `information` text,
@@ -143,10 +143,7 @@ CREATE TABLE `employee` (
 --
 
 INSERT INTO `employee` (`employee_id`, `admin_id`, `department_id`, `number_id`, `full_name`, `gender`, `birthday`, `phone_number`, `other_phone_number`, `address`, `email`, `join_date`, `picture`, `deleted_on`) VALUES
-('19070001', 1, 1, '3603180702970009', 'Avandhy Kurniawan', 'Pria', '1997-02-07', '081287505145', '', '<p>Perum Bukit Tiara Blok R4 No. 3, Rt. 041, Rw. 006, Kel. Pasir Jaya, Kec. Cikupa, Kab. Tangerang.</p>\n', 'avandhykurniawan@gmail.com', '2015-01-01', 'moon.png', NULL),
-('19070002', 1, 2, 'sdfdf', 'fsdfsdf', 'Pria', '1994-03-03', 'sdfdsfs', 'dsfsdfsd', '<p>sdfsdfsd</p>\n', 'sdfdfsd', '2019-01-01', NULL, NULL),
-('19070003', 1, 4, 'dasd', 'asdasdasd', 'Wanita', '1990-01-31', 'asdasd', 'adsasd', '<p>asdasds</p>\n', 'adasd', '2019-07-09', NULL, NULL),
-('19070004', 1, 16, '23423423', 'dasdas', 'Pria', '1998-12-31', 'dasdasd', 'adasd', '<p>asdasdasd</p>\n', 'asdasd', '2019-07-09', 'avatar.png', NULL);
+('19070001', 1, 1, '3603180702970009', 'Avandhy Kurniawan', 'Pria', '1997-02-07', '081287505145', '', '<p>Perum Bukit Tiara Blok R4 No. 3, Rt. 041, Rw. 006, Kel. Pasir Jaya, Kec. Cikupa, Kab. Tangerang.</p>\n', 'avandhykurniawan@gmail.com', '2015-01-01', 'avatar.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -271,7 +268,6 @@ ALTER TABLE `department`
 --
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`employee_id`),
-  ADD UNIQUE KEY `number_id` (`number_id`),
   ADD KEY `admin_id` (`admin_id`),
   ADD KEY `department_id` (`department_id`);
 

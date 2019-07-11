@@ -86,7 +86,15 @@
         }
 
         if($("#cmbDepartment").length > 0){
-          getAllEmployeeData_Select();
+          getAllDepartmentData_Select();
+        }
+
+        if($("#cmbEmployee").length > 0){
+          getAllEmployeeData_Select(true);
+        }
+
+        if($("#cmbInternetPackage").length > 0){
+          getAllInternetPackageData_Select(true);
         }
 
         if($("#txtCategoryInformation").length > 0){
@@ -99,6 +107,10 @@
 
         if($("#txtAddress").length > 0){
           CKEDITOR.replace("txtAddress");
+        }
+
+        if($("#txtRegistrationInformation").length > 0){
+          CKEDITOR.replace("txtRegistrationInformation");
         }
 
       });
@@ -144,6 +156,7 @@
       function resetForm(){
         $(".form-control").val("");
         $("select.form-control").prop("selectedIndex",0);
+        $("select.custom-select").val("").change();
         $(".date").datepicker("setDate", null);
         $(".profileImage").attr("src","<?= base_url('assets/images/avatar_2x.png'); ?>");
         for (instance in CKEDITOR.instances) {
@@ -295,7 +308,7 @@
           url : "<?= base_url('_administrator/getGenerateCustomerCode'); ?>",
           dataType : "JSON",
           success : function(response){
-            $(param).val(response.RESPONSE.registration_client.RESULTCODE);
+            $(param).val(response.RESPONSE.client_registration.RESULTCODE);
           },
           error : function(respose){
             var data = {
@@ -551,10 +564,12 @@
           success : function(response){
             var result = alert(response);
             if(result){
-              var formData = new FormData();
-              formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
-              formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
-              uploadPhoto(formData);
+              if(photoName){
+                var formData = new FormData();
+                formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
+                formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
+                uploadPhoto(formData);
+              }
               resetForm();
               getGenerateEmployeeCode('#txtEmployeeId');
               EMPLOYEEDATA.ajax.reload(null, false);
@@ -782,10 +797,12 @@
           success : function(response){
             var result = alert(response);
             if(result){
-              var formData = new FormData();
-              formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
-              formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
-              uploadPhoto(formData);
+              if(photoName){
+                var formData = new FormData();
+                formData.append("FILEPHOTO",$("#filePhoto")[0].files[0]);
+                formData.append("<?= $CSRF_NAME; ?>","<?= $CSRF_TOKEN; ?>");
+                uploadPhoto(formData);
+              }
               resetForm();
               getGenerateEmployeeCode('#txtEmployeeId');
               EMPLOYEEDATA.ajax.reload(null, false);
@@ -1128,6 +1145,64 @@
         });
       }
 
+      function getAllDepartmentData_Select(param=false){
+        if(param){
+          $("#cmbDepartment").addClass("custom-select");
+          $("#cmbDepartment").select2({
+            placeholder : "Pilih Departemen",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.department, function(item){
+                    return{
+                      text:item.department_id,
+                      id:item.department_name
+                    }
+                  })
+                };
+              }
+            }
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $("#cmbDepartment").removeClass("custom-select");
+              $("#cmbDepartment").empty();
+              $("#cmbDepartment").append("<option>Pilih Departemen</option>");
+              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
+                $("#cmbDepartment").append(
+                  "<option value='"+AvValue.department_id+"'>"+AvValue.department_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
+      }
+
       function getAllPackageCategoryData(){
         var result = $('#packageCategoriesListTable').DataTable({
                       ajax: {
@@ -1193,6 +1268,7 @@
 
       function getAllPackageCategoryData_Select(param=false){
         if(param){
+          $("#cmbType").addClass("custom-select");
           $("#cmbType").select2({
             placeholder : "Pilih Kategori Paket",
             // dropdownParent: $("#modalInputRencanaKerja"),
@@ -1227,6 +1303,7 @@
             url : "<?= base_url('_administrator/getAllPackageCategoryData'); ?>",
             dataType : "JSON",
             success : function(response){
+              $("#cmbType").removeClass("custom-select");
               $("#cmbType").empty();
               $("#cmbType").append("<option>Pilih Kategori Paket</option>");
               $.each(response.RESPONSE.package_categories, function(AvIndex, AvValue){
@@ -1281,6 +1358,84 @@
                     });
 
         return result;
+      }
+
+      function getAllInternetPackageData_Select(param=false){
+        if(param){
+          $("#cmbInternetPackage").addClass("custom-select");
+          $("#cmbInternetPackage").select2({
+            placeholder : "Pilih Paket Internet",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllInternetPackageData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.internet_packages, function(item){
+                    return{
+                      text:item.package_name+" ["+item.speed+"]",
+                      id:item.package_id
+                    }
+                  })
+                };
+              }
+            }
+          });
+
+          $("#cmbInternetPackage").on("select2:select", function(){
+            $.ajax({
+              type : "GET",
+              url : "<?= base_url('_administrator/getDetailInternetPackageDataById'); ?>",
+              dataType : "JSON",
+              data : {
+                INTERNETPACKAGEID : this.value
+              },
+              success : function(response){
+                $.each(response.RESPONSE.internet_packages, function(AvIndex, AvValue){
+                  $("#txtPrice").val(AvValue.price);
+                });
+              }
+            });
+          });
+
+          $("#cmbInternetPackage").on("select2:unselect", function(){
+            $("#txtPrice").val("");
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllInternetPackageData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $("#cmbInternetPackage").removeClass("custom-select");
+              $("#cmbType").empty();
+              $("#cmbType").append("<option>Pilih Paket Internet</option>");
+              $.each(response.RESPONSE.internet_packages, function(AvIndex, AvValue){
+                $("#cmbType").append(
+                  "<option value='"+AvValue.package_id+"'>"+AvValue.package_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
       }
 
       function getDetailInternetPackageDataById(param, param2=false){
@@ -1355,14 +1510,15 @@
 
       function getAllEmployeeData_Select(param=false){
         if(param){
-          $("#cmbDepartment").select2({
-            placeholder : "Pilih Departemen",
+          $("#cmbEmployee").addClass("custom-select");
+          $("#cmbEmployee").select2({
+            placeholder : "Pilih Paket Karyawan",
             // dropdownParent: $("#modalInputRencanaKerja"),
             width : "100%",
             cache:false,
             allowClear:true,
             ajax:{
-              url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+              url : "<?= base_url('_administrator/getAllEmployeeData'); ?>",
               dataType : "JSON",
               delay : 0,
               data : function(params){
@@ -1373,10 +1529,10 @@
               },
               processResults : function(response){
                 return{
-                  results : $.map(response.RESPONSE.department, function(item){
+                  results : $.map(response.RESPONSE.employee, function(item){
                     return{
-                      text:item.department_id,
-                      id:item.department_name
+                      text:item.full_name,
+                      id:item.employee_id
                     }
                   })
                 };
@@ -1386,14 +1542,15 @@
         }else{
           $.ajax({
             type : "GET",
-            url : "<?= base_url('_administrator/getAllDepartmentData'); ?>",
+            url : "<?= base_url('_administrator/getAllEmployeeData'); ?>",
             dataType : "JSON",
             success : function(response){
-              $("#cmbDepartment").empty();
-              $("#cmbDepartment").append("<option>Pilih Departemen</option>");
-              $.each(response.RESPONSE.department, function(AvIndex, AvValue){
-                $("#cmbDepartment").append(
-                  "<option value='"+AvValue.department_id+"'>"+AvValue.department_name+"</option>"
+              $("#cmbEmployee").removeClass("custom-select");
+              $("#cmbEmployee").empty();
+              $("#cmbEmployee").append("<option>Pilih Paket Internet</option>");
+              $.each(response.RESPONSE.employee, function(AvIndex, AvValue){
+                $("#cmbEmployee").append(
+                  "<option value='"+AvValue.employee_id+"'>"+AvValue.full_name+"</option>"
                 );
               });
             },
@@ -1475,7 +1632,7 @@
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Tgl.Lahir</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
-                      "<div class='col-md-8'>"+AvValue.formated_birthday+"</div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_birthday+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>No. Telp / Ponsel</label></div>"+
@@ -1500,7 +1657,7 @@
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Tanggal Masuk</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
-                      "<div class='col-md-8'>"+AvValue.formated_join_date+"</div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_join_date+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Departemen</label></div>"+
@@ -1510,7 +1667,7 @@
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Diperbarui Pada</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
-                      "<div class='col-md-8'>"+AvValue.formated_updated_on+"</div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_updated_on+"</div>"+
                     "</div>"+
                   "</div>"+
                     "<div class='col-md-2'>"+

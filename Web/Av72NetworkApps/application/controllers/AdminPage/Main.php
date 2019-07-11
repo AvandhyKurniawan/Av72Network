@@ -610,7 +610,7 @@ class Main extends CI_Controller {
   public function getGenerateCustomerCode(){
     if(Main::isLogin()){
       $date = date("ym");
-      $arrData = array("registration_client" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
+      $arrData = array("client_registration" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
                                                       "WHERE" => "SUBSTR(reg_id,3,4) = '$date' AND deleted_on IS NULL",
                                                       "PREFIX" => "72".$date)
                    );
@@ -741,16 +741,16 @@ class Main extends CI_Controller {
                                                           A.full_name,
                                                           A.gender,
                                                           A.birthday,
-                                                          DATE_FORMAT(A.birthday, '%d %M %Y') AS formated_birthday,
+                                                          DATE_FORMAT(A.birthday, '%d %M %Y') AS formatted_birthday,
                                                           A.phone_number,
                                                           A.other_phone_number,
                                                           A.address,
                                                           A.email,
                                                           A.join_date,
-                                                          DATE_FORMAT(A.join_date, '%d %M %Y') AS formated_join_date,
+                                                          DATE_FORMAT(A.join_date, '%d %M %Y') AS formatted_join_date,
                                                           A.picture,
                                                           A.updated_on,
-                                                          DATE_FORMAT(A.updated_on, '%d %M %Y %H:%i:%s') AS formated_updated_on,
+                                                          DATE_FORMAT(A.updated_on, '%d %M %Y %H:%i:%s') AS formatted_updated_on,
                                                           B.department_name",
                                              "JOIN" => array(
                                                         array("department B","A.department_id = B.department_id","INNER")
@@ -792,21 +792,38 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
       }else{
-        $arrData = array("employee" => array("VALUES" => array("admin_id"            => $adminId,
-                                                               "department_id"       => $departmentId,
-                                                               "number_id"           => $numberId,
-                                                               "full_name"           => $fullName,
-                                                               "gender"              => $gender,
-                                                               "birthday"            => $birthday,
-                                                               "phone_number"        => $phoneNumber,
-                                                               "other_phone_number"  => $otherPhoneNumber,
-                                                               "address"             => $address,
-                                                               "email"               => $email,
-                                                               "join_date"           => $joinDate,
-                                                               "picture"             => $picture),
-                                             "WHERE" => "employee_id = '$employeeId'"
-                                       )
-                );
+        if(empty($picture)){
+          $arrData = array("employee" => array("VALUES" => array("admin_id"            => $adminId,
+                                                                 "department_id"       => $departmentId,
+                                                                 "number_id"           => $numberId,
+                                                                 "full_name"           => $fullName,
+                                                                 "gender"              => $gender,
+                                                                 "birthday"            => $birthday,
+                                                                 "phone_number"        => $phoneNumber,
+                                                                 "other_phone_number"  => $otherPhoneNumber,
+                                                                 "address"             => $address,
+                                                                 "email"               => $email,
+                                                                 "join_date"           => $joinDate),
+                                               "WHERE" => "employee_id = '$employeeId'"
+                                         )
+                     );
+        }else{
+          $arrData = array("employee" => array("VALUES" => array("admin_id"            => $adminId,
+                                                                 "department_id"       => $departmentId,
+                                                                 "number_id"           => $numberId,
+                                                                 "full_name"           => $fullName,
+                                                                 "gender"              => $gender,
+                                                                 "birthday"            => $birthday,
+                                                                 "phone_number"        => $phoneNumber,
+                                                                 "other_phone_number"  => $otherPhoneNumber,
+                                                                 "address"             => $address,
+                                                                 "email"               => $email,
+                                                                 "join_date"           => $joinDate,
+                                                                 "picture"             => $picture),
+                                               "WHERE" => "employee_id = '$employeeId'"
+                                         )
+                  );
+        }
         $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
@@ -1158,48 +1175,41 @@ class Main extends CI_Controller {
 
   public function getAllInternetPackageData(){
     if(Main::isLogin()){
-      if(Main::isLogin()){
-        $search = $this->input->get("SEARCH");
-        if(empty($search)){
-          $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
-                                                                      A.package_name,
-                                                                      A.speed,
-                                                                      A.price,
-                                                                      B.package_categories_name,
-                                                                      A.information,
-                                                                      DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                          "JOIN" => array(
-                                                                      array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
-                                                                    ),
-                                                          "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
-                                                    )
-                     );
-        }else{
-          $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
-                                                                      A.package_name,
-                                                                      A.speed,
-                                                                      A.price,
-                                                                      B.package_categories_name,
-                                                                      A.information,
-                                                                      DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
-                                                          "JOIN" => array(
-                                                                      array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
-                                                                    ),
-                                                          "WHERE" => "A.deleted_on IS NULL AND 
-                                                                      B.deleted_on IS NULL AND 
-                                                                      (A.package_name LIKE '%$search%' OR
-                                                                       A.speed LIKE '%$search%' OR
-                                                                       B.package_categories_name LIKE '$search' OR
-                                                                      )"
-                                                    )
-                     );
-        }
-        $result = $this->Data_Access_Model->selectData($arrData);
+      $search = $this->input->get("SEARCH");
+      if(empty($search)){
+        $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
+                                                                    A.package_name,
+                                                                    A.speed,
+                                                                    A.price,
+                                                                    B.package_categories_name,
+                                                                    A.information,
+                                                                    DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                        "JOIN" => array(
+                                                                    array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                  ),
+                                                        "WHERE" => "A.deleted_on IS NULL AND B.deleted_on IS NULL"
+                                                  )
+                    );
       }else{
-        $result = json_encode(array("CODE"      => 403,
-                                    "MESSAGE"   => "Forbidden",
-                                    "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+        $arrData = array("internet_packages A" => array("COLUMN" => encodeMysqlValue("A.package_id","package_id").", 
+                                                                    A.package_name,
+                                                                    A.speed,
+                                                                    A.price,
+                                                                    B.package_categories_name,
+                                                                    A.information,
+                                                                    DATE_FORMAT(A.updated_on,'%d %M %Y %H:%i:%s') AS updated_on",
+                                                        "JOIN" => array(
+                                                                    array("package_categories B","A.package_categories_id = B.package_categories_id","INNER")
+                                                                  ),
+                                                        "WHERE" => "A.deleted_on IS NULL AND 
+                                                                    B.deleted_on IS NULL AND 
+                                                                    (A.package_name LIKE '%$search%' OR
+                                                                      A.speed LIKE '%$search%' OR
+                                                                      B.package_categories_name LIKE '%$search%')"
+                                                  )
+                    );
       }
+      $result = $this->Data_Access_Model->selectData($arrData);
     }else{
       $result = json_encode(array("CODE"      => 403,
                                   "MESSAGE"   => "Forbidden",
@@ -1284,6 +1294,104 @@ class Main extends CI_Controller {
                    );
 
         $result = $this->Data_Access_Model->updateData($arrData);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function saveClientRegistration(){
+    if(Main::isLogin()){
+      $adminId            = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $registrationId     = decodePassword($this->input->post("REGISTRATIONID"));
+      $packageId          = decodePassword($this->input->post("PACKAGEID"));
+      $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
+      $fullName           = $this->input->post("FULLNAME");
+      $gender             = $this->input->post("GENDER");
+      $birthday           = $this->input->post("BIRTHDAY");
+      $phoneNumber        = $this->input->post("PHONENUMBER");
+      $otherPhoneNumber   = $this->input->post("OTHERPHONENUMBER");
+      $email              = $this->input->post("EMAIL");
+      $address            = $this->input->post("ADDRESS");
+      $price              = $this->input->post("PRICE");
+      $registrationDate   = $this->input->post("REGISTRATIONDATE");
+      $registrationFee    = $this->input->post("REGISTRATIONFEE");
+      $registrationInfo   = $this->input->post("REGISTRATIONINFO");
+
+      if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
+         empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
+         empty($price)          || empty($registrationDate) || empty($registrationFee) || 
+         empty($employeeId)
+      ){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
+      }else{
+        $arrData = array("client_registration" => array("VALUES" => array(
+                                                                      array("reg_id"              => $registrationId,
+                                                                            "admin_id"            => $adminId,
+                                                                            "employee_id"         => $employeeId,
+                                                                            "package_id"          => $packageId,
+                                                                            "full_name"           => $fullName,
+                                                                            "gender"              => $gender,
+                                                                            "birthday"            => $birthday,
+                                                                            "phone_number"        => $phoneNumber,
+                                                                            "other_phone_number"  => $otherPhoneNumber,
+                                                                            "email"               => $email,
+                                                                            "address"             => $address,
+                                                                            "registration_date"   => $registrationDate,
+                                                                            "registration_fee"    => $registrationFee,
+                                                                            "monthly_payment"     => $price,
+                                                                            "information"         => $registrationInfo 
+                                                                      )
+                                                                    )
+                                                  )
+                   );
+        $result = $this->Data_Access_Model->insertData($arrData);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function getAllRegistrationData(){
+    if(Main::isLogin()){
+      $search = $this->input->get("SEARCH");
+      if(empty($search)){
+        $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+                                                                       A.employee_id, 
+                                                                       A.package_id,
+                                                                       A.full_name,
+                                                                       A.gender,
+                                                                       A.birthday,
+                                                                       CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
+                                                                       A.phone_number,
+                                                                       A.other_phone_number,
+                                                                       A.email,
+                                                                       A.address,
+                                                                       DATE_FORMAT(A.registration_date, '%d %M %Y') AS formatted_registration_date,
+                                                                       A.registration_date,
+                                                                       A.registration_status,
+                                                                       A.registration_fee,
+                                                                       A.monthly_payment,
+                                                                       A.information,
+                                                                       B.package_name,
+                                                                       C.full_name AS employee_name",
+                                                          "JOIN" => array(
+                                                                      array("internet_packages B","A.package_id = B.package_id","LEFT"),
+                                                                      array("employee C","A.employee_id = C.employee_id","LEFT"),
+                                                                    ),
+                                                          "WHERE" => "A.deleted_on IS NULL"
+                                                    )
+                   );
+      }else{
+
       }
     }else{
       $result = json_encode(array("CODE"      => 403,
