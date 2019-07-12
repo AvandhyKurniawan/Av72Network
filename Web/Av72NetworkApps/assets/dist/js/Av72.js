@@ -10,6 +10,14 @@ function _encodePassword(param){
     return encodedPassword;
 }
 
+function _decodePassword(param){
+    var decodedPassword = param;
+    for(var i=0; i<7; i++){
+        decodedPassword = atob(decodedPassword);
+    }
+    return decodedPassword;
+}
+
 function _checkLengthPassword(param){
     var password = $("#"+param).val();
     var passwordLength = password.length

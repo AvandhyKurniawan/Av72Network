@@ -678,7 +678,7 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       $search = $this->input->get("SEARCH");
       if(empty($search)){
-        $arrData = array("employee A" => array("COLUMN" => "A.employee_id,
+        $arrData = array("employee A" => array("COLUMN" => encodeMysqlValue("A.employee_id","employee_id").",
                                                             A.number_id, 
                                                             A.full_name,
                                                             A.gender,
@@ -698,7 +698,7 @@ class Main extends CI_Controller {
                                          )
                         );
       }else{
-        $arrData = array("employee A" => array("COLUMN" => "A.employee_id,
+        $arrData = array("employee A" => array("COLUMN" => encodeMysqlValue("A.employee_id","employee_id").",
                                                             A.number_id, 
                                                             A.full_name,
                                                             A.gender,
@@ -734,8 +734,8 @@ class Main extends CI_Controller {
 
   public function getDetailEmployeeDataById(){
     if(Main::isLogin()){
-      $employeeId = $this->input->get("EMPLOYEEID");
-      $arrData = array("employee A" => array("COLUMN" => "A.employee_id,".
+      $employeeId = decodePassword($this->input->get("EMPLOYEEID"));
+      $arrData = array("employee A" => array("COLUMN" =>  encodeMysqlValue("A.employee_id","employee_id").",".
                                                           encodeMysqlValue("A.department_id","department_id").","."
                                                           A.number_id, 
                                                           A.full_name,
@@ -837,7 +837,7 @@ class Main extends CI_Controller {
   public function deleteEmployeeData(){
     if(Main::isLogin()){
       $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
-      $employeeId = $this->input->post("EMPLOYEEID");
+      $employeeId = decodePassword($this->input->post("EMPLOYEEID"));
 
       if(empty($employeeId)){
         $result = json_encode(array("CODE"      => 400,
@@ -1360,7 +1360,7 @@ class Main extends CI_Controller {
     echo $result;
   }
 
-  public function getAllRegistrationData(){
+  public function getAllClientRegistrationData(){
     if(Main::isLogin()){
       $search = $this->input->get("SEARCH");
       if(empty($search)){
@@ -1391,7 +1391,156 @@ class Main extends CI_Controller {
                                                     )
                    );
       }else{
+        $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+                                                                       A.employee_id, 
+                                                                       A.package_id,
+                                                                       A.full_name,
+                                                                       A.gender,
+                                                                       A.birthday,
+                                                                       CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
+                                                                       A.phone_number,
+                                                                       A.other_phone_number,
+                                                                       A.email,
+                                                                       A.address,
+                                                                       DATE_FORMAT(A.registration_date, '%d %M %Y') AS formatted_registration_date,
+                                                                       A.registration_date,
+                                                                       A.registration_status,
+                                                                       A.registration_fee,
+                                                                       A.monthly_payment,
+                                                                       A.information,
+                                                                       B.package_name,
+                                                                       C.full_name AS employee_name",
+                                                          "JOIN" => array(
+                                                                array("internet_packages B","A.package_id = B.package_id","LEFT"),
+                                                                array("employee C","A.employee_id = C.employee_id","LEFT"),
+                                                              ),
+                                                          "WHERE" => "A.deleted_on IS NULL AND 
+                                                                      (
+                                                                        CONCAT(A.reg_id, ' ',A.full_name) LIKE '%$search%' OR 
+                                                                        CONCAT(A.full_name, ' ',A.reg_id) LIKE '%$search%'
+                                                                      )"
+                                                    )
+                   );
+      }
+      $result = $this->Data_Access_Model->selectData($arrData);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
 
+  public function getDetailClientRegistrationDataById(){
+    if(Main::isLogin()){
+      $regId = decodePassword($this->input->get("REGISTRATIONID"));
+      $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+                                                                     A.employee_id, 
+                                                                     A.package_id,
+                                                                     A.full_name,
+                                                                     A.gender,
+                                                                     A.birthday,
+                                                                     CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
+                                                                     A.phone_number,
+                                                                     A.other_phone_number,
+                                                                     A.email,
+                                                                     A.address,
+                                                                     DATE_FORMAT(A.registration_date, '%d %M %Y') AS formatted_registration_date,
+                                                                     A.registration_date,
+                                                                     A.registration_status,
+                                                                     A.registration_fee,
+                                                                     A.monthly_payment,
+                                                                     A.information,
+                                                                     B.package_name,
+                                                                     C.full_name AS employee_name",
+                                                        "JOIN" => array(
+                                                                    array("internet_packages B","A.package_id = B.package_id","LEFT"),
+                                                                    array("employee C","A.employee_id = C.employee_id","LEFT"),
+                                                                  ),
+                                                        "WHERE" => "A.deleted_on IS NULL AND A.reg_id = '$regId'"
+                                                  )
+                 );
+      $result = $this->Data_Access_Model->selectData($arrData);
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function editClientRegistrationData(){
+    if(Main::isLogin()){
+      $adminId            = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $registrationId     = decodePassword($this->input->post("REGISTRATIONID"));
+      $packageId          = decodePassword($this->input->post("PACKAGEID"));
+      $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
+      $fullName           = $this->input->post("FULLNAME");
+      $gender             = $this->input->post("GENDER");
+      $birthday           = $this->input->post("BIRTHDAY");
+      $phoneNumber        = $this->input->post("PHONENUMBER");
+      $otherPhoneNumber   = $this->input->post("OTHERPHONENUMBER");
+      $email              = $this->input->post("EMAIL");
+      $address            = $this->input->post("ADDRESS");
+      $price              = $this->input->post("PRICE");
+      $registrationDate   = $this->input->post("REGISTRATIONDATE");
+      $registrationFee    = $this->input->post("REGISTRATIONFEE");
+      $registrationInfo   = $this->input->post("REGISTRATIONINFO");
+
+      if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
+         empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
+         empty($price)          || empty($registrationDate) || empty($registrationFee) || 
+         empty($employeeId)
+      ){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
+      }else{
+        $arrData = array("client_registration" => array("VALUES" => array("admin_id"            => $adminId,
+                                                                          "employee_id"         => $employeeId,
+                                                                          "package_id"          => $packageId,
+                                                                          "full_name"           => $fullName,
+                                                                          "gender"              => $gender,
+                                                                          "birthday"            => $birthday,
+                                                                          "phone_number"        => $phoneNumber,
+                                                                          "other_phone_number"  => $otherPhoneNumber,
+                                                                          "email"               => $email,
+                                                                          "address"             => $address,
+                                                                          "registration_date"   => $registrationDate,
+                                                                          "registration_fee"    => $registrationFee,
+                                                                          "monthly_payment"     => $price,
+                                                                          "information"         => $registrationInfo 
+                                                                      ),
+                                                        "WHERE" => "reg_id = '$registrationId'"
+                                                  )
+                   );
+        $result = $this->Data_Access_Model->updateData($arrData);
+      }
+    }else{
+      $result = json_encode(array("CODE"      => 403,
+                                  "MESSAGE"   => "Forbidden",
+                                  "RESPONSE"  => "Maaf, Anda Tidak Memiliki Hak Akses!"));
+    }
+    echo $result;
+  }
+
+  public function deleteClientRegistrationData(){
+    if(Main::isLogin()){
+      $adminId = decodePassword($this->session->userdata("Av72Net_AdminId"));
+      $registrationId = decodePassword($this->input->post("REGISTRATIONID"));
+
+      if(empty($registrationId)){
+        $result = json_encode(array("CODE"      => 400,
+                                    "MESSAGE"   => "Bad Request",
+                                    "RESPONSE"  => "Maaf, Ada Parameter Yang Tidak Sesuai. Silahkan Hubungi Developer Anda!"));
+      }else{
+        $arrData = array("client_registration" => array("VALUES" => array("deleted_on" => date("Y-m-d H:i:s"),
+                                                                          "admin_id"   => $adminId),
+                                                        "WHERE" => array("reg_id" => $registrationId)
+                                                )
+                   );
+
+        $result = $this->Data_Access_Model->updateData($arrData);
       }
     }else{
       $result = json_encode(array("CODE"      => 403,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 11, 2019 at 04:25 PM
+-- Generation Time: Jul 12, 2019 at 04:16 PM
 -- Server version: 8.0.16
 -- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -44,7 +44,7 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-11 15:56:55', NULL),
+(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-12 16:15:30', NULL),
 (6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
 (10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');

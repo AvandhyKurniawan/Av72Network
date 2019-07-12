@@ -589,6 +589,69 @@
           }
         });
       }
+
+      function saveClientRegistration(){
+        var registrationId    = $("#txtClientId").val();
+        var packageId         = $("#cmbInternetPackage").val();
+        var employeeId        = $("#cmbEmployee").val();
+        var fullName          = $("#txtFullName").val();
+        var gender            = $("#cmbGender").val();
+        var birthday          = $("#txtBirthday").val();
+        var phoneNumber       = $("#txtTelp").val();
+        var otherPhoneNumber  = $("#txtTelpLain").val();
+        var email             = $("#txtEmail").val();
+        var address           = CKEDITOR.instances["txtAddress"].getData();
+        var price             = $("#txtPrice").val().replace(/,/g,"");
+        var registrationDate  = $("#txtRegistrationDate").val();
+        var registrationFee   = $("#txtRegistrationFee").val();
+        var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/saveClientRegistration'); ?>",
+          dataType : "JSON",
+          data : {
+            REGISTRATIONID    : _encodePassword(registrationId),
+            PACKAGEID         : packageId,
+            EMPLOYEEID        : employeeId,
+            FULLNAME          : fullName,
+            GENDER            : gender,
+            BIRTHDAY          : birthday,
+            PHONENUMBER       : phoneNumber,
+            OTHERPHONENUMBER  : otherPhoneNumber,
+            EMAIL             : email,
+            ADDRESS           : address,
+            PRICE             : price,
+            REGISTRATIONDATE  : registrationDate,
+            REGISTRATIONFEE   : registrationFee,
+            REGISTRATIONINFO  : registrationInfo 
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getGenerateCustomerCode("#txtClientId");
+              EMPLOYEEDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
     </script>
     <!-- ========== SAVE FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -1498,9 +1561,10 @@
                         {data : "employee_id"}
                       ],
                       fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
-                        var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailEmployeeDataById('"+AvData["employee_id"]+"',"+false+")><i class='fa fa-info'></i></button>"+
-                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+AvData["employee_id"]+"',"+true+")><i class='fa fa-pencil'></i></button>"+
-                                      "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteEmployeeData('"+AvData["employee_id"]+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(0)",AvRow).text(_decodePassword(AvData["employee_id"]));
+                        var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+false+")><i class='fa fa-info'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteEmployeeData('"+_decodePassword(AvData["employee_id"])+"')><i class='fa fa-trash'></i></button>";
                         $("td:eq(7)",AvRow).html(buttons);
                       }
                     });
@@ -1572,7 +1636,7 @@
           url : "<?= base_url('_administrator/getDetailEmployeeDataById'); ?>",
           dataType : "JSON",
           data : {
-            EMPLOYEEID : param
+            EMPLOYEEID : _encodePassword(param)
           },
           success : function(response){
             if(param2){
@@ -1582,7 +1646,7 @@
                 }else{
                   var pictureUrl = "<?= base_url('assets/images/upload/profile-images/'); ?>"+AvValue.picture;
                 }
-                $("#txtEmployeeId").val(AvValue.employee_id);
+                $("#txtEmployeeId").val(_decodePassword(AvValue.employee_id));
                 $("#txtNumberId").val(AvValue.number_id);
                 $("#txtFullName").val(AvValue.full_name);
                 $("#cmbGender").val(AvValue.gender);
@@ -1612,7 +1676,7 @@
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>ID. Pegawai</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
-                      "<div class='col-md-8'>"+AvValue.employee_id+"</div>"+
+                      "<div class='col-md-8'>"+_decodePassword(AvValue.employee_id)+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>No. KTP</label></div>"+
