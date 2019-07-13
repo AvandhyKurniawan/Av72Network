@@ -229,7 +229,7 @@
 
       <div class="col-md-9">
         <div class="pull-right">
-          <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary"><i class="fa fa-plus"></i> Tambah Baru</button>
+          <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary" onclick="saveClientRegistrationData();" data-onclick="saveClientRegistrationData();"><i class="fa fa-plus"></i> Tambah Baru</button>
           <button type="button" class="btn btn-md btn-flat btn-danger" onclick="resetForm();"><i class="fa fa-refresh"></i> Batal</button>
         </div>
       </div>
@@ -240,12 +240,13 @@
             <table class="table table-responsive table-striped" id="customerListTable">
               <thead>
                 <th width="1%">No.</th>
+                <th>No. Pelanggan</th>
                 <th>Nama Pelanggan</th>
+                <th>Jenis Kelamin</th>
                 <th>Nama Paket</th>
                 <th>Tanggal Registrasi</th>
-                <th>Biaya Registrasi</th>
+                <th>No. Telpon</th>
                 <th>Status</th>
-                <th>Keterangan</th>
                 <th>Pilihan</th>
               </thead>
               <tbody>
@@ -258,6 +259,25 @@
     </div>
     <div class="box-footer">
 
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalDetailData" role="dialog" tabindex="-1" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal" data-target="#modalDetailData">&times</button>
+          <h4 class="modal-title">Detail Data</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div id="modalContentContainer"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
     </div>
   </div>
 </div>

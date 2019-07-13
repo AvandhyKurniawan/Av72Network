@@ -611,7 +611,7 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       $date = date("ym");
       $arrData = array("client_registration" => array("COLUMN" => "MAX(RIGHT(reg_id,4)) AS CODE",
-                                                      "WHERE" => "SUBSTR(reg_id,3,4) = '$date' AND deleted_on IS NULL",
+                                                      "WHERE" => "SUBSTR(reg_id,3,4) = '$date'",
                                                       "PREFIX" => "72".$date)
                    );
       $result = $this->Data_Access_Model->selectGenerateId($arrData);
@@ -1337,15 +1337,16 @@ class Main extends CI_Controller {
                                                                             "package_id"          => $packageId,
                                                                             "full_name"           => $fullName,
                                                                             "gender"              => $gender,
-                                                                            "birthday"            => $birthday,
+                                                                            "birthday"            => (empty($birthday) ? NULL : $birthday),
                                                                             "phone_number"        => $phoneNumber,
-                                                                            "other_phone_number"  => $otherPhoneNumber,
-                                                                            "email"               => $email,
+                                                                            "other_phone_number"  => (empty($otherPhoneNumber) ? NULL : $otherPhoneNumber),
+                                                                            "email"               => (empty($email) ? NULL : $email),
                                                                             "address"             => $address,
                                                                             "registration_date"   => $registrationDate,
                                                                             "registration_fee"    => $registrationFee,
                                                                             "monthly_payment"     => $price,
-                                                                            "information"         => $registrationInfo 
+                                                                            "updated_by"          => $adminId,
+                                                                            "information"         => (empty($registrationInfo) ? NULL : $registrationInfo) 
                                                                       )
                                                                     )
                                                   )
@@ -1364,13 +1365,14 @@ class Main extends CI_Controller {
     if(Main::isLogin()){
       $search = $this->input->get("SEARCH");
       if(empty($search)){
-        $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+        $arrData = array("client_registration A" => array("COLUMN" => encodeMysqlValue("A.reg_id","reg_id").", 
                                                                        A.employee_id, 
                                                                        A.package_id,
                                                                        A.full_name,
                                                                        A.gender,
                                                                        A.birthday,
-                                                                       CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
+                                                                       DATE_FORMAT(A.birthday, '%d %M %Y') AS formatted_birthday,
+                                                                       CONCAT(A.phone_number,' / ',A.other_phone_number) AS formatted_phone_number,
                                                                        A.phone_number,
                                                                        A.other_phone_number,
                                                                        A.email,
@@ -1391,13 +1393,14 @@ class Main extends CI_Controller {
                                                     )
                    );
       }else{
-        $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+        $arrData = array("client_registration A" => array("COLUMN" => encodeMysqlValue("A.reg_id","reg_id").",
                                                                        A.employee_id, 
                                                                        A.package_id,
                                                                        A.full_name,
                                                                        A.gender,
                                                                        A.birthday,
-                                                                       CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
+                                                                       DATE_FORMAT(A.birthday, '%d %M %Y') AS formatted_birthday,
+                                                                       CONCAT(A.phone_number,' / ',A.other_phone_number) AS formatted_phone_number,
                                                                        A.phone_number,
                                                                        A.other_phone_number,
                                                                        A.email,
@@ -1434,12 +1437,13 @@ class Main extends CI_Controller {
   public function getDetailClientRegistrationDataById(){
     if(Main::isLogin()){
       $regId = decodePassword($this->input->get("REGISTRATIONID"));
-      $arrData = array("client_registration A" => array("COLUMN" => "A.reg_id, 
+      $arrData = array("client_registration A" => array("COLUMN" => encodeMysqlValue("A.reg_id","reg_id").", 
                                                                      A.employee_id, 
                                                                      A.package_id,
                                                                      A.full_name,
                                                                      A.gender,
                                                                      A.birthday,
+                                                                     DATE_FORMAT(A.birthday, '%d %M %Y') AS formatted_birthday,
                                                                      CONCAT(A.phone_number,'/',A.other_phone_number) AS formatted_phone_number,
                                                                      A.phone_number,
                                                                      A.other_phone_number,
@@ -1451,11 +1455,16 @@ class Main extends CI_Controller {
                                                                      A.registration_fee,
                                                                      A.monthly_payment,
                                                                      A.information,
+                                                                     A.updated_on,
+                                                                     DATE_FORMAT(A.updated_on, '%d %M %Y %H:%i:%s') AS formatted_updated_on,
                                                                      B.package_name,
-                                                                     C.full_name AS employee_name",
+                                                                     B.speed,
+                                                                     C.full_name AS employee_name,
+                                                                     D.full_name AS updater_name",
                                                         "JOIN" => array(
                                                                     array("internet_packages B","A.package_id = B.package_id","LEFT"),
                                                                     array("employee C","A.employee_id = C.employee_id","LEFT"),
+                                                                    array("administrator D","A.updated_by = D.admin_id","LEFT"),
                                                                   ),
                                                         "WHERE" => "A.deleted_on IS NULL AND A.reg_id = '$regId'"
                                                   )
@@ -1496,21 +1505,23 @@ class Main extends CI_Controller {
                                     "MESSAGE"   => "Bad Request",
                                     "RESPONSE"  => "Maaf, Semua Kolom Bertanda Bintang Tidak Boleh Kosong!"));
       }else{
-        $arrData = array("client_registration" => array("VALUES" => array("admin_id"            => $adminId,
+        $arrData = array("client_registration" => array("VALUES" => array("reg_id"              => $registrationId,
+                                                                          "admin_id"            => $adminId,
                                                                           "employee_id"         => $employeeId,
                                                                           "package_id"          => $packageId,
                                                                           "full_name"           => $fullName,
                                                                           "gender"              => $gender,
-                                                                          "birthday"            => $birthday,
+                                                                          "birthday"            => (empty($birthday) ? NULL : $birthday),
                                                                           "phone_number"        => $phoneNumber,
-                                                                          "other_phone_number"  => $otherPhoneNumber,
-                                                                          "email"               => $email,
+                                                                          "other_phone_number"  => (empty($otherPhoneNumber) ? NULL : $otherPhoneNumber),
+                                                                          "email"               => (empty($email) ? NULL : $email),
                                                                           "address"             => $address,
                                                                           "registration_date"   => $registrationDate,
                                                                           "registration_fee"    => $registrationFee,
                                                                           "monthly_payment"     => $price,
-                                                                          "information"         => $registrationInfo 
-                                                                      ),
+                                                                          "updated_by"          => $adminId,
+                                                                          "information"         => (empty($registrationInfo) ? NULL : $registrationInfo) 
+                                                                    ),
                                                         "WHERE" => "reg_id = '$registrationId'"
                                                   )
                    );

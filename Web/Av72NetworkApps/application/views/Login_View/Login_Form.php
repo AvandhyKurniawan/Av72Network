@@ -15,7 +15,6 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/datepicker/datepicker3.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/iCheck/all.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/select2/select2.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/datatables/dataTables.bootstrap.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/fixedheader/css/fixedHeader.bootstrap.min.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/jQuery/confirm/jquery-confirm.min.css'); ?>">
   </head>

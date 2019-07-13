@@ -36,6 +36,7 @@
       var EMPLOYEEDATA = null;
       var PACKAGECATEGORYDATA = null;
       var INTERNETPACKAGEDATA = null;
+      var CLIENTREGISTRATIONDATA = null;
 
       $(function(e){
         $(".date").datepicker({
@@ -71,6 +72,10 @@
 
         if($("#employeeListTable").length > 0){
           EMPLOYEEDATA = getAllEmployeeData();
+        }
+
+        if($("#customerListTable").length > 0){
+          CLIENTREGISTRATIONDATA = getAllClientRegistrationData();
         }
 
         if($("#txtEmployeeId").length > 0){
@@ -590,7 +595,7 @@
         });
       }
 
-      function saveClientRegistration(){
+      function saveClientRegistrationData(){
         var registrationId    = $("#txtClientId").val();
         var packageId         = $("#cmbInternetPackage").val();
         var employeeId        = $("#cmbEmployee").val();
@@ -603,7 +608,7 @@
         var address           = CKEDITOR.instances["txtAddress"].getData();
         var price             = $("#txtPrice").val().replace(/,/g,"");
         var registrationDate  = $("#txtRegistrationDate").val();
-        var registrationFee   = $("#txtRegistrationFee").val();
+        var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
         var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
 
         $.ajax({
@@ -611,20 +616,21 @@
           url : "<?= base_url('_administrator/saveClientRegistration'); ?>",
           dataType : "JSON",
           data : {
-            REGISTRATIONID    : _encodePassword(registrationId),
-            PACKAGEID         : packageId,
-            EMPLOYEEID        : employeeId,
-            FULLNAME          : fullName,
-            GENDER            : gender,
-            BIRTHDAY          : birthday,
-            PHONENUMBER       : phoneNumber,
-            OTHERPHONENUMBER  : otherPhoneNumber,
-            EMAIL             : email,
-            ADDRESS           : address,
-            PRICE             : price,
-            REGISTRATIONDATE  : registrationDate,
-            REGISTRATIONFEE   : registrationFee,
-            REGISTRATIONINFO  : registrationInfo 
+            REGISTRATIONID      : _encodePassword(registrationId),
+            PACKAGEID           : packageId,
+            EMPLOYEEID          : employeeId,
+            FULLNAME            : fullName,
+            GENDER              : gender,
+            BIRTHDAY            : birthday,
+            PHONENUMBER         : phoneNumber,
+            OTHERPHONENUMBER    : otherPhoneNumber,
+            EMAIL               : email,
+            ADDRESS             : address,
+            PRICE               : price,
+            REGISTRATIONDATE    : registrationDate,
+            REGISTRATIONFEE     : registrationFee,
+            REGISTRATIONINFO    : registrationInfo,
+            <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
           },
           beforeSend : function(){
             $("#btnAction > i").css("display","none");
@@ -635,7 +641,7 @@
             if(result){
               resetForm();
               getGenerateCustomerCode("#txtClientId");
-              EMPLOYEEDATA.ajax.reload(null, false);
+              CLIENTREGISTRATIONDATA.ajax.reload(null, false);
             }
           },
           error : function(response){
@@ -885,6 +891,69 @@
           }
         });
       }
+
+      function editClientRegistrationData(param){
+        var packageId         = $("#cmbInternetPackage").val();
+        var employeeId        = $("#cmbEmployee").val();
+        var fullName          = $("#txtFullName").val();
+        var gender            = $("#cmbGender").val();
+        var birthday          = $("#txtBirthday").val();
+        var phoneNumber       = $("#txtTelp").val();
+        var otherPhoneNumber  = $("#txtTelpLain").val();
+        var email             = $("#txtEmail").val();
+        var address           = CKEDITOR.instances["txtAddress"].getData();
+        var price             = $("#txtPrice").val().replace(/,/g,"");
+        var registrationDate  = $("#txtRegistrationDate").val();
+        var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
+        var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
+
+        $.ajax({
+          type : "POST",
+          url : "<?= base_url('_administrator/editClientRegistrationData'); ?>",
+          dataType : "JSON",
+          data : {
+            REGISTRATIONID      : _encodePassword(param),
+            PACKAGEID           : packageId,
+            EMPLOYEEID          : employeeId,
+            FULLNAME            : fullName,
+            GENDER              : gender,
+            BIRTHDAY            : birthday,
+            PHONENUMBER         : phoneNumber,
+            OTHERPHONENUMBER    : otherPhoneNumber,
+            EMAIL               : email,
+            ADDRESS             : address,
+            PRICE               : price,
+            REGISTRATIONDATE    : registrationDate,
+            REGISTRATIONFEE     : registrationFee,
+            REGISTRATIONINFO    : registrationInfo,
+            <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
+          },
+          beforeSend : function(){
+            $("#btnAction > i").css("display","none");
+            $("#btnAction > img").css("display","inline-block");
+          },
+          success : function(response){
+            var result = alert(response);
+            if(result){
+              resetForm();
+              getGenerateCustomerCode("#txtClientId");
+              CLIENTREGISTRATIONDATA.ajax.reload(null, false);
+            }
+          },
+          error : function(response){
+            var data = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
+            }
+            alert(data);
+          },
+          complete : function(){
+            $("#btnAction > i").css("display","inline-block");
+            $("#btnAction > img").css("display","none");
+          }
+        });
+      }
     </script>
     <!-- ========== EDIT FUNCTION FINISH ========== -->
 <!-- ============================================================================================================================== -->
@@ -1091,6 +1160,51 @@
                         resetForm();
                         getGenerateEmployeeCode('#txtEmployeeId');
                         EMPLOYEEDATA.ajax.reload(null, false);
+                      }
+                    },
+                    error : function(response){
+                      var param = {
+                        CODE : response.status,
+                        MESSAGE : response.statusText,
+                        RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                      }
+                      alert(param);
+                    }
+                  })
+                }
+              },
+              cancelAction: {
+                text: 'Batal'
+              }
+            }
+        });
+      }
+
+      function deleteClientRegistrationData(param){
+        $.confirm({
+          type: "red",
+          theme: "material",
+          title: 'Hapus Data Pelanggan?',
+          content: 'Apakah Anda Yakin Ingin Menghapus Data Tersebut?',
+          autoClose: 'cancelAction|10000',
+          buttons: {
+              deleteUser: {
+                text: 'Hapus Data',
+                action: function () {
+                  $.ajax({
+                    type : "POST",
+                    url : "<?= base_url('_administrator/deleteClientRegistrationData'); ?>",
+                    dataType : "JSON",
+                    data : {
+                      REGISTRATIONID : _encodePassword(param),
+                      <?= $CSRF_NAME; ?>    : "<?= $CSRF_TOKEN; ?>"
+                    },
+                    success : function(response){
+                      var result = alert(response);
+                      if(result){
+                        resetForm();
+                        getGenerateCustomerCode("#txtClientId");
+                        CLIENTREGISTRATIONDATA.ajax.reload(null, false);
                       }
                     },
                     error : function(response){
@@ -1739,6 +1853,188 @@
                         "<img src='"+pictureUrl+"' class='img-responsive' width='138px' height='138px'>"+
                       "</div>"+
                     "</div>"
+                );
+              });
+              $("#modalDetailData").modal("show");
+            }
+          },
+          error : function(response){
+            var param = {
+              CODE : response.status,
+              MESSAGE : response.statusText,
+              RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+            }
+            alert(param);
+          }
+        });
+      }
+
+      function getAllClientRegistrationData(){
+        var result = $('#customerListTable').DataTable({
+                      scrollX: true,
+                      ajax: {
+                        url     : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
+                        dataSrc : "RESPONSE.client_registration",
+                        error : function(response){
+                          var param = {
+                            CODE : response.status,
+                            MESSAGE : response.statusText,
+                            RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+                          }
+                          alert(param);
+                        }
+                      },
+                      columns:[
+                        {data : "reg_id"},
+                        {data : "reg_id"},
+                        {data : "full_name"},
+                        {data : "gender"},
+                        {data : "package_name"},
+                        {data : "formatted_registration_date"},
+                        {data : "formatted_phone_number"},
+                        {data : "registration_status"},
+                        {data : "reg_id"}
+                      ],
+                      fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
+                        $("td:eq(0)",AvRow).text(++AvDisplayIndex);
+                        $("td:eq(1)",AvRow).text(_decodePassword(AvData["reg_id"]));
+                        var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailClientRegistrationDataById('"+_decodePassword(AvData["reg_id"])+"',"+false+")><i class='fa fa-info'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailClientRegistrationDataById('"+_decodePassword(AvData["reg_id"])+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteClientRegistrationData('"+_decodePassword(AvData["reg_id"])+"')><i class='fa fa-trash'></i></button>";
+                        $("td:eq(8)",AvRow).html(buttons);
+                      }
+                    });
+
+        return result;
+      }
+
+      function getDetailClientRegistrationDataById(param, param2=false){
+        $.ajax({
+          type : "GET",
+          url : "<?= base_url('_administrator/getDetailClientRegistrationDataById'); ?>",
+          dataType : "JSON",
+          data : {
+            REGISTRATIONID : _encodePassword(param)
+          },
+          success : function(response){
+            if(param2){
+              $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
+                var internetPackageData = {
+                                            id: _encodePassword(AvValue.package_id), 
+                                            text: AvValue.package_name+" ["+AvValue.speed+"]"
+                                          };
+                var internetPackageOption = new Option(internetPackageData.text, internetPackageData.id, true, true);
+
+                var employeeData = {
+                                    id: _encodePassword(AvValue.employee_id),
+                                    text: AvValue.employee_name
+                                   };
+                var employeeOption = new Option(employeeData.text, employeeData.id, true, true);
+                $("#txtClientId").val(_decodePassword(AvValue.reg_id));
+                $("#cmbInternetPackage").append(internetPackageOption).trigger("change");
+                $("#cmbEmployee").append(employeeOption).trigger("change");
+                $("#txtFullName").val(AvValue.full_name);
+                $("#cmbGender").val(AvValue.gender);
+                $("#txtBirthday").val(AvValue.birthday);
+                $("#txtTelp").val(AvValue.phone_number);
+                $("#txtTelpLain").val(AvValue.other_phone_number);
+                $("#txtEmail").val(AvValue.email);
+                CKEDITOR.instances["txtAddress"].setData(AvValue.address);
+                $("#txtPrice").val(AvValue.monthly_payment);
+                $("#txtRegistrationDate").val(AvValue.registration_date);
+                $("#txtRegistrationFee").val(AvValue.registration_fee);
+                CKEDITOR.instances["txtRegistrationInformation"].setData(AvValue.information);
+              });
+              var editFunction = "editClientRegistrationData('"+param+"')";
+              $("#btnAction").attr("onclick",editFunction)
+                             .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
+                                   "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+            }else{
+              $("#modalContentContainer").empty();
+              $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
+                $("#modalContentContainer").append(
+                  "<div class='col-md-10'>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Registrasi</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+_decodePassword(AvValue.reg_id)+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Nama Lengkap</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.full_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Jenis Kelamin</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.gender+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Tgl. Lahir</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_birthday+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Telp. / Ponsel</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.phone_number+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Telp. / Ponsel Lain</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.other_phone_number+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>E-mail</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.email+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Alamat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.address+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Paket Internet</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.package_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Harga Paket Internet</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+parseFloat(AvValue.monthly_payment).toLocaleString()+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Tanggal Registrasi</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_registration_date+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Biaya Registrasi</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+parseFloat(AvValue.registration_fee).toLocaleString()+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Sales</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.employee_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Keterangan</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.information+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Diperbarui Oleh</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.updater_name+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Diperbarui Pada</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.formatted_updated_on+"</div>"+
+                    "</div>"+
+                  "</div>"
                 );
               });
               $("#modalDetailData").modal("show");
