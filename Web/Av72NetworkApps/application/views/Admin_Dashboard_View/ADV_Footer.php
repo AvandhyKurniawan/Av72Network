@@ -102,6 +102,10 @@
           getAllInternetPackageData_Select(true);
         }
 
+        if($("#cmbRegistrationID").length > 0){
+          getAllClientRegistrationData_Select(true);
+        }
+
         if($("#txtCategoryInformation").length > 0){
           CKEDITOR.replace("txtCategoryInformation");
         }
@@ -599,6 +603,8 @@
         var registrationId    = $("#txtClientId").val();
         var packageId         = $("#cmbInternetPackage").val();
         var employeeId        = $("#cmbEmployee").val();
+        var ispParentId       = $("#txtIspParentId").val();
+        var numberId          = $("#txtNumberId").val();
         var fullName          = $("#txtFullName").val();
         var gender            = $("#cmbGender").val();
         var birthday          = $("#txtBirthday").val();
@@ -619,6 +625,8 @@
             REGISTRATIONID      : _encodePassword(registrationId),
             PACKAGEID           : packageId,
             EMPLOYEEID          : employeeId,
+            ISPPARENTID         : ispParentId,
+            NUMBERID            : numberId,
             FULLNAME            : fullName,
             GENDER              : gender,
             BIRTHDAY            : birthday,
@@ -895,6 +903,8 @@
       function editClientRegistrationData(param){
         var packageId         = $("#cmbInternetPackage").val();
         var employeeId        = $("#cmbEmployee").val();
+        var ispParentId       = $("#txtIspParentId").val();
+        var numberId          = $("#txtNumberId").val();
         var fullName          = $("#txtFullName").val();
         var gender            = $("#cmbGender").val();
         var birthday          = $("#txtBirthday").val();
@@ -915,6 +925,8 @@
             REGISTRATIONID      : _encodePassword(param),
             PACKAGEID           : packageId,
             EMPLOYEEID          : employeeId,
+            ISPPARENTID         : ispParentId,
+            NUMBERID            : numberId,
             FULLNAME            : fullName,
             GENDER              : gender,
             BIRTHDAY            : birthday,
@@ -1690,7 +1702,7 @@
         if(param){
           $("#cmbEmployee").addClass("custom-select");
           $("#cmbEmployee").select2({
-            placeholder : "Pilih Paket Karyawan",
+            placeholder : "Pilih Karyawan",
             // dropdownParent: $("#modalInputRencanaKerja"),
             width : "100%",
             cache:false,
@@ -1933,6 +1945,8 @@
                 $("#txtClientId").val(_decodePassword(AvValue.reg_id));
                 $("#cmbInternetPackage").append(internetPackageOption).trigger("change");
                 $("#cmbEmployee").append(employeeOption).trigger("change");
+                $("#txtIspParentId").val(AvValue.isp_parent_id);
+                $("#txtNumberId").val(AvValue.number_id);
                 $("#txtFullName").val(AvValue.full_name);
                 $("#cmbGender").val(AvValue.gender);
                 $("#txtBirthday").val(AvValue.birthday);
@@ -1958,6 +1972,16 @@
                       "<div class='col-md-3'><label>No. Registrasi</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
                       "<div class='col-md-8'>"+_decodePassword(AvValue.reg_id)+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Id Dari Isp</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.isp_parent_id+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. KTP / NPWP</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.number_id+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Nama Lengkap</label></div>"+
@@ -2049,6 +2073,64 @@
             alert(param);
           }
         });
+      }
+
+      function getAllClientRegistrationData_Select(param=false){
+        if(param){
+          $("#cmbRegistrationID").addClass("custom-select");
+          $("#cmbRegistrationID").select2({
+            placeholder : "Cari Data Pelanggan",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.client_registration, function(item){
+                    return{
+                      text:"["+_decodePassword(item.reg_id)+"] "+item.full_name,
+                      id:item.reg_id
+                    }
+                  })
+                };
+              }
+            }
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $("#cmbRegistrationID").removeClass("custom-select");
+              $("#cmbRegistrationID").empty();
+              $("#cmbRegistrationID").append("<option>Pilih Paket Internet</option>");
+              $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
+                $("#cmbRegistrationID").append(
+                  "<option value='"+AvValue.reg_id+"'>["+AvValue.reg_id+"] "+AvValue.full_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
       }
     </script>
     <!-- ========== GET DATA FUNCTION FINISH ========== -->

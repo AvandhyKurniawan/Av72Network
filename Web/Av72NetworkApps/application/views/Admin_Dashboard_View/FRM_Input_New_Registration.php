@@ -21,6 +21,36 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
+          <label>No. Id Dari Isp</label>
+          <label class="text-red">*</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" id="txtIspParentId" class="form-control" placeholder="Masukan Id Dari Isp Induk">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>No. KTP / NPWP</label>
+          <label class="text-red">*</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" id="txtNumberId" class="form-control" placeholder="Masukan No.Ktp / NPWP Pelanggan">
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <div class="col-md-2">
           <label>Nama Lengkap</label>
           <label class="text-red">*</label>
         </div>

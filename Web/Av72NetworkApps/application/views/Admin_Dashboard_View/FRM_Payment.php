@@ -30,7 +30,33 @@
         <div class="col-md-6">
           <div class="form-group">
             <select class="form-control" id="cmbBillingPeriode">
+              <?php
+                $arrBulan = array("Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
+                for ($i=0; $i < count($arrBulan); $i++) {
+                  $value = $arrBulan[$i]." ".date("Y");
+                  echo "<option value='$value'>$value</option>";
+                }
+              ?>
+            </select>
+          </div>
+        </div>
+      </div>
 
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Jenis Pembayaran</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <select class="form-control" id="cmbPaymentType">
+              <option value="INTERNET">Internet</option>
+              <option value="REGISTRASI">Registrasi</option>
+              <option value="PERANGKAT">Perangkat</option>
+              <option value="REGISTRASI DAN PERANGKAT">Registrasi Dan Perangkat</option>
+              <option value="INTERNET DAN PERANGKAT">Internet Dan Perangkat</option>
             </select>
           </div>
         </div>
@@ -46,6 +72,20 @@
         <div class="col-md-6">
           <div class="form-group">
             <input type="text" id="txtBillingAmount" class="form-control" placeholder="Masukan Jumlah Yang Harus Dibayar" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Jumlah Pajak</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtTaxAmount" class="form-control number" placeholder="Jumlah Pajak Yang Harus Dibayarkan" readonly>
           </div>
         </div>
       </div>
@@ -85,7 +125,7 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
-          <label>Jenis Pembayaran</label>
+          <label>Metode Pembayaran</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
@@ -96,20 +136,6 @@
               <option value="CASH">Tunai</option>
               <option value="TRANSFER">Transfer</option>
             </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-12">
-        <div class="col-md-2">
-          <label>Pajak</label>
-        </div>
-        <div class="col-md-1">
-          <label>:</label>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="txtTaxAmount" class="form-control" placeholder="Masukan Jumlah Nominal Pajak" readonly>
           </div>
         </div>
       </div>

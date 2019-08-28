@@ -100,18 +100,10 @@ class Main extends CI_Controller {
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
 
-                                              array("NAME"    => "Pembayaran Registrasi Baru",
-                                                    "ID"      => "MPembayaranRegistrasiBaru",
+                                              array("NAME"    => "Pembayaran",
+                                                    "ID"      => "MPembayaran",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "_administrator/add_new_registration_payment",
-                                                    "STATUS"  => "Single",
-                                                    "PARENT"  => "MTransaksi",
-                                                    "LEVEL"   => 1),
-
-                                              array("NAME"    => "Pembayaran Internet Bulanan",
-                                                    "ID"      => "MPembayaranInternetBulanan",
-                                                    "ICON"    => "fa fa-book",
-                                                    "URL"     => "_administrator/add_internet_payment",
+                                                    "URL"     => "_administrator/add_new_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -177,18 +169,10 @@ class Main extends CI_Controller {
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
 
-                                              array("NAME"    => "Pembayaran Registrasi Baru",
-                                                    "ID"      => "MPembayaranRegistrasiBaru",
+                                              array("NAME"    => "Pembayaran",
+                                                    "ID"      => "MPembayaran",
                                                     "ICON"    => "fa fa-book",
-                                                    "URL"     => "_administrator/add_new_registration_payment",
-                                                    "STATUS"  => "Single",
-                                                    "PARENT"  => "MTransaksi",
-                                                    "LEVEL"   => 1),
-
-                                              array("NAME"    => "Pembayaran Internet Bulanan",
-                                                    "ID"      => "MPembayaranInternetBulanan",
-                                                    "ICON"    => "fa fa-book",
-                                                    "URL"     => "_administrator/add_internet_payment",
+                                                    "URL"     => "_administrator/add_new_payment",
                                                     "STATUS"  => "Single",
                                                     "PARENT"  => "MTransaksi",
                                                     "LEVEL"   => 1),
@@ -331,29 +315,12 @@ class Main extends CI_Controller {
     }
   }
 
-  public function add_new_registration_payment(){
+  public function add_new_payment(){
     if(Main::isLogin()){
       $DATA = array("TITLE"     => "Tambah Data",
                     "ADDRESS_PATH" => array("Link_1" => $this->uri->rsegment(1),
                                             "Link_2" => $this->uri->rsegment(2)),
-                    "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Registration_Payment",NULL,TRUE),
-                    "CSRF_NAME" => $this->security->get_csrf_token_name(),
-                    "CSRF_TOKEN" => $this->security->get_csrf_hash());
-      $this->load->view("Admin_Dashboard_View/ADV_Header");
-      $this->load->view("Admin_Dashboard_View/ADV_Sidebar",Main::listMenu());
-      $this->load->view("Admin_Dashboard_View/ADV_Content_Wrapper",$DATA);
-      $this->load->view("Admin_Dashboard_View/ADV_Footer");
-    }else{
-      redirect("/","refresh");
-    }
-  }
-
-  public function add_internet_payment(){
-    if(Main::isLogin()){
-      $DATA = array("TITLE"     => "Tambah Data",
-                    "ADDRESS_PATH" => array("Link_1" => $this->uri->rsegment(1),
-                                            "Link_2" => $this->uri->rsegment(2)),
-                    "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Internet_Payment",NULL,TRUE),
+                    "COMPONENT" => $this->load->view("Admin_Dashboard_View/FRM_Payment",NULL,TRUE),
                     "CSRF_NAME" => $this->security->get_csrf_token_name(),
                     "CSRF_TOKEN" => $this->security->get_csrf_hash());
       $this->load->view("Admin_Dashboard_View/ADV_Header");
@@ -1309,6 +1276,8 @@ class Main extends CI_Controller {
       $registrationId     = decodePassword($this->input->post("REGISTRATIONID"));
       $packageId          = decodePassword($this->input->post("PACKAGEID"));
       $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
+      $ispParentId        = $this->input->post("ISPPARENTID");
+      $numberId           = $this->input->post("NUMBERID");
       $fullName           = $this->input->post("FULLNAME");
       $gender             = $this->input->post("GENDER");
       $birthday           = $this->input->post("BIRTHDAY");
@@ -1324,7 +1293,7 @@ class Main extends CI_Controller {
       if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
          empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
          empty($price)          || empty($registrationDate) || empty($registrationFee) || 
-         empty($employeeId)
+         empty($employeeId)     || empty($ispParentId)      || empty($numberId)
       ){
         $result = json_encode(array("CODE"      => 400,
                                     "MESSAGE"   => "Bad Request",
@@ -1335,11 +1304,13 @@ class Main extends CI_Controller {
                                                                             "admin_id"            => $adminId,
                                                                             "employee_id"         => $employeeId,
                                                                             "package_id"          => $packageId,
+                                                                            "isp_parent_id"       => $ispParentId,
+                                                                            "number_id"           => $numberId,
                                                                             "full_name"           => $fullName,
                                                                             "gender"              => $gender,
                                                                             "birthday"            => (empty($birthday) ? NULL : $birthday),
                                                                             "phone_number"        => $phoneNumber,
-                                                                            "other_phone_number"  => (empty($otherPhoneNumber) ? NULL : $otherPhoneNumber),
+                                                                            "other_phone_number"  => (empty($otherPhoneNumber) ? "" : $otherPhoneNumber),
                                                                             "email"               => (empty($email) ? NULL : $email),
                                                                             "address"             => $address,
                                                                             "registration_date"   => $registrationDate,
@@ -1419,8 +1390,8 @@ class Main extends CI_Controller {
                                                               ),
                                                           "WHERE" => "A.deleted_on IS NULL AND 
                                                                       (
-                                                                        CONCAT(A.reg_id, ' ',A.full_name) LIKE '%$search%' OR 
-                                                                        CONCAT(A.full_name, ' ',A.reg_id) LIKE '%$search%'
+                                                                        CONCAT(A.reg_id, ' ', A.full_name) LIKE '%$search%' OR 
+                                                                        CONCAT(A.full_name, ' ', A.reg_id) LIKE '%$search%'
                                                                       )"
                                                     )
                    );
@@ -1440,6 +1411,8 @@ class Main extends CI_Controller {
       $arrData = array("client_registration A" => array("COLUMN" => encodeMysqlValue("A.reg_id","reg_id").", 
                                                                      A.employee_id, 
                                                                      A.package_id,
+                                                                     A.isp_parent_id,
+                                                                     A.number_id,
                                                                      A.full_name,
                                                                      A.gender,
                                                                      A.birthday,
@@ -1484,6 +1457,8 @@ class Main extends CI_Controller {
       $registrationId     = decodePassword($this->input->post("REGISTRATIONID"));
       $packageId          = decodePassword($this->input->post("PACKAGEID"));
       $employeeId         = decodePassword($this->input->post("EMPLOYEEID"));
+      $ispParentId        = $this->input->post("ISPPARENTID");
+      $numberId           = $this->input->post("NUMBERID");
       $fullName           = $this->input->post("FULLNAME");
       $gender             = $this->input->post("GENDER");
       $birthday           = $this->input->post("BIRTHDAY");
@@ -1499,7 +1474,7 @@ class Main extends CI_Controller {
       if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
          empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
          empty($price)          || empty($registrationDate) || empty($registrationFee) || 
-         empty($employeeId)
+         empty($employeeId)     || empty($ispParentId)      || empty($numberId)
       ){
         $result = json_encode(array("CODE"      => 400,
                                     "MESSAGE"   => "Bad Request",
@@ -1509,11 +1484,13 @@ class Main extends CI_Controller {
                                                                           "admin_id"            => $adminId,
                                                                           "employee_id"         => $employeeId,
                                                                           "package_id"          => $packageId,
+                                                                          "isp_parent_id"       => $ispParentId,
+                                                                          "number_id"           => $numberId,
                                                                           "full_name"           => $fullName,
                                                                           "gender"              => $gender,
                                                                           "birthday"            => (empty($birthday) ? NULL : $birthday),
                                                                           "phone_number"        => $phoneNumber,
-                                                                          "other_phone_number"  => (empty($otherPhoneNumber) ? NULL : $otherPhoneNumber),
+                                                                          "other_phone_number"  => (empty($otherPhoneNumber) ? "" : $otherPhoneNumber),
                                                                           "email"               => (empty($email) ? NULL : $email),
                                                                           "address"             => $address,
                                                                           "registration_date"   => $registrationDate,
