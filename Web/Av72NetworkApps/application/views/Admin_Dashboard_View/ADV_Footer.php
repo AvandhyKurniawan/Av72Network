@@ -363,6 +363,65 @@
           }
         });
       }
+
+      function changePaymentType(param){
+        var registrationId = $("#cmbRegistrationID").val();
+        var paymentType = $(param).val();
+        if(registrationId != null){
+          if(paymentType != ""){
+            switch(paymentType){
+              case "REGISTRASI"                 : $("#registrationAmountWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "INTERNET"                   : $("#paymentPeriodWrapper").css("display","block");
+                                                  $("#priceWrapper").css("display","block");                 
+                                                  $("#taxWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "PERANGKAT"                  : $("#devicePriceWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "REGISTRASI DAN PERANGKAT"   : $("#registrationAmountWrapper").css("display","block");
+                                                  $("#devicePriceWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "INTERNET DAN PERANGKAT"     : $("#paymentPeriodWrapper").css("display","block");
+                                                  $("#priceWrapper").css("display","block");
+                                                  $("#devicePriceWrapper").css("display","block");
+                                                  $("#taxWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              default                           : $("#paymentPeriodWrapper").css("display","none");
+                                                  $("#registrationAmountWrapper").css("display","none");
+                                                  $("#priceWrapper").css("display","none");
+                                                  $("#devicePriceWrapper").css("display","none");
+                                                  $("#taxWrapper").css("display","none");
+                                                  $("#amountToBePaidWrapper").css("display","none");
+                                                  break;
+            }
+          }else{
+            $("#paymentPeriodWrapper").css("display","none");
+            $("#registrationAmountWrapper").css("display","none");
+            $("#priceWrapper").css("display","none");
+            $("#devicePriceWrapper").css("display","none");
+            $("#taxWrapper").css("display","none");
+            $("#amountToBePaidWrapper").css("display","none");
+          }
+        }else{
+          $(param).val("");
+          $("#paymentPeriodWrapper").css("display","none");
+          $("#registrationAmountWrapper").css("display","none");
+          $("#priceWrapper").css("display","none");
+          $("#devicePriceWrapper").css("display","none");
+          $("#taxWrapper").css("display","none");
+          $("#amountToBePaidWrapper").css("display","none");
+        }
+      }
     </script>
 
     <!-- ========== SAVE FUNCTION START ========== -->

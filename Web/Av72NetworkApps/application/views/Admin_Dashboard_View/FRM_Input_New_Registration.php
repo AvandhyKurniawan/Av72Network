@@ -228,6 +228,40 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
+          <label>Kepemilikan Perangkat</label>
+          <label class="text-red">*</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <select class="form-control" id="cmbDeviceStatus">
+              <option value="">== Pilih Status Kepemilikan Perangkat ==</option>
+              <option value="SEWA">Sewa</option>
+              <option value="BELI">Beli</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Harga Perangkat</label>
+          <label class="text-red">*</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" id="txtDevicePrice" class="form-control currency" placeholder="Masukan Harga Perangkat">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
           <label>Sales</label>
           <label class="text-red">*</label>
         </div>

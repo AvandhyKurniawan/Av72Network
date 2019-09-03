@@ -22,6 +22,27 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
+          <label>Jenis Pembayaran</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <select class="form-control" id="cmbPaymentType" onchange="changePaymentType(this);">
+              <option value="">== Pilih Jenis Pembayaran ==</option>
+              <option value="REGISTRASI">Registrasi</option>
+              <option value="INTERNET">Internet</option>
+              <option value="PERANGKAT">Perangkat</option>
+              <option value="REGISTRASI DAN PERANGKAT">Registrasi Dan Perangkat</option>
+              <option value="INTERNET DAN PERANGKAT">Internet Dan Perangkat</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12" id="paymentPeriodWrapper" style="display:none;">
+        <div class="col-md-2">
           <label>Periode Pembayaran</label>
         </div>
         <div class="col-md-1">
@@ -44,25 +65,80 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
-          <label>Jenis Pembayaran</label>
+          <label>Tanggal Pembayaran</label>
         </div>
         <div class="col-md-1">
           <label>:</label>
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <select class="form-control" id="cmbPaymentType">
-              <option value="INTERNET">Internet</option>
-              <option value="REGISTRASI">Registrasi</option>
-              <option value="PERANGKAT">Perangkat</option>
-              <option value="REGISTRASI DAN PERANGKAT">Registrasi Dan Perangkat</option>
-              <option value="INTERNET DAN PERANGKAT">Internet Dan Perangkat</option>
-            </select>
+            <div class="input-group date">
+              <input type="text" id="txtPaymentDate" class="form-control" placeholder="Pilih Tanggal Pembayaran" readonly value="<?= date("Y-m-d"); ?>">
+              <span class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-md-12">
+      <div class="col-md-12" id="registrationAmountWrapper" style="display:none;">
+        <div class="col-md-2">
+          <label>Biaya Registrasi</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtRegistrationAmount" class="form-control" placeholder="Masukan Biaya Registrasi" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12" id="priceWrapper" style="display:none;">
+        <div class="col-md-2">
+          <label>Tarif Internet</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtPrice" class="form-control" placeholder="Masukan Tarif Internet Bulanan" readonly>
+          </div>
+        </div>
+      </div>  
+
+      <div class="col-md-12" id="devicePriceWrapper" style="display:none;">
+        <div class="col-md-2">
+          <label>Harga Alat / Cicilan / Sewa</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtDevicePrice" class="form-control" placeholder="Masukan Harga Alat / Cicilan / Sewa">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12"  id="taxWrapper" style="display:none;">
+        <div class="col-md-2">
+          <label>Jumlah Pajak</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtTaxAmount" class="form-control number" placeholder="Jumlah Pajak Yang Harus Dibayarkan" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12" id="amountToBePaidWrapper" style="display:none;">
         <div class="col-md-2">
           <label>Jumlah Yang Harus Dibayar</label>
         </div>
@@ -78,39 +154,6 @@
 
       <div class="col-md-12">
         <div class="col-md-2">
-          <label>Jumlah Pajak</label>
-        </div>
-        <div class="col-md-1">
-          <label>:</label>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="text" id="txtTaxAmount" class="form-control number" placeholder="Jumlah Pajak Yang Harus Dibayarkan" readonly>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-12">
-        <div class="col-md-2">
-          <label>Tanggal Pembayaran</label>
-        </div>
-        <div class="col-md-1">
-          <label>:</label>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <div class="input-group date">
-              <input type="text" id="txtPaymentDate" class="form-control" placeholder="Pilih Tanggal Pembayaran" readonly>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-12">
-        <div class="col-md-2">
           <label>Jumlah Yang Dibayarkan</label>
         </div>
         <div class="col-md-1">
@@ -119,6 +162,20 @@
         <div class="col-md-6">
           <div class="form-group">
             <input type="text" id="txtPaymentAmount" class="form-control number" placeholder="Masukan Jumlah Yang Dibayarkan">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Jumlah Yang Kembalian</label>
+        </div>
+        <div class="col-md-1">
+          <label>:</label>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="text" id="txtAmountOfChange" class="form-control number" placeholder="Masukan Jumlah Kembalian" readonly>
           </div>
         </div>
       </div>
