@@ -228,7 +228,7 @@
       <div class="col-md-9">
         <div class="pull-right">
           <button type="button" id="btnAction" class="btn btn-md btn-flat btn-primary"><i class="fa fa-check"></i> Simpan Baru</button>
-          <button type="button" class="btn btn-md btn-flat btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+          <button type="button" class="btn btn-md btn-flat btn-danger" onclick='resetForm(true);'><i class="fa fa-refresh"></i> Batal</button>
         </div>
       </div>
 

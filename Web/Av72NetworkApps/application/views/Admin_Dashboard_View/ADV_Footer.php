@@ -162,9 +162,9 @@
         });
       }
 
-      function resetForm(){
+      function resetForm(param=false){
+        $("select.form-control").prop("selectedIndex",0).change();
         $(".form-control").val("");
-        $("select.form-control").prop("selectedIndex",0);
         $("select.custom-select").val("").change();
         $(".date").datepicker("setDate", null);
         $(".profileImage").attr("src","<?= base_url('assets/images/avatar_2x.png'); ?>");
@@ -173,6 +173,9 @@
           CKEDITOR.instances[name].setData("");
         }
         var saveFunction = $("#btnAction").data("onclick");
+        if(param){
+          $(".date > input[class='form-control']").val("<?= date('Y-m-d'); ?>").change();
+        }
         $("#btnAction").attr("onclick",saveFunction)
                        .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                              "<i class='fa fa-plus' style='display: inline-block;'></i> Tambah Baru");
@@ -420,6 +423,12 @@
           $("#devicePriceWrapper").css("display","none");
           $("#taxWrapper").css("display","none");
           $("#amountToBePaidWrapper").css("display","none");
+          var data = {
+              CODE : 400,
+              MESSAGE : "Bad Request",
+              RESPONSE : "Maaf, ID. Registrasi Harus Diisi Terlebih Dahulu!"
+            }
+            alert(data);
         }
       }
     </script>
@@ -674,6 +683,8 @@
         var price             = $("#txtPrice").val().replace(/,/g,"");
         var registrationDate  = $("#txtRegistrationDate").val();
         var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
+        var deviceStatus      = $("#cmbDeviceStatus").val();
+        var devicePrice       = $("#txtDevicePrice").val().replace(/,/g,"");
         var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
 
         $.ajax({
@@ -696,6 +707,8 @@
             PRICE               : price,
             REGISTRATIONDATE    : registrationDate,
             REGISTRATIONFEE     : registrationFee,
+            DEVICESTATUS        : deviceStatus,
+            DEVICEPRICE         : devicePrice,
             REGISTRATIONINFO    : registrationInfo,
             <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
           },
@@ -974,6 +987,8 @@
         var price             = $("#txtPrice").val().replace(/,/g,"");
         var registrationDate  = $("#txtRegistrationDate").val();
         var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
+        var deviceStatus      = $("#cmbDeviceStatus").val();
+        var devicePrice       = $("#txtDevicePrice").val().replace(/,/g,"");
         var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
 
         $.ajax({
@@ -996,6 +1011,8 @@
             PRICE               : price,
             REGISTRATIONDATE    : registrationDate,
             REGISTRATIONFEE     : registrationFee,
+            DEVICESTATUS        : deviceStatus,
+            DEVICEPRICE         : devicePrice,
             REGISTRATIONINFO    : registrationInfo,
             <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
           },
@@ -2016,6 +2033,8 @@
                 $("#txtPrice").val(AvValue.monthly_payment);
                 $("#txtRegistrationDate").val(AvValue.registration_date);
                 $("#txtRegistrationFee").val(AvValue.registration_fee);
+                $("#cmbDeviceStatus").val(AvValue.tools_status);
+                $("#txtDevicePrice").val(AvValue.price_of_tools);
                 CKEDITOR.instances["txtRegistrationInformation"].setData(AvValue.information);
               });
               var editFunction = "editClientRegistrationData('"+param+"')";
@@ -2096,6 +2115,16 @@
                       "<div class='col-md-3'><label>Biaya Registrasi</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
                       "<div class='col-md-8'>"+parseFloat(AvValue.registration_fee).toLocaleString()+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Kepemilikan Perangkat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.tools_status+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Harga Perangkat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+parseFloat(AvValue.price_of_tools).toLocaleString()+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Sales</label></div>"+

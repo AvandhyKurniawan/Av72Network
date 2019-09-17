@@ -1288,12 +1288,15 @@ class Main extends CI_Controller {
       $price              = $this->input->post("PRICE");
       $registrationDate   = $this->input->post("REGISTRATIONDATE");
       $registrationFee    = $this->input->post("REGISTRATIONFEE");
+      $deviceStatus       = $this->input->post("DEVICESTATUS");
+      $devicePrice        = $this->input->post("DEVICEPRICE");
       $registrationInfo   = $this->input->post("REGISTRATIONINFO");
 
       if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
          empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
          empty($price)          || empty($registrationDate) || empty($registrationFee) || 
-         empty($employeeId)     || empty($ispParentId)      || empty($numberId)
+         empty($employeeId)     || empty($ispParentId)      || empty($numberId)        ||
+         empty($deviceStatus)   || empty($devicePrice)
       ){
         $result = json_encode(array("CODE"      => 400,
                                     "MESSAGE"   => "Bad Request",
@@ -1316,6 +1319,8 @@ class Main extends CI_Controller {
                                                                             "registration_date"   => $registrationDate,
                                                                             "registration_fee"    => $registrationFee,
                                                                             "monthly_payment"     => $price,
+                                                                            "tools_status"        => $deviceStatus,
+                                                                            "price_of_tools"      => $devicePrice,
                                                                             "updated_by"          => $adminId,
                                                                             "information"         => (empty($registrationInfo) ? NULL : $registrationInfo) 
                                                                       )
@@ -1353,6 +1358,8 @@ class Main extends CI_Controller {
                                                                        A.registration_status,
                                                                        A.registration_fee,
                                                                        A.monthly_payment,
+                                                                       A.tools_status,
+                                                                       A.price_of_tools,
                                                                        A.information,
                                                                        B.package_name,
                                                                        C.full_name AS employee_name",
@@ -1381,6 +1388,8 @@ class Main extends CI_Controller {
                                                                        A.registration_status,
                                                                        A.registration_fee,
                                                                        A.monthly_payment,
+                                                                       A.tools_status,
+                                                                       A.price_of_tools,
                                                                        A.information,
                                                                        B.package_name,
                                                                        C.full_name AS employee_name",
@@ -1432,6 +1441,8 @@ class Main extends CI_Controller {
                                                                      DATE_FORMAT(A.updated_on, '%d %M %Y %H:%i:%s') AS formatted_updated_on,
                                                                      B.package_name,
                                                                      B.speed,
+                                                                     A.tools_status,
+                                                                     A.price_of_tools,
                                                                      C.full_name AS employee_name,
                                                                      D.full_name AS updater_name",
                                                         "JOIN" => array(
@@ -1469,12 +1480,15 @@ class Main extends CI_Controller {
       $price              = $this->input->post("PRICE");
       $registrationDate   = $this->input->post("REGISTRATIONDATE");
       $registrationFee    = $this->input->post("REGISTRATIONFEE");
+      $deviceStatus       = $this->input->post("DEVICESTATUS");
+      $devicePrice        = $this->input->post("DEVICEPRICE");
       $registrationInfo   = $this->input->post("REGISTRATIONINFO");
 
       if(empty($registrationId) || empty($fullName)         || empty($gender)          ||
          empty($phoneNumber)    || empty($address)          || empty($packageId)       || 
          empty($price)          || empty($registrationDate) || empty($registrationFee) || 
-         empty($employeeId)     || empty($ispParentId)      || empty($numberId)
+         empty($employeeId)     || empty($ispParentId)      || empty($numberId)        ||
+         empty($deviceStatus)   || empty($devicePrice)
       ){
         $result = json_encode(array("CODE"      => 400,
                                     "MESSAGE"   => "Bad Request",
@@ -1496,6 +1510,8 @@ class Main extends CI_Controller {
                                                                           "registration_date"   => $registrationDate,
                                                                           "registration_fee"    => $registrationFee,
                                                                           "monthly_payment"     => $price,
+                                                                          "tools_status"        => $deviceStatus,
+                                                                          "price_of_tools"      => $devicePrice,
                                                                           "updated_by"          => $adminId,
                                                                           "information"         => (empty($registrationInfo) ? NULL : $registrationInfo) 
                                                                     ),
