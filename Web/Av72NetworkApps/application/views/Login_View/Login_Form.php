@@ -117,7 +117,11 @@
               <?php echo $CSRF_NAME; ?> : "<?php echo $CSRF_TOKEN; ?>"
             },
             success : function(response){
-              alert(response);
+              if(response.CODE == 200){
+                location.reload();
+              }else{
+                alert(response);
+              }
             },
             error : function(response){
               var data = {
