@@ -4,6 +4,28 @@
       <h3 class="box-title">Tambah Pelanggan Baru</h3>
     </div>
     <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1-1" data-toggle="tab">Tab 1</a></li>
+            <li><a href="#tab_2-2" data-toggle="tab">Tab 2</a></li>
+            <li class="pull-right header"><i class="fa fa-th"></i> Menu Data Pegawai</li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_1-1">
+              <div class="row">
+              </div>
+            </div><!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2-2">
+              <div class="row">
+              </div>
+            </div><!-- /.tab-pane -->
+          </div><!-- /.tab-content -->
+        </div><!-- /.nav-tabs-custom -->
+      </div><!-- /.col-md-12 -->
+    </div><!-- /.row -->
+    
       <div class="col-md-12">
         <div class="col-md-2">
           <label>No. Registrasi</label>

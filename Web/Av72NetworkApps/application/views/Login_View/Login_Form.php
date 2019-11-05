@@ -29,11 +29,11 @@
         </div> -->
         <form class="" action="#" method="POST">
           <div class="form-group has-feedback">
-            <input type="text" id="txtUname" class="form-control" placeholder="Nama Pengguna">
+            <input type="text" id="txtUname" class="form-control" placeholder="Nama Pengguna" autocomplete="off">
             <span class="form-control-feedback fa fa-user"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" id="txtUpass" class="form-control" placeholder="Kata Sandi">
+            <input type="password" id="txtUpass" class="form-control" placeholder="Kata Sandi" autocomplete="off">
             <span class="form-control-feedback fa fa-key"></span>
           </div>
 

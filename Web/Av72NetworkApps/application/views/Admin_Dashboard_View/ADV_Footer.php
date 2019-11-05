@@ -163,8 +163,8 @@
       }
 
       function resetForm(param=false){
-        $("select.form-control").prop("selectedIndex",0).change();
         $(".form-control").val("");
+        $("select.form-control").prop("selectedIndex",0).change();
         $("select.custom-select").val("").change();
         $(".date").datepicker("setDate", null);
         $(".profileImage").attr("src","<?= base_url('assets/images/avatar_2x.png'); ?>");
