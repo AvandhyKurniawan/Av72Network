@@ -8,7 +8,7 @@
         <div class="col-md-12">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1-1" data-toggle="tab">Daftar Data Pegawai</a></li>
+              <li class="active"><a href="#tab_1-1" data-toggle="tab" onclick="EMPLOYEEDATA.ajax.reload(null, false);">Daftar Data Pegawai</a></li>
               <li><a href="#tab_2-2" data-toggle="tab">Tambah Data Pegawai</a></li>
               <li class="pull-right header"><i class="fa fa-th"></i> Menu Data Pegawai</li>
             </ul>

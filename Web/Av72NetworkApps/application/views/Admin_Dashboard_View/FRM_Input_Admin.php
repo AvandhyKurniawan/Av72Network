@@ -8,7 +8,7 @@
         <div class="col-md-12">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1-1" data-toggle="tab">Daftar Data Administrator</a></li>
+              <li class="active"><a href="#tab_1-1" data-toggle="tab" onclick="ADMINISTRATORDATA.ajax.reload(null, false);">Daftar Data Administrator</a></li>
               <li><a href="#tab_2-2" data-toggle="tab">Tambah Data Administrator</a></li>
               <li class="pull-right header"><i class="fa fa-th"></i> Data Administrator</li>
             </ul>

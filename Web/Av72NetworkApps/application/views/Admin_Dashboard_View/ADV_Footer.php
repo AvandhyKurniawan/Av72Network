@@ -1518,6 +1518,7 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+              $("a[href='#tab_2-2']").tab("show");
             }
           },
           error : function(response){
@@ -1724,6 +1725,8 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+
+              $("a[href='#tab_2-2']").tab("show");
             }
           },
           error : function(response){
@@ -1765,7 +1768,7 @@
                       fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
                         $("td:eq(0)",AvRow).text(_decodePassword(AvData["employee_id"]));
                         var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+false+")><i class='fa fa-info'></i></button>"+
-                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+true+")><i class='fa fa-edit'></i></button>"+
                                       "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteEmployeeData('"+_decodePassword(AvData["employee_id"])+"')><i class='fa fa-trash'></i></button>";
                         $("td:eq(7)",AvRow).html(buttons);
                       }
@@ -1865,6 +1868,7 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+              $("a[href='#tab_2-2']").tab('show');
             }else{
               $("#modalContentContainer").empty();
               $.each(response.RESPONSE.employee, function(AvIndex, AvValue){
@@ -2041,6 +2045,8 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+
+              $("a[href='#tab_2-2']").tab("show");
             }else{
               $("#modalContentContainer").empty();
               $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
