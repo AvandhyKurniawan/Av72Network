@@ -102,7 +102,7 @@
           getAllInternetPackageData_Select(true);
         }
 
-        if($("#cmbRegistrationID").length > 0){
+        if($("select[data-id='cmbRegistrationID']").length > 0){
           getAllClientRegistrationData_Select(true);
         }
 
@@ -368,7 +368,7 @@
       }
 
       function changePaymentType(param){
-        var registrationId = $("#cmbRegistrationID").val();
+        var registrationId = $("#cmbRegistrationID2").val();
         var paymentType = $(param).val();
         if(registrationId != null){
           if(paymentType != ""){
@@ -2170,9 +2170,20 @@
       }
 
       function getAllClientRegistrationData_Select(param=false){
+        if($("select[data-id='cmbRegistrationID']").length > 1){
+          var componentId = "";
+          $("select[data-id='cmbRegistrationID']").each(function(index, value){
+            componentId += "#"+$(this).attr("id");
+            if(parseInt($("select[data-id='cmbRegistrationID']").length) - parseInt(index) != 1){
+              componentId += ", ";
+            }
+          });
+        }else{
+          var componentId = "#cmbRegistrationID";
+        }
         if(param){
-          $("#cmbRegistrationID").addClass("custom-select");
-          $("#cmbRegistrationID").select2({
+          $(componentId).addClass("custom-select");
+          $(componentId).select2({
             placeholder : "Cari Data Pelanggan",
             // dropdownParent: $("#modalInputRencanaKerja"),
             width : "100%",
@@ -2206,9 +2217,9 @@
             url : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
             dataType : "JSON",
             success : function(response){
-              $("#cmbRegistrationID").removeClass("custom-select");
-              $("#cmbRegistrationID").empty();
-              $("#cmbRegistrationID").append("<option>Pilih Paket Internet</option>");
+              $(componentId).removeClass("custom-select");
+              $(componentId).empty();
+              $(componentId).append("<option>Pilih Paket Internet</option>");
               $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
                 $("#cmbRegistrationID").append(
                   "<option value='"+AvValue.reg_id+"'>["+AvValue.reg_id+"] "+AvValue.full_name+"</option>"

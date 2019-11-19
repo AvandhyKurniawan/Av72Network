@@ -50,7 +50,11 @@
                   <div class="col-md-1">
                     <label>:</label>
                   </div>
-                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="txtBillNumber" placeholder="Masukan Nomor Tagihan">
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-12">
@@ -60,7 +64,16 @@
                   <div class="col-md-1">
                     <label>:</label>
                   </div>
-                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="input-group date">
+                        <input type="text" class="form-control" id="txtDateOfPrintBill" placeholder="Pilih Tanggal Cetak Tagihan" readonly>
+                        <span class="input-group-addon">
+                          <i class="fa fa-calendar"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-12">
@@ -70,7 +83,16 @@
                   <div class="col-md-1">
                     <label>:</label>
                   </div>
-                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="input-group date">
+                        <input type="text" class="form-control" id="txtDueDate" placeholder="Pilih Tanggal Jatuh Tempo" readonly>
+                        <span class="input-group-addon">
+                          <i class="fa fa-calendar"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-12">
@@ -80,18 +102,41 @@
                   <div class="col-md-1">
                     <label>:</label>
                   </div>
-                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="txtContractNumber" placeholder="Masukan Nomor Kontrak">
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-12">
                   <div class="col-md-2">
-                    <label>Total Tagihan</label>
+                    <label>Harga Internet</label>
                   </div>
                   <div class="col-md-1">
                     <label>:</label>
                   </div>
-                  <div class="col-md-6"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input type="text" class="form-control currency" id="txtInternetPrice" placeholder="Masukan Nomor Harga Internet" readonly>
+                    </div>
+                  </div>
                 </div>
+
+                <div class="col-md-12">
+                  <div class="col-md-2">
+                    <label>Total Pajak</label>
+                  </div>
+                  <div class="col-md-1">
+                    <label>:</label>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input type="text" class="form-control currency" id="txtTaxAmount" placeholder="Masukan Total Pajak" readonly>
+                    </div>
+                  </div>
+                </div>
+
               </div><!-- /.row -->
             </div><!-- /.tab-pane -->
 

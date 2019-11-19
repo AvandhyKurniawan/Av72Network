@@ -56,6 +56,5 @@ class Login_Controller extends CI_Controller {
     $data["heading"] = "404 Page Not Found";
     $data["message"] = "The page you requested was not found ";
     $this->load->view('error',$data);
-  }
-
+  }  
 }
