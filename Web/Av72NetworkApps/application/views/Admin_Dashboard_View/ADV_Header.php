@@ -30,9 +30,6 @@
           <span class="logo-lg"><img class="user-image" src="<?= base_url('assets/images/Logo_Av-72_Network2.png'); ?>" width="200px" height="30px" style="margin-top:10px;"></span>
         </a>
         <nav class="navbar navbar-static-top">
-          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-          </a>
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
               <li class="dropdown user user-menu">

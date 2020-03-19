@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 12, 2019 at 04:16 PM
--- Server version: 8.0.16
--- PHP Version: 7.2.19-1+ubuntu16.04.1+deb.sury.org+1
+-- Generation Time: Sep 03, 2019 at 04:28 PM
+-- Server version: 8.0.17
+-- PHP Version: 7.2.21-1+ubuntu16.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -44,8 +44,8 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`admin_id`, `username`, `password`, `full_name`, `role`, `last_login`, `deleted_on`) VALUES
-(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-07-12 16:15:30', NULL),
-(6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-07-05 09:01:43', NULL),
+(1, 'Avandhy', 'HYzZbchKZKPVvFpc6xNjEw==', 'Avandhy Kurniawan', 'ROOT', '2019-09-03 14:07:33', NULL),
+(6, 'administrator', 'GNsRbUGnoBPctcM84l+j4Q==', 'Administrator', 'ADMIN', '2019-08-28 13:36:35', NULL),
 (7, 'asdad', '8SoLF9YGEuCYlYV6pDFdcw==', 'asdasd', 'ADMIN', NULL, '2019-06-26 16:20:21'),
 (10, 'a', 'UytHlQNlYr2Is8mg8vq+VQ==', 'a', 'ADMIN', NULL, '2019-07-05 08:52:06');
 
@@ -60,8 +60,10 @@ CREATE TABLE `client_registration` (
   `admin_id` int(11) NOT NULL,
   `employee_id` varchar(20) NOT NULL,
   `package_id` int(11) NOT NULL,
+  `isp_parent_id` varchar(3) DEFAULT NULL,
+  `number_id` varchar(30) DEFAULT NULL,
   `full_name` varchar(100) NOT NULL,
-  `gender` enum('MALE','FEMALE') NOT NULL,
+  `gender` enum('Pria','Wanita') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `birthday` date DEFAULT NULL,
   `phone_number` varchar(15) NOT NULL,
   `other_phone_number` varchar(15) DEFAULT NULL,
@@ -71,12 +73,22 @@ CREATE TABLE `client_registration` (
   `registration_status` enum('PENDING','CANCELED','ON SCHEDULED','ON PROCESS','HOLD','REGISTERED') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'PENDING',
   `registration_fee` decimal(15,2) NOT NULL DEFAULT '0.00',
   `monthly_payment` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `price_of_tools` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `tools_status` enum('SEWA','BELI') NOT NULL DEFAULT 'BELI',
   `information` text,
   `entered_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_by` int(11) NOT NULL,
   `deleted_on` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `client_registration`
+--
+
+INSERT INTO `client_registration` (`reg_id`, `admin_id`, `employee_id`, `package_id`, `isp_parent_id`, `number_id`, `full_name`, `gender`, `birthday`, `phone_number`, `other_phone_number`, `email`, `address`, `registration_date`, `registration_status`, `registration_fee`, `monthly_payment`, `price_of_tools`, `tools_status`, `information`, `updated_by`, `deleted_on`) VALUES
+('7219070001', 1, '19070001', 1, '002', NULL, 'qqqq', 'Pria', '1995-07-13', '121221', '', NULL, '<p>asasas</p>\n', '2019-07-15', 'PENDING', '100000.00', '120000.00', '0.00', 'BELI', '<p>sds</p>\n', 1, '2019-08-28 13:32:55'),
+('7219080001', 1, '19070001', 4, '001', '3603180702970009', 'Avandhy Kurniawan', 'Pria', '1997-02-07', '081287505145', '', 'avandhykurniawan@gmail.com', '<p>Bukit Tiara Blok R4 No.3 Rt.041, Rw.006, Pasir Jaya, Cikupa, Tangerang, Banten, 15710</p>\n', '2019-01-31', 'PENDING', '100000.00', '200000.00', '200000.00', 'BELI', NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -204,7 +216,8 @@ CREATE TABLE `internet_payment` (
   `billing_amount` decimal(15,2) NOT NULL,
   `payment_date` date NOT NULL,
   `payment_amount` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `payment_type` enum('CASH','TRANSFER') NOT NULL DEFAULT 'CASH',
+  `payment_method` enum('CASH','TRANSFER') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'CASH',
+  `payment_type` enum('REGISTRASI','INTERNET','PERANGKAT','REGISTRASI DAN PERANGKAT','INTERNET DAN PERANGKAT') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'INTERNET',
   `tax_amount` decimal(15,2) NOT NULL DEFAULT '0.00',
   `payment_information` text,
   `transfer_proof_image` varchar(150) DEFAULT NULL,
@@ -251,6 +264,7 @@ ALTER TABLE `administrator`
 --
 ALTER TABLE `client_registration`
   ADD PRIMARY KEY (`reg_id`),
+  ADD UNIQUE KEY `number_id` (`number_id`),
   ADD KEY `admin_id` (`admin_id`),
   ADD KEY `employee_id` (`employee_id`),
   ADD KEY `package_id` (`package_id`),

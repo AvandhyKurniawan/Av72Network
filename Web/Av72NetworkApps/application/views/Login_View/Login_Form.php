@@ -29,18 +29,23 @@
         </div> -->
         <form class="" action="#" method="POST">
           <div class="form-group has-feedback">
-            <input type="text" id="txtUname" class="form-control" placeholder="Nama Pengguna">
+            <input type="text" id="txtUname" class="form-control" placeholder="Nama Pengguna" autocomplete="off">
             <span class="form-control-feedback fa fa-user"></span>
           </div>
           <div class="form-group has-feedback">
-            <input type="password" id="txtUpass" class="form-control" placeholder="Kata Sandi">
+            <input type="password" id="txtUpass" class="form-control" placeholder="Kata Sandi" autocomplete="off">
             <span class="form-control-feedback fa fa-key"></span>
           </div>
 
           <div class="row">
             <div class="col-xs-12" style="margin-bottom:10px;">
               <button type="button" id="btnLogin" class="btn btn-md btn-flat btn-block btn-primary" onclick="login()">
-                <i class="fa fa-sign-in"></i> Masuk
+                <div id="defaultValue">
+                  <i class="fa fa-sign-in"></i> Masuk
+                </div>
+                <div id="loadingValue" style="display: none;">
+                    <img src="<?= base_url('assets/images/loading_1.svg'); ?>" width="20px" height="20px" style="padding:0; margin:0;">&nbsp; Loading
+                </div>
               </button>
             </div>
           </div>
@@ -116,8 +121,16 @@
               upass :  _encodePassword(uPass),
               <?php echo $CSRF_NAME; ?> : "<?php echo $CSRF_TOKEN; ?>"
             },
+            beforeSend : function(){
+              $("#btnLogin > #defaultValue").css("display","none");
+              $("#btnLogin > #loadingValue").css("display","block");
+            },
             success : function(response){
-              alert(response);
+              if(response.CODE == 200){
+                location.reload();
+              }else{
+                alert(response);
+              }
             },
             error : function(response){
               var data = {
@@ -126,6 +139,10 @@
                 RESPONSE : "[ "+response.status+" "+response.statusText+" ] Silahkan Hubungi Developer Program!"
               }
               alert(data);
+            },
+            complete : function(){
+              $("#btnLogin > #defaultValue").css("display","block");
+              $("#btnLogin > #loadingValue").css("display","none");
             }
           });
         }

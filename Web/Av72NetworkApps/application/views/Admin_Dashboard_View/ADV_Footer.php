@@ -102,6 +102,10 @@
           getAllInternetPackageData_Select(true);
         }
 
+        if($("select[data-id='cmbRegistrationID']").length > 0){
+          getAllClientRegistrationData_Select(true);
+        }
+
         if($("#txtCategoryInformation").length > 0){
           CKEDITOR.replace("txtCategoryInformation");
         }
@@ -158,9 +162,9 @@
         });
       }
 
-      function resetForm(){
+      function resetForm(param=false){
         $(".form-control").val("");
-        $("select.form-control").prop("selectedIndex",0);
+        $("select.form-control").prop("selectedIndex",0).change();
         $("select.custom-select").val("").change();
         $(".date").datepicker("setDate", null);
         $(".profileImage").attr("src","<?= base_url('assets/images/avatar_2x.png'); ?>");
@@ -169,6 +173,9 @@
           CKEDITOR.instances[name].setData("");
         }
         var saveFunction = $("#btnAction").data("onclick");
+        if(param){
+          $(".date > input[class='form-control']").val("<?= date('Y-m-d'); ?>").change();
+        }
         $("#btnAction").attr("onclick",saveFunction)
                        .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                              "<i class='fa fa-plus' style='display: inline-block;'></i> Tambah Baru");
@@ -358,6 +365,71 @@
             alert(data);
           }
         });
+      }
+
+      function changePaymentType(param){
+        var registrationId = $("#cmbRegistrationID2").val();
+        var paymentType = $(param).val();
+        if(registrationId != null){
+          if(paymentType != ""){
+            switch(paymentType){
+              case "REGISTRASI"                 : $("#registrationAmountWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "INTERNET"                   : $("#paymentPeriodWrapper").css("display","block");
+                                                  $("#priceWrapper").css("display","block");                 
+                                                  $("#taxWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "PERANGKAT"                  : $("#devicePriceWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "REGISTRASI DAN PERANGKAT"   : $("#registrationAmountWrapper").css("display","block");
+                                                  $("#devicePriceWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              case "INTERNET DAN PERANGKAT"     : $("#paymentPeriodWrapper").css("display","block");
+                                                  $("#priceWrapper").css("display","block");
+                                                  $("#devicePriceWrapper").css("display","block");
+                                                  $("#taxWrapper").css("display","block");
+                                                  $("#amountToBePaidWrapper").css("display","block");
+                                                  break;
+
+              default                           : $("#paymentPeriodWrapper").css("display","none");
+                                                  $("#registrationAmountWrapper").css("display","none");
+                                                  $("#priceWrapper").css("display","none");
+                                                  $("#devicePriceWrapper").css("display","none");
+                                                  $("#taxWrapper").css("display","none");
+                                                  $("#amountToBePaidWrapper").css("display","none");
+                                                  break;
+            }
+          }else{
+            $("#paymentPeriodWrapper").css("display","none");
+            $("#registrationAmountWrapper").css("display","none");
+            $("#priceWrapper").css("display","none");
+            $("#devicePriceWrapper").css("display","none");
+            $("#taxWrapper").css("display","none");
+            $("#amountToBePaidWrapper").css("display","none");
+          }
+        }else{
+          $(param).val("");
+          $("#paymentPeriodWrapper").css("display","none");
+          $("#registrationAmountWrapper").css("display","none");
+          $("#priceWrapper").css("display","none");
+          $("#devicePriceWrapper").css("display","none");
+          $("#taxWrapper").css("display","none");
+          $("#amountToBePaidWrapper").css("display","none");
+          var data = {
+              CODE : 400,
+              MESSAGE : "Bad Request",
+              RESPONSE : "Maaf, ID. Registrasi Harus Diisi Terlebih Dahulu!"
+            }
+            alert(data);
+        }
       }
     </script>
 
@@ -599,6 +671,8 @@
         var registrationId    = $("#txtClientId").val();
         var packageId         = $("#cmbInternetPackage").val();
         var employeeId        = $("#cmbEmployee").val();
+        var ispParentId       = $("#txtIspParentId").val();
+        var numberId          = $("#txtNumberId").val();
         var fullName          = $("#txtFullName").val();
         var gender            = $("#cmbGender").val();
         var birthday          = $("#txtBirthday").val();
@@ -609,6 +683,8 @@
         var price             = $("#txtPrice").val().replace(/,/g,"");
         var registrationDate  = $("#txtRegistrationDate").val();
         var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
+        var deviceStatus      = $("#cmbDeviceStatus").val();
+        var devicePrice       = $("#txtDevicePrice").val().replace(/,/g,"");
         var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
 
         $.ajax({
@@ -619,6 +695,8 @@
             REGISTRATIONID      : _encodePassword(registrationId),
             PACKAGEID           : packageId,
             EMPLOYEEID          : employeeId,
+            ISPPARENTID         : ispParentId,
+            NUMBERID            : numberId,
             FULLNAME            : fullName,
             GENDER              : gender,
             BIRTHDAY            : birthday,
@@ -629,6 +707,8 @@
             PRICE               : price,
             REGISTRATIONDATE    : registrationDate,
             REGISTRATIONFEE     : registrationFee,
+            DEVICESTATUS        : deviceStatus,
+            DEVICEPRICE         : devicePrice,
             REGISTRATIONINFO    : registrationInfo,
             <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
           },
@@ -895,6 +975,8 @@
       function editClientRegistrationData(param){
         var packageId         = $("#cmbInternetPackage").val();
         var employeeId        = $("#cmbEmployee").val();
+        var ispParentId       = $("#txtIspParentId").val();
+        var numberId          = $("#txtNumberId").val();
         var fullName          = $("#txtFullName").val();
         var gender            = $("#cmbGender").val();
         var birthday          = $("#txtBirthday").val();
@@ -905,6 +987,8 @@
         var price             = $("#txtPrice").val().replace(/,/g,"");
         var registrationDate  = $("#txtRegistrationDate").val();
         var registrationFee   = $("#txtRegistrationFee").val().replace(/,/g,"");
+        var deviceStatus      = $("#cmbDeviceStatus").val();
+        var devicePrice       = $("#txtDevicePrice").val().replace(/,/g,"");
         var registrationInfo  = CKEDITOR.instances["txtRegistrationInformation"].getData();
 
         $.ajax({
@@ -915,6 +999,8 @@
             REGISTRATIONID      : _encodePassword(param),
             PACKAGEID           : packageId,
             EMPLOYEEID          : employeeId,
+            ISPPARENTID         : ispParentId,
+            NUMBERID            : numberId,
             FULLNAME            : fullName,
             GENDER              : gender,
             BIRTHDAY            : birthday,
@@ -925,6 +1011,8 @@
             PRICE               : price,
             REGISTRATIONDATE    : registrationDate,
             REGISTRATIONFEE     : registrationFee,
+            DEVICESTATUS        : deviceStatus,
+            DEVICEPRICE         : devicePrice,
             REGISTRATIONINFO    : registrationInfo,
             <?= $CSRF_NAME; ?>  : "<?= $CSRF_TOKEN; ?>" 
           },
@@ -1430,6 +1518,7 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+              $("a[href='#tab_2-2']").tab("show");
             }
           },
           error : function(response){
@@ -1636,6 +1725,8 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+
+              $("a[href='#tab_2-2']").tab("show");
             }
           },
           error : function(response){
@@ -1677,7 +1768,7 @@
                       fnRowCallback: function(AvRow, AvData, AvDisplayIndex, AvFullDisplayIndex){
                         $("td:eq(0)",AvRow).text(_decodePassword(AvData["employee_id"]));
                         var buttons = "<button class='btn btn-md btn-flat btn-info' title='Detail Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+false+")><i class='fa fa-info'></i></button>"+
-                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+true+")><i class='fa fa-pencil'></i></button>"+
+                                      "<button class='btn btn-md btn-flat btn-warning' title='Ubah Data' onclick=getDetailEmployeeDataById('"+_decodePassword(AvData["employee_id"])+"',"+true+")><i class='fa fa-edit'></i></button>"+
                                       "<button class='btn btn-md btn-flat btn-danger' title='Hapus Data' onclick=deleteEmployeeData('"+_decodePassword(AvData["employee_id"])+"')><i class='fa fa-trash'></i></button>";
                         $("td:eq(7)",AvRow).html(buttons);
                       }
@@ -1690,7 +1781,7 @@
         if(param){
           $("#cmbEmployee").addClass("custom-select");
           $("#cmbEmployee").select2({
-            placeholder : "Pilih Paket Karyawan",
+            placeholder : "Pilih Karyawan",
             // dropdownParent: $("#modalInputRencanaKerja"),
             width : "100%",
             cache:false,
@@ -1777,6 +1868,7 @@
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+              $("a[href='#tab_2-2']").tab('show');
             }else{
               $("#modalContentContainer").empty();
               $.each(response.RESPONSE.employee, function(AvIndex, AvValue){
@@ -1933,6 +2025,8 @@
                 $("#txtClientId").val(_decodePassword(AvValue.reg_id));
                 $("#cmbInternetPackage").append(internetPackageOption).trigger("change");
                 $("#cmbEmployee").append(employeeOption).trigger("change");
+                $("#txtIspParentId").val(AvValue.isp_parent_id);
+                $("#txtNumberId").val(AvValue.number_id);
                 $("#txtFullName").val(AvValue.full_name);
                 $("#cmbGender").val(AvValue.gender);
                 $("#txtBirthday").val(AvValue.birthday);
@@ -1943,12 +2037,16 @@
                 $("#txtPrice").val(AvValue.monthly_payment);
                 $("#txtRegistrationDate").val(AvValue.registration_date);
                 $("#txtRegistrationFee").val(AvValue.registration_fee);
+                $("#cmbDeviceStatus").val(AvValue.tools_status);
+                $("#txtDevicePrice").val(AvValue.price_of_tools);
                 CKEDITOR.instances["txtRegistrationInformation"].setData(AvValue.information);
               });
               var editFunction = "editClientRegistrationData('"+param+"')";
               $("#btnAction").attr("onclick",editFunction)
                              .html("<img src=<?= base_url('assets/images/loading_1.svg'); ?> style='display: none;' width='20px' height='20px;'>"+
                                    "<i class='fa fa-pencil' style='display: inline-block;'></i> Ubah Data");
+
+              $("a[href='#tab_2-2']").tab("show");
             }else{
               $("#modalContentContainer").empty();
               $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
@@ -1958,6 +2056,16 @@
                       "<div class='col-md-3'><label>No. Registrasi</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
                       "<div class='col-md-8'>"+_decodePassword(AvValue.reg_id)+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. Id Dari Isp</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.isp_parent_id+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>No. KTP / NPWP</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.number_id+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Nama Lengkap</label></div>"+
@@ -2015,6 +2123,16 @@
                       "<div class='col-md-8'>"+parseFloat(AvValue.registration_fee).toLocaleString()+"</div>"+
                     "</div>"+
                     "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Kepemilikan Perangkat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+AvValue.tools_status+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
+                      "<div class='col-md-3'><label>Harga Perangkat</label></div>"+
+                      "<div class='col-md-1'><label>:</label></div>"+
+                      "<div class='col-md-8'>"+parseFloat(AvValue.price_of_tools).toLocaleString()+"</div>"+
+                    "</div>"+
+                    "<div class='col-md-12'>"+
                       "<div class='col-md-3'><label>Sales</label></div>"+
                       "<div class='col-md-1'><label>:</label></div>"+
                       "<div class='col-md-8'>"+AvValue.employee_name+"</div>"+
@@ -2049,6 +2167,75 @@
             alert(param);
           }
         });
+      }
+
+      function getAllClientRegistrationData_Select(param=false){
+        if($("select[data-id='cmbRegistrationID']").length > 1){
+          var componentId = "";
+          $("select[data-id='cmbRegistrationID']").each(function(index, value){
+            componentId += "#"+$(this).attr("id");
+            if(parseInt($("select[data-id='cmbRegistrationID']").length) - parseInt(index) != 1){
+              componentId += ", ";
+            }
+          });
+        }else{
+          var componentId = "#cmbRegistrationID";
+        }
+        if(param){
+          $(componentId).addClass("custom-select");
+          $(componentId).select2({
+            placeholder : "Cari Data Pelanggan",
+            // dropdownParent: $("#modalInputRencanaKerja"),
+            width : "100%",
+            cache:false,
+            allowClear:true,
+            ajax:{
+              url : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
+              dataType : "JSON",
+              delay : 0,
+              data : function(params){
+                var query = {
+                  SEARCH: params.term
+                }
+                return query;
+              },
+              processResults : function(response){
+                return{
+                  results : $.map(response.RESPONSE.client_registration, function(item){
+                    return{
+                      text:"["+_decodePassword(item.reg_id)+"] "+item.full_name,
+                      id:item.reg_id
+                    }
+                  })
+                };
+              }
+            }
+          });
+        }else{
+          $.ajax({
+            type : "GET",
+            url : "<?= base_url('_administrator/getAllClientRegistrationData'); ?>",
+            dataType : "JSON",
+            success : function(response){
+              $(componentId).removeClass("custom-select");
+              $(componentId).empty();
+              $(componentId).append("<option>Pilih Paket Internet</option>");
+              $.each(response.RESPONSE.client_registration, function(AvIndex, AvValue){
+                $("#cmbRegistrationID").append(
+                  "<option value='"+AvValue.reg_id+"'>["+AvValue.reg_id+"] "+AvValue.full_name+"</option>"
+                );
+              });
+            },
+            error : function(response){
+              var param = {
+                CODE : response.status,
+                MESSAGE : response.statusText,
+                RESPONSE : "Maaf, Terjadi Kesalahan Pada Server."
+              }
+              alert(param);
+            }
+          });
+        }
       }
     </script>
     <!-- ========== GET DATA FUNCTION FINISH ========== -->
